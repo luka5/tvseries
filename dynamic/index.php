@@ -10,6 +10,12 @@ function getRequestVar($key){
 	else
 		throw new Exception_IndexNotFound("RequestVar " . $key . " missing.");
 }
+function forceGetRequestVar($key){
+	if(isset($_REQUEST[$key]))
+		return $_REQUEST[$key];
+	else
+		null;
+}
 // mache aus Errors Exception zum Abfangen, fange alle Exceptions ab und gib Fehlermeldung aus
 function exception_error_handler($errno, $errstr, $errfile, $errline ) {
     exception_handler("" . $errstr . "<br />" . $errfile . " " . $errline);

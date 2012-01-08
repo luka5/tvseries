@@ -12,7 +12,10 @@ class Startup {
 		Database::createInstance($this->configArray['db']);
 		Session::createInstance();
 
-		$this->callName = getRequestVar('callName');		
+		$this->callName = forceGetRequestVar('callName');
+		if(forceGetRequestVar('callName') == null)
+			//for use with php_cli
+			$this->callName = $_SERVER['argv'][1];
 		
 		// Initialisiere Call mit $this->callName
 		$callClass = new ReflectionClass("Call_" . $this->callName);

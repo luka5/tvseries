@@ -25,14 +25,18 @@ Ext.define('TvSeries.store.availabilitystore', {
                 },
                 {
                     idAvailability: 2,
-                    name: 'low'
+                    name: 'processing'
                 },
                 {
                     idAvailability: 3,
-                    name: 'medium'
+                    name: 'low'
                 },
                 {
                     idAvailability: 4,
+                    name: 'medium'
+                },
+                {
+                    idAvailability: 5,
                     name: 'high'
                 }
             ],

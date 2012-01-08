@@ -21,7 +21,6 @@ class Call_UpdateEpg extends Call_Abstract{
 		"programlink" => 16
 	);
 	private $epgdir = "../media/epg/";
-	//private $epgdir = "../../tvseriesmedia/epg/";
  	private $allserials = null;
 				 
 	public function __construct(){
@@ -30,16 +29,21 @@ class Call_UpdateEpg extends Call_Abstract{
 
 	public function handle(){
 		//get request vars
-		$action = getRequestVar("1");
-		if(isset($_REQUEST["2"])){
-			$dateFrom = getRequestVar("2");
+		if(isset($_SERVER['argv'][2])){
+			$action = $_SERVER['argv'][2];
+		}else{
+			$action = "";
+		}
+		
+		if(isset($_SERVER['argv'][3])){
+			$dateFrom = $_SERVER['argv'][3];
 		}else{
 			//kein Datum übergeben: wähle heutigen Tag
 			$dateFrom = date("d.m.Y");
 		}
-		$dateFrom = getRequestVar("2");
-		if(isset($_REQUEST["3"])){
-			$dateTo = getRequestVar("3");	
+		
+		if(isset($_SERVER['argv'][4])){
+			$dateTo = $_SERVER['argv'][4];
 		}else{
 			$dateTo = $dateFrom;
 		}
@@ -55,18 +59,22 @@ class Call_UpdateEpg extends Call_Abstract{
 					$this->importEpgfiles();
 					break;
 
-				case "importEpgfile":
+				case "import":
 					$this->importEpgfiles();
 					break;
 
+				case "download":
+					$this->downloadEpgfiles($dateFrom, $dateTo);
+					break;
+				
 				default:
-					echo "all | importEpgfile";
+					throw new Exception("all | import | download");
 			}
 		}catch(Exception $e){
 			echo "\n\nForced Finish. ".$e->getMessage();
 		}
 
-		echo "\n\n Finished. (" . (microtime(true)-$time1) . "s, " . date("d.m.Y H:i") . ").";
+		echo "\n\n Finished. (" . (microtime(true)-$time1) . "s, " . date("d.m.Y H:i") . ").\n";
 	}
 
 	/*
@@ -101,7 +109,7 @@ class Call_UpdateEpg extends Call_Abstract{
 					$this->importEpgfile($sourcefile);
 					
 					//delete file
-					//unlink($sourcefile);
+					unlink($this->epgdir . $sourcefile);
 				}
 			}
 			closedir($handle);
@@ -116,12 +124,12 @@ class Call_UpdateEpg extends Call_Abstract{
 		 * Id;beginn;ende;dauer;sender;titel;typ;text;genre_id;fsk;language;weekday;zusatz;wdh;downloadlink;infolink;programlink;
 		 */
 
-		echo "Reading input file ".$sourcefile." \n";
-        
+		echo "\nReading input file ".$sourcefile." \n";
+		
 		// open $sourcefile
-        $sourcehandle = fopen($this->epgdir . $sourcefile, "rb");
-        if(!$sourcehandle)
-            throw new Exception("File " . $sourcefile . " could not be opened");
+		$sourcehandle = fopen($this->epgdir . $sourcefile, "rb");
+		if(!$sourcehandle)
+			throw new Exception("File " . $sourcefile . " could not be opened");
 		
 		$lineCounter = 0;
 		// Datei Zeile für Zeile durchgehen
@@ -152,6 +160,18 @@ class Call_UpdateEpg extends Call_Abstract{
 		
 		$title = $values[$this->epgIndices['titel']];
 		
+		$found = false;
+		if($this->allserials == null)
+			$this->allserials = Factory_Serial::getByFields(null);
+		foreach($this->allserials as $serial){
+			if($this->otrEquals($serial->getTitle(), $title)){
+				$found = true;
+				break;
+			}
+		}
+		if(!$found)
+			return;
+			
 		$episodeText = $values[$this->epgIndices['text']];
 		$episodeTitles = explode(",", $episodeText);
 		
@@ -177,35 +197,22 @@ class Call_UpdateEpg extends Call_Abstract{
 					if($this->otrEquals($season->getTitle(), $title)){
 						//season passt
 						echo ":";
-						//echo "\nPassendes gefunden!(1)" . $title . " - " . $episodeTitle;
 						$this->newBroadcastTime($serial, $episode, $time, $channel, $episodeTitle);
-						break;
+						return;
 					}else if($this->otrEquals($serial->getTitle(), $title)){
 						//serial passt
 						echo ":";
-						//echo "\nPassendes gefunden!(2)" . $title . " - " . $episodeTitle;
 						$this->newBroadcastTime($serial, $episode, $time, $channel, $episodeTitle);
-						break;
+						return;
 					}else{
 						//episode gefunden aber sonst nichts. irgnorieren.
 					}
 				}
-			}else{
-				//schaue ob serial bekannt
-				//episode noch nicht angelegt oder "tippfehler"
-				if($this->allserials == null)
-					$this->allserials = Factory_Serial::getByFields(null);
-				foreach($this->allserials as $serial){
-				 	if($this->otrEquals($serial->getTitle(), $title)){
-				 		//serial passt
-				 		//TODO: hier kommen auch folgende Strings an: Zeichentrickserie USA 2004 20 min
-				 		//SHIT!
-				 		echo "\nPassendes gefunden!(3)" . $title . " - " . $episodeTitle;
-				 		break;
-				 	} 
-				}
 			}
 		}
+		echo ";";
+		//episode nicht gefunden, aber serial passt
+		$this->newBroadcastTime($serial, null, $time, $channel, $episodeText);
 
 	}
 	
@@ -224,35 +231,35 @@ class Call_UpdateEpg extends Call_Abstract{
 	
 	private function newBroadcastTime($serial, $episode, $time, $channel, $title){
 		//erzeuge neues BrowadcastTime Model
-		echo "<br />Found: ".$serial->getTitle(). " ".$episode->getTitle() . "<br />";
-		/*$bt = new Model_BroadcastTime();
+		$bt = new Model_BroadcastTime();
 		$bt->setIdSerial($serial->getId());
-		$bt->setIdEpisode($episode->getId());
+		if($episode != null)
+			$bt->setIdEpisode($episode->getId());
 		$bt->setTime($time);
 		$bt->setChannel($channel);
 		$bt->setTitle($title);
 		
-		Factory_BroadcastTime::createNew($bt);*/
+		Factory_BroadcastTime::createNew($bt);
 	}
 	
 	private function downloadfile($file_source, $file_target) {
 		
-        $rh = fopen($file_source, 'rb');
-        $wh = fopen($file_target, 'wb');
-        if ($rh===false || $wh===false) {
+		$rh = fopen($file_source, 'rb');
+		$wh = fopen($file_target, 'wb');
+		if ($rh===false || $wh===false) {
 			// error reading or opening file
-           return true;
-        }
-        while (!feof($rh)) {
-            if (fwrite($wh, fread($rh, 1024)) === FALSE) {
-                   // 'Download error: Cannot write to file ('.$file_target.')';
-                   return true;
-               }
-        }
-        fclose($rh);
-        fclose($wh);
-        // No error
-        return false;
-    }
+			return true;
+		}
+		while (!feof($rh)) {
+			if (fwrite($wh, fread($rh, 1024)) === FALSE) {
+				// 'Download error: Cannot write to file ('.$file_target.')';
+				return true;
+			}
+		}
+		fclose($rh);
+		fclose($wh);
+		// No error
+		return false;
+	}
 }
 ?>

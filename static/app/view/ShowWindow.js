@@ -133,7 +133,7 @@ Ext.define('TvSeries.view.ShowWindow', {
 		    success: function(response){
 		        var responseObj = Ext.JSON.decode(response.responseText);
 		        if(!responseObj.success){
-		        	Ext.Msg.alert("Fehler beim Aktualisieren der Daten.<br />"+responseObj.errorInfo);
+				Ext.Msg.alert("Fehler beim Aktualisieren der Daten.", responseObj.errorInfo);
 		        }
 		    }
 		});

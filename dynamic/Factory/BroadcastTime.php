@@ -18,18 +18,38 @@
 		 */
 		public static function createNew(Model_BroadcastTime $model){
 			if($model->getId() === null){
+				
+				if(self::checkExistence($model))
+					return;
+				
 				// Model hat keine ID, schreibe in Datenbank
 				$query = "INSERT INTO BroadcastTime SET ";
 				$query .= "idSerial = " . $model->getIdSerial() . ", ";
-				$query .= "idEpisode = " . $model->getIdEpisode() . ", ";
+				if($model->getIdEpisode() !== null)
+					$query .= "idEpisode = " . $model->getIdEpisode() . ", ";
 				$query .= "time = '" . $model->getTime() . "', ";
 				$query .= "channel = '" . $model->getChannel() . "', ";
-				$query .= "title = '" . $model->getTitle() . "' ";				
+				$query .= "title = '" . $model->getTitle() . "' ";
+				
 				$result = Database::getInstance()->executeUpdate($query);
 				if($result === false){
 					throw new Exception("Fehler beim Anlegen der BroadcastTime");
 				}
 			}
+		}
+		
+		public static function checkExistence(Model_BroadcastTime $model){
+			$fields = array(
+				"idSerial" => $model->getIdSerial(),
+				"idEpisode" => $model->getIdEpisode(),
+				"time" => $model->getTime(),
+				"channel" => $model->getChannel(),
+				"title" => $model->getTitle()
+			);
+			$models = self::getByFields($fields);
+			if(count($models) == 0)
+				return false;
+			return true;
 		}
 
 		/**

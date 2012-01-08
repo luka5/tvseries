@@ -95,9 +95,9 @@
 				$query = "UPDATE Episode SET ";
 				$query .= "idSeason = " . $model->getIdSeason() . ", ";
 				$query .= "number = " . $model->getNumber() . ", ";
-				$query .= "title = '" . $model->getTitle() . "', ";
-				$query .= "originalTitle = '" . $model->getOriginalTitle() . "',  ";
-				$query .= "about = '" . $model->getAbout() . "', ";
+				$query .= "title = \"" . $model->getTitle() . "\", ";
+				$query .= "originalTitle = \"" . $model->getOriginalTitle() . "\",  ";
+				$query .= "about = \"" . $model->getAbout() . "\", ";
 				$query .= "ranking = " . $model->getRanking() . ", ";
 				$query .= "availability = " . $model->getAvailability() . ", ";
 				$query .= "premier = '" . $model->getPremier() . "', ";
@@ -106,7 +106,7 @@
 				
 				$result = Database::getInstance()->executeUpdate($query);
 				if($result === false)
-					throw new Exception("Error Updating Episode (".$model->getId().")");
+					throw new Exception("Error Updating Episode (".$model->getId().")" . $query);
 			}else
 				throw new Exception("Unknown Model! Try using Factory::createNew(\$model)");
 		}
