@@ -48,8 +48,8 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
     		var showWindow = Ext.create('TvSeries.view.ShowWindow', {});
     		showWindow.load(record, seasonsRecord[0], serialRecord[0]);
     		showWindow.show();
-    		showWindow.on('close', function(){
-    			this.down("EpisodesGrid").getStore().load();
+    		showWindow.on('hide', function(){
+   			this.down("EpisodesGrid").getStore().load();
     		}, this);
 		}, this);
     },
