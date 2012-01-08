@@ -68,14 +68,17 @@ Ext.define('TvSeries.view.ShowWindow', {
 	    	case 'not':
 	    		availability = 1;
 	    		break;
-	    	case 'low':
+	    	case 'processing':
 	    		availability = 2;
 	    		break;
-	    	case 'middle':
+	    	case 'low':
 	    		availability = 3;
 	    		break;
-	    	case 'high':
+	    	case 'middle':
 	    		availability = 4;
+	    		break;
+	    	case 'high':
+	    		availability = 5;
 	    		break;
     	}
     	console.info(availability);
