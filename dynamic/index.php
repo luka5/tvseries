@@ -16,7 +16,7 @@ function exception_error_handler($errno, $errstr, $errfile, $errline ) {
 }
 function exception_handler($msg) {
 	require("error.php");
-    exit;
+	exit;
 }
 set_error_handler("exception_error_handler", E_ALL);
 set_exception_handler("exception_handler");

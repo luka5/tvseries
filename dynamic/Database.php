@@ -24,7 +24,6 @@ class Database {
 	// Konstruktor nicht von extern erreichbar
 	private function __construct($config){
         $strDBLocation = $config['type'].":host=".$config['host'].";dbname=".$config['dbname'];
-echo $strDBLocation;
         try {
             $this->PDOobj = new PDO($strDBLocation, $config['user'],  $config['pass'], array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
         }catch (PDOException $e ) {

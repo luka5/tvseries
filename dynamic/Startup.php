@@ -9,7 +9,7 @@ class Startup {
     public function __construct() {
 
 		$this->configArray = parse_ini_file("config.ini", true);
-//		Database::createInstance($this->configArray['db']);
+		Database::createInstance($this->configArray['db']);
 		Session::createInstance();
 
 		$this->callName = getRequestVar('callName');		
