@@ -13,7 +13,7 @@ class Startup {
 		Session::createInstance();
 
 		$this->callName = forceGetRequestVar('callName');
-		if(forceGetRequestVar('callName') == null)
+		if($this->callName == null)
 			//for use with php_cli
 			$this->callName = $_SERVER['argv'][1];
 		
