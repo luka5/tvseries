@@ -91,7 +91,10 @@ class Call_UpdateEpg extends Call_Abstract{
 			$targetfile = $this->epgdir . "epg_" . $from->format('Y_m_d') . ".csv";
 			$this->downloadfile($sourcefile, $targetfile);
 			
-			$from += 60*60*24;
+			$year = $from->format('Y');
+			$month = $from->format('m');
+			$day = $from->format('d');
+			$from->setDate($year, $month, $day+1);
 		}
 		
 	}
