@@ -1,0 +1,15 @@
+<script type="text/javascript" src="app/view/ui/TvSeriesViewport.js"></script>
+<script type="text/javascript" src="app/view/TvSeriesViewport.js"></script>
+<script type="text/javascript" src="app/view/ui/EpisodesGrid.js"></script>
+<script type="text/javascript" src="app/view/EpisodesGrid.js"></script>
+<script type="text/javascript" src="app/view/ui/SerialsGrid.js"></script>
+<script type="text/javascript" src="app/view/SerialsGrid.js"></script>
+<script type="text/javascript" src="app/view/ui/SeasonsGrid.js"></script>
+<script type="text/javascript" src="app/view/SeasonsGrid.js"></script>
+<script type="text/javascript" src="app/view/ui/ShowWindow.js"></script>
+<script type="text/javascript" src="app/view/ShowWindow.js"></script>
+<script type="text/javascript" src="app/store/Episodes.js"></script>
+<script type="text/javascript" src="app/store/Serials.js"></script>
+<script type="text/javascript" src="app/store/Season.js"></script>
+<script type="text/javascript" src="app/store/BroadcastTime.js"></script>
+<script type="text/javascript" src="app/store/availabilitystore.js"></script>

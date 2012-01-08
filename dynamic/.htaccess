@@ -1,0 +1,11 @@
+RewriteEngine on
+RewriteRule ^$  index.html [L,QSA]
+
+# Pruefe, ob Datei lokal angelegt ist
+RewriteCond %{REQUEST_FILENAME} !-s
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteCond %{REQUEST_FILENAME} !-d
+
+
+# Aufruf als Content-Abfrage prüfen
+RewriteRule ^(.*)$  index.php?requestType=content&location=$1 [L,QSA]
