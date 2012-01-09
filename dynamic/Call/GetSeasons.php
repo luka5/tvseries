@@ -2,7 +2,7 @@
 class Call_GetSeasons extends Call_Abstract{
 
 	public function __construct(){
-
+		parent::__construct();
 	}
 	
 	public function handle(){

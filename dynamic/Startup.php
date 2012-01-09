@@ -7,7 +7,7 @@ class Startup {
 	private $configArray;
 
     public function __construct() {
-
+	try{
 		$this->configArray = parse_ini_file("config.ini", true);
 		Database::createInstance($this->configArray['db']);
 		Session::createInstance();
@@ -21,7 +21,12 @@ class Startup {
 		$callClass = new ReflectionClass("Call_" . $this->callName);
 		$call = call_user_func_array(array(&$callClass, 'newInstance'), array());
 		$call->handle();
-
+	}catch(Exception $e){
+		echo json_encode(array(
+			"success" => false,
+			"errorInfo" => $e->getMessage()
+		));
+	}
     }
 
 }

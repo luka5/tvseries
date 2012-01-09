@@ -18,5 +18,7 @@ Ext.define('TvSeries.view.SerialsGrid', {
     initComponent: function() {
         var me = this;
         me.callParent(arguments);
+
+        me.getStore().on('load', onload, this);
     }
 });
