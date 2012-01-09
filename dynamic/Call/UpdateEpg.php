@@ -57,6 +57,7 @@ class Call_UpdateEpg extends Call_Abstract{
 				case "all":
 					$this->downloadEpgfiles($dateFrom, $dateTo);
 					$this->importEpgfiles();
+					$this->sendMail($dateFrom, $dateTo);
 					break;
 
 				case "import":
@@ -67,8 +68,12 @@ class Call_UpdateEpg extends Call_Abstract{
 					$this->downloadEpgfiles($dateFrom, $dateTo);
 					break;
 				
+				case "mail":
+					$this->sendMail($dateFrom, $dateTo);
+					break;
+				
 				default:
-					throw new Exception("all | import | download");
+					throw new Exception("all | import | download | mail");
 			}
 		}catch(Exception $e){
 			echo "\n\nForced Finish. ".$e->getMessage();
@@ -264,5 +269,62 @@ class Call_UpdateEpg extends Call_Abstract{
 		// No error
 		return false;
 	}
+
+	private function sendMail($dateFrom, $dateTo){
+		$from = new DateTime($dateFrom);
+		$to = new DateTime($dateTo);
+		$broadcastmodels = array();
+		
+		$date = new DateTime($from->format("d.m.Y H:i"));
+		while($date <= $to){
+			$values = array(
+				"time" => $date->format("Y-m-d") . "%"
+			);
+			
+			$broadcastmodels[$date->format("d.m.Y")] =  Factory_BroadcastTime::getByFields($values);
+			
+			$year = $date->format('Y');
+			$month = $date->format('m');
+			$day = $date->format('d');
+			$date->setDate($year, $month, $day+1);
+		}
+		
+		$nachricht = "Hallole,\nim folgenden die neuen Sendungen.\n";
+		foreach($broadcastmodels as $date => $models){
+			$nachricht .= "\n\nSendungen vom ".$date ."\n";
+			$unavailable = "";
+			$available = "";
+			$unassigned = "";
+			
+			foreach($models as $model){
+				$time = new DateTime($model->getTime());
+				$serial = Factory_Serial::getById($model->getIdSerial());
+				if($model->getIdEpisode() != null){
+					$episode = Factory_Episode::getById($model->getIdEpisode());
+					$season = Factory_Season::getById($episode->getIdSeason());
+					
+					if($episode->getAvailability() == "high" || $episode->getAvailability() == "medium")
+						$available .= $time->format("H:i") . " " . $model->getChannel() .  ": " . $serial->getTitle() . " - " . $episode->getTitle() . " (" . $season->getTitle() . ") \n";
+					else
+						$unavailable .= $time->format("H:i") . " " . $model->getChannel() . ": " . $serial->getTitle() . " - " . $episode->getTitle() . " (" . $season->getTitle() . ") \n";
+					
+				}else{
+					$unassigned .= $time->format("H:i") . " " . $model->getChannel() . ": " . $serial->getTitle() . " - " . $model->getTitle() . " \n";
+				}
+			}
+			
+			$nachricht .= "Fehlende:\n" . $unavailable . "\nVorhandene:\n" . $available . "\nOhne Zuordnung:\n" . $unassigned;
+		}
+		
+		$mail_header  = "From: Marge<margesimpson@luka5.de>\n";
+		$mail_header .= "MIME-Version: 1.0";
+		$mail_header .= "\nContent-Type: text/plain; charset=UTF-8";
+		$mail_header .= "\nContent-Transfer-Encoding: 8bit";
+		
+		$emailaddress = "example@example.com";
+		mail($emailaddress, "Sendungen vom " . $from->format("d.m.Y") . ($from < $to ? " bis ".$to->format("d.m.Y"):""), $nachricht, $mail_header);
+
+	}
+	
 }
 ?>
