@@ -98,7 +98,7 @@ Ext.define('TvSeries.view.ShowWindow', {
     	//theatre.update('<!--<embed src="' + downloadurl + '" width=512 height=384 type="video/x-msvideo"  id="movie"></embed>-->');
     	//theatre.update('<video src="' + downloadurl + '" autoplay="" controls="" style="width: 1024px; height: 576px;"></video><br /><embed src="' + fileurl + '.avi" width=512 height=384 type="video/x-msvideo"  id="movie"></embed>');
     	
-        console.info(play(fileurl + ".avi"));
+        play(fileurl + ".avi");
         
     	var BroadcastTimeGrid = this.down("#BroadcastTimeGrid");
     	var BroadcastStore = BroadcastTimeGrid.getStore();

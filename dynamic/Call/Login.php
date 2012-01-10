@@ -19,8 +19,8 @@ class Call_Login extends Call_Abstract{
 			throw new Exception_AccessDenied("Zugangsdaten falsch.");
 		
 		Session::getInstance()->setVar("idUser" , $user[0]->getId());
-		Session::setVar("username" , $username);
-		Session::setVar("secret" , $secret);
+		Session::getInstance()->setVar("username" , $username);
+		Session::getInstance()->setVar("secret" , $secret);
 	
 		$data = array(
 			"success" => true
