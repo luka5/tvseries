@@ -90,26 +90,42 @@
 		 * @param Model_Episode $model
 		 */
 		public static function store(Model_Episode $model){
+			
+			$fields = "";
+			if($model->getIdSeason() !== null && $model->getIdSeason() != "")
+				$fields .= "idSeason = " . $model->getIdSeason() . ", ";
+			if($model->getNumber() !== null && $model->getNumber() != "")
+				$fields .= "number = " . $model->getNumber() . ", ";
+			$fields .= "title = \"" . $model->getTitle() . "\", ";
+			$fields .= "originalTitle = \"" . $model->getOriginalTitle() . "\",  ";
+			$fields .= "about = \"" . $model->getAbout() . "\", ";
+			if($model->getRanking() !== null && $model->getRanking() != "")
+				$fields .= "ranking = " . $model->getRanking() . ", ";
+			if($model->getAvailability() !== null && $model->getAvailability() != "")
+				$fields .= "availability = " . $model->getAvailability() . ", ";
+			$fields .= "premier = '" . $model->getPremier() . "', ";
+			$fields .= "originalPremier = '" . $model->getOriginalPremier() . "' ";
+
 			if(isset(self::$models[$model->getId()])){
 				// Model bekannt, schreibe in Datenbank
 				$query = "UPDATE Episode SET ";
-				$query .= "idSeason = " . $model->getIdSeason() . ", ";
-				$query .= "number = " . $model->getNumber() . ", ";
-				$query .= "title = \"" . $model->getTitle() . "\", ";
-				$query .= "originalTitle = \"" . $model->getOriginalTitle() . "\",  ";
-				$query .= "about = \"" . $model->getAbout() . "\", ";
-				$query .= "ranking = " . $model->getRanking() . ", ";
-				$query .= "availability = " . $model->getAvailability() . ", ";
-				$query .= "premier = '" . $model->getPremier() . "', ";
-				$query .= "originalPremier = '" . $model->getOriginalPremier() . "' ";
+				$query .= $fields;
 				$query .= "WHERE id = " . $model->getId();
 				
 				$result = Database::getInstance()->executeUpdate($query);
 				if($result === false)
 					throw new Exception("Error Updating Episode (".$model->getId().")" . $query);
-			}else
-				throw new Exception("Unknown Model! Try using Factory::createNew(\$model)");
+			}else{
+				//erzeiche neuen DB Eintrag
+				$query = "INSERT INTO Episode SET ";
+				$query .= $fields;
+
+				$result = Database::getInstance()->executeUpdate($query);
+				if($result === false){
+					throw new Exception("Fehler beim Anlegen der Episode.".$query);
+				}
+
+			}		
 		}
-			
 	}
 ?>
