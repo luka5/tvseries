@@ -58,6 +58,7 @@ class Call_UpdateEpisodes extends Call_Abstract{
 			if(count($existingEpisode) > 0)
 				$model->setId($existingEpisode[0]->getId());
 
+			//insert $model into database OR update database
 			Factory_Episode::store($model);
 		}
 	}
