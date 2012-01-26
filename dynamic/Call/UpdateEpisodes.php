@@ -20,7 +20,7 @@ class Call_UpdateEpisodes extends Call_Abstract {
 
 				$episodes->setAvailability($availability);
 				Factory_Episode::store($episodes);
-			}if ($action == "updateoradd") {
+			}else if ($action == "updateoradd") {
 				//example url: view-source:http://localhost:8081/tvseries/dynamic/?callName=UpdateEpisodes&action=updateoradd&data=[{%22idSeason%22:%2250%22,%22number%22:%2221%22,%22originalTitle%22:%22Do%20You%20See%20What%20I%20See%22,%22premier%22:%2212.12.2012%22}]&allocate={%22originalTitle%22:%22originalTitle%22,%22premier%22:%22premier%22,%22idSeason%22:%22idSeason%22,%22number%22:%22number%22}
 				$data = json_decode(getRequestVar("data"), true);
 				$idSeason = getRequestVar("idSeason");
