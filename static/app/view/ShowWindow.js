@@ -29,11 +29,6 @@ Ext.define('ShowWindowModel', {
     },
 
     {
-        name: 'EpisodeDownloadlink',  
-        type: 'string'
-    },
-
-    {
         name: 'EpisodePremier',  
         type: 'string'
     },
@@ -91,10 +86,6 @@ Ext.define('TvSeries.view.ShowWindow', {
         if(episodeNumber <= 9){
             episodeNumber = "0" + episodeNumber;
         }
-
-        var fileurl = "http://c-ha.dyndns.org/tvseries/media/"+serialTitle_+"/"+seasonTitle_+"/"+seasonNumber+"x"+episodeNumber;
-        var downloadurl = fileurl+".webm";
-        var downloadlink = "<a href=\"" + downloadurl + "\">loadIt</a>";
     	
         var availability = episodeRecord.get('availability');
         switch(availability){
@@ -119,7 +110,6 @@ Ext.define('TvSeries.view.ShowWindow', {
             SerialTitle: serialTitle,
             SeasonTitle: seasonTitle,
             EpisodeTitle: episodeRecord.get('title'),
-            EpisodeDownloadlink: downloadlink,
             EpisodePremier: episodeRecord.get('premier'),
             EpisodeAbout: episodeRecord.get('about'),
             availability: availability
@@ -136,8 +126,9 @@ Ext.define('TvSeries.view.ShowWindow', {
         BroadcastTimeGrid.on("itemdblclick", this.click, this);
         
         // Loading the Video into Videoplayer and start!
-        this.videoPlayer.playlist.add(fileurl+'.webm');
-        this.videoPlayer.playlist.play();    
+	var videourl = "http://c-ha.dyndns.org/tvseries/media/"+serialTitle_+"/"+seasonTitle_+"/"+seasonNumber+"x"+episodeNumber;
+        this.videoPlayer.playlist.add(videourl);
+        this.videoPlayer.playlist.play();
         
         this.show();
     },
