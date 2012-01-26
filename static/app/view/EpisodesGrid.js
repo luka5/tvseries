@@ -12,11 +12,20 @@
  */
 
 Ext.define('TvSeries.view.EpisodesGrid', {
-    extend: 'TvSeries.view.ui.EpisodesGrid',
-    alias: 'widget.EpisodesGrid',
+	extend: 'TvSeries.view.ui.EpisodesGrid',
+	alias: 'widget.EpisodesGrid',
 
-    initComponent: function() {
-        var me = this;
-        me.callParent(arguments);
-    }
+	initComponent: function() {
+		var me = this;
+		me.callParent(arguments);
+		
+		me.down("#addEpisodeButton").on("click", me.addEpisode, me);
+	},
+	
+	addEpisode: function(){
+		var addwindow = Ext.create('TvSeries.view.AddWindow', {
+			renderTo: Ext.getBody()
+		});
+		addwindow.show();
+	}
 });

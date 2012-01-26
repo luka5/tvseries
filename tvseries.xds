@@ -10,7 +10,7 @@
         "lineEnding": "LF",
         "instantiateStore": true,
         "exportXDSFiles": true,
-        "genTimestamps": true,
+        "genTimestamps": false,
         "appName": "TvSeries"
     },
     "xdsVersion": "1.2.2",
@@ -454,9 +454,10 @@
             },
             "codeClass": null,
             "userConfig": {
-                "height": 620,
-                "width": 1350,
+                "height": 513,
+                "width": 956,
                 "layout": "border",
+                "closeAction": "hide",
                 "title": "Episode anzeigen",
                 "modal": true,
                 "designer|userClassName": "ShowWindow"
@@ -491,6 +492,7 @@
                             "codeClass": null,
                             "userConfig": {
                                 "border": 0,
+                                "height": 240,
                                 "id": "infoPanel",
                                 "padding": null,
                                 "width": 300,
@@ -549,22 +551,6 @@
                                     }
                                 },
                                 {
-                                    "id": "ExtBox1-ext-gen42531",
-                                    "type": "displayfield",
-                                    "reference": {
-                                        "name": "items",
-                                        "type": "array"
-                                    },
-                                    "codeClass": null,
-                                    "userConfig": {
-                                        "name": "EpisodeDownloadlink",
-                                        "value": "Display Field",
-                                        "fieldLabel": "Download",
-                                        "designer|userClassName": "MyDisplayField5",
-                                        "layout|anchor": "100%"
-                                    }
-                                },
-                                {
                                     "id": "ExtBox1-ext-gen40872",
                                     "type": "displayfield",
                                     "reference": {
@@ -608,6 +594,8 @@
                                     },
                                     "codeClass": null,
                                     "userConfig": {
+                                        "height": 200,
+                                        "width": 300,
                                         "name": "EpisodeAbout",
                                         "value": "Display Field",
                                         "fieldLabel": "",
@@ -702,59 +690,29 @@
                     "codeClass": null,
                     "userConfig": {
                         "border": 0,
-                        "id": "theatre",
+                        "id": null,
                         "title": null,
                         "designer|userClassName": "MyPanel2",
                         "layout|region": "center",
-                        "layout|split": null
-                    }
-                },
-                {
-                    "id": "ExtBox1-ext-gen8955",
-                    "type": "toolbar",
-                    "reference": {
-                        "name": "dockedItems",
-                        "type": "array"
-                    },
-                    "codeClass": null,
-                    "userConfig": {
-                        "height": 23,
-                        "tpl": "",
-                        "width": 1339,
-                        "designer|userClassName": "MyToolbar3",
-                        "container|align": "middle",
-                        "layout|region": "east",
-                        "dock": "bottom"
+                        "layout|split": null,
+                        "weight": 333
                     },
                     "cn": [
                         {
-                            "id": "ExtBox1-ext-gen11492",
-                            "type": "button",
+                            "id": "ExtBox1-ext-gen7028",
+                            "type": "panel",
                             "reference": {
                                 "name": "items",
                                 "type": "array"
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "id": "aviButton",
-                                "text": "avi",
-                                "designer|userClassName": "MyButton3",
-                                "layout|flex": null
-                            }
-                        },
-                        {
-                            "id": "ExtBox1-ext-gen12079",
-                            "type": "button",
-                            "reference": {
-                                "name": "items",
-                                "type": "array"
-                            },
-                            "codeClass": null,
-                            "userConfig": {
-                                "id": "webmButton",
-                                "text": "webm",
-                                "designer|userClassName": "MyButton3",
-                                "layout|flex": null
+                                "height": 480,
+                                "html": "<embed type=\\\"application/x-vlc-plugin\\\" name=\\\"videoplayer\\\" height=\\\"300\\\" width=\\\"500\\\" autoplay=\\\"no\\\" loop=\\\"no\\\" target=\\\"\\\" />",
+                                "id": "theatre",
+                                "width": 640,
+                                "title": null,
+                                "designer|userClassName": "MyPanel3"
                             }
                         }
                     ]
