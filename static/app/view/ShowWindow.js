@@ -155,6 +155,7 @@ Ext.define('TvSeries.view.ShowWindow', {
             scope: this,
             url : '../dynamic/?callName=UpdateEpisodes',
             params: {
+                action: 'updateavailability',
                 idEpisode: idEpisode,
                 availability: idAvailability
             },
