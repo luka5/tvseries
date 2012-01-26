@@ -20,6 +20,7 @@ Ext.define('TvSeries.view.ui.ShowWindow', {
     },
     title: 'Episode anzeigen',
     modal: true,
+    closeAction: 'hide',
 
     initComponent: function() {
         var me = this;
@@ -132,7 +133,8 @@ Ext.define('TvSeries.view.ui.ShowWindow', {
                     xtype: 'panel',
                     border: 0,
                     id: 'theatre',
-                    region: 'center'
+                    region: 'center',
+                    html: "<embed type=\"application/x-vlc-plugin\" pluginspage=\"http://www.videolan.org\" width=\"640\" height=\"480\" id=\"videoplayer\" toolbar=\"true\" bgcolor=\"#ffffff\"></embed>"
                 }
             ],
             dockedItems: [

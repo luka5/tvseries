@@ -20,10 +20,6 @@ Ext.application({
             renderTo: Ext.getBody()
         });
         cmp1.show();
-        var cmp2 = Ext.create('TvSeries.view.ShowWindow', {
-            renderTo: Ext.getBody()
-        });
-//        cmp2.show();
     }
 });
 
