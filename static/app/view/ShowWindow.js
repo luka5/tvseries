@@ -153,9 +153,8 @@ Ext.define('TvSeries.view.ShowWindow', {
         var idAvailability = recs[0].data.idAvailability;
         Ext.Ajax.request({
             scope: this,
-            url : '../dynamic/?callName=UpdateEpisodes',
+            url : '../dynamic/?callName=UpdateEpisodes&action=updateavailability',
             params: {
-                action: 'updateavailability',
                 idEpisode: idEpisode,
                 availability: idAvailability
             },
