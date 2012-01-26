@@ -57,7 +57,8 @@ class Call_UpdateEpg extends Call_Abstract{
 				case "all":
 					$this->downloadEpgfiles($dateFrom, $dateTo);
 					$this->importEpgfiles();
-					$this->sendMail($dateFrom, $dateTo);
+					$oldmapped = $this->recheck();
+					$this->sendMail($dateFrom, $dateTo, $oldmapped);
 					break;
 
 				case "import":
@@ -72,8 +73,12 @@ class Call_UpdateEpg extends Call_Abstract{
 					$this->sendMail($dateFrom, $dateTo);
 					break;
 				
+				case "recheck":
+					$this->recheck();
+					break;
+				
 				default:
-					throw new Exception("all | import | download | mail");
+					throw new Exception("all | import | download | mail | recheck");
 			}
 		}catch(Exception $e){
 			echo "\n\nForced Finish. ".$e->getMessage();
@@ -159,14 +164,31 @@ class Call_UpdateEpg extends Call_Abstract{
 			}
 				
 			//arbeite mit inhalt.
-			$this->checkRow($values);
+			$success = $this->checkRow($values);
+			if($success == 1)
+				echo ":";
+			else if($success == 2)
+				echo ";";
 		}
 	}
 
-	private function checkRow($values){
+	private function checkRow($var){
 		//ueberpruefe eintrag
-		
-		$title = $values[$this->epgIndices['titel']];
+		$btmodel = null;
+		if($var instanceof Model_BroadcastTime){
+			$serial = Factory_Serial::getById($var->getIdSerial());
+			
+			$title = $serial->getTitle();
+			$episodeText = $var->getTitle();
+			$channel = $var->getChannel();
+			$time = $var->getTime();
+			$btmodel = $var;
+		}else{
+			$title = $var[$this->epgIndices['titel']];
+			$episodeText = $var[$this->epgIndices['text']];
+			$channel = $var[$this->epgIndices['sender']];
+			$time = $var[$this->epgIndices['beginn']];
+		}
 		
 		$found = false;
 		if($this->allserials == null)
@@ -179,13 +201,9 @@ class Call_UpdateEpg extends Call_Abstract{
 		}
 		if(!$found)
 			return;
-			
-		$episodeText = $values[$this->epgIndices['text']];
+
 		$episodeTitles = explode(",", $episodeText);
 		
-		$channel = $values[$this->epgIndices['sender']];
-		
-		$time = $values[$this->epgIndices['beginn']];
 		$tmptime = new DateTime($time);
 		$time = $tmptime->format('Y-m-d H:i:s');
 		
@@ -202,25 +220,20 @@ class Call_UpdateEpg extends Call_Abstract{
 					$season = $season[0];
 					$serial = Factory_Serial::getByFields(array("id" => $season->getIdSerial()));
 					$serial = $serial[0];
-					if($this->otrEquals($season->getTitle(), $title)){
-						//season passt
-						echo ":";
-						$this->newBroadcastTime($serial, $episode, $time, $channel, $episodeTitle);
-						return;
-					}else if($this->otrEquals($serial->getTitle(), $title)){
-						//serial passt
-						echo ":";
-						$this->newBroadcastTime($serial, $episode, $time, $channel, $episodeTitle);
-						return;
+					if($this->otrEquals($season->getTitle(), $title) || $this->otrEquals($serial->getTitle(), $title)){
+						//season passt || serial passt
+						$this->newBroadcastTime($serial, $episode, $time, $channel, $episodeTitle, $btmodel);
+						return 1;
 					}else{
 						//episode gefunden aber sonst nichts. irgnorieren.
+						return 0;
 					}
 				}
 			}
 		}
-		echo ";";
+		return 2;
 		//episode nicht gefunden, aber serial passt
-		$this->newBroadcastTime($serial, null, $time, $channel, $episodeText);
+		$this->newBroadcastTime($serial, null, $time, $channel, $episodeText, $btmodel);
 
 	}
 	
@@ -237,15 +250,22 @@ class Call_UpdateEpg extends Call_Abstract{
 		return false;
 	}
 	
-	private function newBroadcastTime($serial, $episode, $time, $channel, $title){
-		//erzeuge neues BrowadcastTime Model
-		$bt = new Model_BroadcastTime();
-		$bt->setIdSerial($serial->getId());
-		if($episode != null)
+	private function newBroadcastTime($serial, $episode, $time, $channel, $title, $btmodel = null){
+		if($btmodel == null){
+			//erzeuge neues BrowadcastTime Model
+			$bt = new Model_BroadcastTime();
+			$bt->setIdSerial($serial->getId());
+			if($episode != null)
+				$bt->setIdEpisode($episode->getId());
+			$bt->setTime($time);
+			$bt->setChannel($channel);
+			$bt->setTitle($title);
+		}else{
+			//aktualisiere Model
+			$bt = $btmodel;
+			$bt->setTitle($title);
 			$bt->setIdEpisode($episode->getId());
-		$bt->setTime($time);
-		$bt->setChannel($channel);
-		$bt->setTitle($title);
+		}
 		
 		Factory_BroadcastTime::createNew($bt);
 	}
@@ -270,7 +290,7 @@ class Call_UpdateEpg extends Call_Abstract{
 		return false;
 	}
 
-	private function sendMail($dateFrom, $dateTo){
+	private function sendMail($dateFrom, $dateTo, $oldmapped = array()){
 		$from = new DateTime($dateFrom);
 		$to = new DateTime($dateTo);
 		$broadcastmodels = array();
@@ -287,6 +307,10 @@ class Call_UpdateEpg extends Call_Abstract{
 			$month = $date->format('m');
 			$day = $date->format('d');
 			$date->setDate($year, $month, $day+1);
+		}
+		
+		if(count($oldmapped) > 0){
+			$broadcastmodels["diversen Tage"] = $oldmapped;
 		}
 		
 		$nachricht = "Hallole,\nim folgenden die neuen Sendungen.\n";
@@ -324,6 +348,19 @@ class Call_UpdateEpg extends Call_Abstract{
 		$emailaddress = "example@example.com";
 		mail($emailaddress, "Sendungen vom " . $from->format("d.m.Y") . ($from < $to ? " bis ".$to->format("d.m.Y"):""), $nachricht, $mail_header);
 
+	}
+	
+	private function recheck(){
+		$broadcastmodels =  Factory_BroadcastTime::getByFields(array(
+				"idEpisode" => null
+			));
+		$mapped = array();
+		foreach($broadcastmodels as $model){
+			$success = $this->checkRow($model);
+			if($success == 1)
+				$mapped[] = $model;
+		}
+		return $mapped;
 	}
 	
 }

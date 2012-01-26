@@ -167,6 +167,7 @@ class Model_Episode extends Model_Abstract {
 	 * @param String $premier
 	 */
 	public function setPremier($premier){
+		$premier = parent::convertDate($premier);
 		$this->premier = $premier;
 	}	
 	
@@ -183,6 +184,7 @@ class Model_Episode extends Model_Abstract {
 	 * @param String $premier
 	 */
 	public function setOriginalPremier($originalPremier){
+		$originalPremier = parent::convertDate($originalPremier);
 		$this->originalPremier = $originalPremier;
 	}
 	

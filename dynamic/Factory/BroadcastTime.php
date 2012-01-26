@@ -30,11 +30,21 @@
 				$query .= "time = '" . $model->getTime() . "', ";
 				$query .= "channel = '" . $model->getChannel() . "', ";
 				$query .= "title = '" . $model->getTitle() . "' ";
-				
-				$result = Database::getInstance()->executeUpdate($query);
-				if($result === false){
-					throw new Exception("Fehler beim Anlegen der BroadcastTime");
-				}
+			}else{
+				// Model hat ID, aktualisiere in Datenbank
+				$query = "UPDATE BroadcastTime SET ";
+				$query .= "idSerial = " . $model->getIdSerial() . ", ";
+				if($model->getIdEpisode() !== null)
+					$query .= "idEpisode = " . $model->getIdEpisode() . ", ";
+				$query .= "time = '" . $model->getTime() . "', ";
+				$query .= "channel = '" . $model->getChannel() . "', ";
+				$query .= "title = '" . $model->getTitle() . "' ";
+				$query .= "WHERE id = " . $model->getId();
+			}
+			
+			$result = Database::getInstance()->executeUpdate($query);
+			if($result === false){
+				throw new Exception("Fehler beim Anlegen der BroadcastTime.");
 			}
 		}
 		
