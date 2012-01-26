@@ -8,7 +8,7 @@ class Startup {
 
     public function __construct() {
 	try{
-		$this->configArray = parse_ini_file("config.ini", true);
+		$this->configArray = parse_ini_file("config.ini.php", true);
 		Database::createInstance($this->configArray['db']);
 		Session::createInstance();
 
