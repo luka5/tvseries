@@ -9,3 +9,8 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 # Aufruf als Content-Abfrage prüfen
 RewriteRule ^(.*)$  index.php?requestType=content&location=$1 [L,QSA]
+
+<files config.ini>
+  order deny,allow
+  deny from all
+</files>

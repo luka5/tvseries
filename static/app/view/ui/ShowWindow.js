@@ -20,6 +20,7 @@ Ext.define('TvSeries.view.ui.ShowWindow', {
     closeAction: 'hide',
     title: 'Episode anzeigen',
     modal: true,
+    closeAction: 'hide',
 
     initComponent: function() {
         var me = this;

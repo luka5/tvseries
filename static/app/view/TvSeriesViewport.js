@@ -14,56 +14,59 @@
 Ext.define('TvSeries.view.TvSeriesViewport', {
     extend: 'TvSeries.view.ui.TvSeriesViewport',
 
+    showWindow: null,
+
     initComponent: function() {
-        var me = this;
-        me.callParent(arguments);
+        this.callParent(arguments);
         
-        
+        this.showWindow = Ext.create('TvSeries.view.ShowWindow', {
+            renderTo: Ext.getBody()
+        });
+
         this.registerListeners();
     },
     
     registerListeners: function(){
-    	this.down("SerialsGrid").getSelectionModel().on('select', function(sm, record, index, opt){
-    		this.loadBySerial(record.get('id'));
-		}, this);
+        this.down("SerialsGrid").getSelectionModel().on('select', function(sm, record, index, opt){
+            this.loadBySerial(record.get('id'));
+        }, this);
     	
-    	this.down("SerialsGrid").down("textfield").on('specialkey', function(field, e){
-    		if (e.getKey() == e.ENTER) {
+        this.down("SerialsGrid").down("textfield").on('specialkey', function(field, e){
+            if (e.getKey() == e.ENTER) {
                 var value = field.getValue();
-            	var serialStore = this.down("SerialsGrid").getStore();
+                var serialStore = this.down("SerialsGrid").getStore();
                 serialStore.getProxy().extraParams = {
-                	title: value
+                    title: value
                 };
                 serialStore.load();
             }
-    	}, this);
+        }, this);
     	
-    	this.down("SeasonsGrid").getSelectionModel().on('select', function(sm, record, index, opt){
-    		this.loadBySeason(record.get('id'));
-		}, this);
+        this.down("SeasonsGrid").getSelectionModel().on('select', function(sm, record, index, opt){
+            this.loadBySeason(record.get('id'));
+        }, this);
     	
-    	this.down("EpisodesGrid").getSelectionModel().on('select', function(sm, record, index, opt){
-    		var serialRecord = this.down("SerialsGrid").getSelectionModel().getSelection();
-    		var seasonsRecord = this.down("SeasonsGrid").getSelectionModel().getSelection();
-    		var showWindow = Ext.create('TvSeries.view.ShowWindow', {});
-    		showWindow.load(record, seasonsRecord[0], serialRecord[0]);
-    		showWindow.show();
-    		showWindow.on('hide', function(){
-   			this.down("EpisodesGrid").getStore().load();
-    		}, this);
-		}, this);
+        this.down("EpisodesGrid").getSelectionModel().on('select', function(sm, record, index, opt){
+            var serialRecord = this.down("SerialsGrid").getSelectionModel().getSelection();
+            var seasonsRecord = this.down("SeasonsGrid").getSelectionModel().getSelection();
+            this.showWindow.loadVideo(record, seasonsRecord[0], serialRecord[0]);
+        }, this);
+
+        this.showWindow.on('hide', function(){
+            this.down("EpisodesGrid").getStore().load();
+        }, this);
     },
     
     loadBySerial: function(idSerial){
-    	var seasonsStore = this.down("SeasonsGrid").getStore();
+        var seasonsStore = this.down("SeasonsGrid").getStore();
         seasonsStore.getProxy().extraParams = {
-        	idSerial: idSerial
+            idSerial: idSerial
         };
         seasonsStore.load();
         
         var episodeStore = this.down("EpisodesGrid").getStore();
         episodeStore.getProxy().extraParams = {
-        	idSerial: idSerial
+            idSerial: idSerial
         };
         episodeStore.load();
     },
@@ -71,7 +74,7 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
     loadBySeason: function(idSeason){
         var episodeStore = this.down("EpisodesGrid").getStore();
         episodeStore.getProxy().extraParams = {
-        	idSeason: idSeason
+            idSeason: idSeason
         };
         episodeStore.load();
     }
