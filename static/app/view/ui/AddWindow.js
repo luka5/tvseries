@@ -12,8 +12,8 @@
 Ext.define('TvSeries.view.ui.AddWindow', {
     extend: 'Ext.window.Window',
 
-    height: 552,
-    width: 947,
+    height: 403,
+    width: 895,
     layout: {
         type: 'border'
     },
@@ -28,22 +28,30 @@ Ext.define('TvSeries.view.ui.AddWindow', {
                 {
                     xtype: 'form',
                     bodyPadding: 10,
-                    url: '../dynamic/?callName=Login',
+                    url: '../dynamic/?callName=UpdateEpisodes&action=updateoradd',
                     region: 'center',
                     split: true,
                     items: [
                         {
-                            xtype: 'textfield',
-                            name: 'season',
-                            fieldLabel: 'Staffel',
+                            xtype: 'combobox',
+                            id: 'serialCombobox',
+                            name: 'idSerial',
+                            fieldLabel: 'Serie',
+                            editable: false,
+                            displayField: 'title',
+                            store: this.serialStore,
+                            valueField: 'id',
                             anchor: '100%'
                         },
                         {
-                            xtype: 'textareafield',
-                            height: 207,
-                            id: 'code',
-                            name: 'code',
-                            fieldLabel: 'Json-Code',
+                            xtype: 'combobox',
+                            id: 'seasonCombobox',
+                            name: 'idSeason',
+                            fieldLabel: 'Staffel',
+                            editable: false,
+                            displayField: 'title',
+                            store: this.seasonStore,
+                            valueField: 'id',
                             anchor: '100%'
                         },
                         {
@@ -61,11 +69,11 @@ Ext.define('TvSeries.view.ui.AddWindow', {
                             anchor: '100%'
                         },
                         {
-                            xtype: 'textfield',
-                            id: 'allocate',
-                            name: 'allocate',
-                            value: '\n\{\n"number": "NR_ST",\n"originaltitle": "OT",\n"title": "DT",\n"about": "ZF",\n"originalpremier": "EA",\n"premier": "EAD"\n\}',
-                            fieldLabel: 'Zuordnung',
+                            xtype: 'textareafield',
+                            height: 207,
+                            id: 'code',
+                            name: 'data',
+                            fieldLabel: 'Json-Code',
                             anchor: '100%'
                         }
                     ],

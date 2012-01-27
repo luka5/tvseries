@@ -8,7 +8,8 @@ class Call_UpdateEpisodes extends Call_Abstract {
 
 	public function handle() {
 		$resultObj = array(
-			"success" => true
+			"success" => true,
+			"msg" => ""
 		);
 		try {
 			$action = getRequestVar("action");
@@ -32,7 +33,7 @@ class Call_UpdateEpisodes extends Call_Abstract {
 		} catch (Exception $e) {
 			$resultObj = array(
 				"success" => false,
-				"errorInfo" => $e->getMessage()
+				"msg" => $e->getMessage()
 			);
 		}
 		parent::encodeAndPrint($resultObj);

@@ -816,8 +816,8 @@
             },
             "codeClass": null,
             "userConfig": {
-                "height": 552,
-                "width": 947,
+                "height": 403,
+                "width": 895,
                 "layout": "border",
                 "title": "Episoden hinzufügen",
                 "modal": true,
@@ -835,7 +835,7 @@
                     "userConfig": {
                         "bodyPadding": 10,
                         "title": null,
-                        "url": "../dynamic/?callName=Login",
+                        "url": "../dynamic/?callName=UpdateEpisodes&action=updateoradd",
                         "designer|userClassName": "MyForm1",
                         "layout|region": "center",
                         "layout|split": true
@@ -843,33 +843,41 @@
                     "cn": [
                         {
                             "id": "ExtBox1-ext-gen10397",
-                            "type": "textfield",
+                            "type": "combobox",
                             "reference": {
                                 "name": "items",
                                 "type": "array"
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "name": "season",
-                                "fieldLabel": "Staffel",
+                                "id": "serialCombobox",
+                                "name": "idSerial",
+                                "fieldLabel": "Serie",
+                                "editable": false,
+                                "displayField": "title",
+                                "store": "this.serialStore",
+                                "valueField": "id",
                                 "designer|userClassName": "MyTextField7",
                                 "layout|anchor": "100%"
                             }
                         },
                         {
-                            "id": "ExtBox1-ext-gen7689",
-                            "type": "textareafield",
+                            "id": "ExtBox1-ext-gen7825",
+                            "type": "combobox",
                             "reference": {
                                 "name": "items",
                                 "type": "array"
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "height": 207,
-                                "id": "code",
-                                "name": "code",
-                                "fieldLabel": "Json-Code",
-                                "designer|userClassName": "MyTextArea",
+                                "id": "seasonCombobox",
+                                "name": "idSeason",
+                                "fieldLabel": "Staffel",
+                                "editable": false,
+                                "displayField": "title",
+                                "store": "this.seasonStore",
+                                "valueField": "id",
+                                "designer|userClassName": "MyTextField7",
                                 "layout|anchor": "100%"
                             }
                         },
@@ -902,6 +910,23 @@
                                 "name": "replaceText",
                                 "fieldLabel": "Mit",
                                 "designer|userClassName": "MyTextField3",
+                                "layout|anchor": "100%"
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen7689",
+                            "type": "textareafield",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "height": 207,
+                                "id": "code",
+                                "name": "data",
+                                "fieldLabel": "Json-Code",
+                                "designer|userClassName": "MyTextArea",
                                 "layout|anchor": "100%"
                             }
                         },
@@ -950,23 +975,6 @@
                                     }
                                 }
                             ]
-                        },
-                        {
-                            "id": "ExtBox1-ext-gen11703",
-                            "type": "textfield",
-                            "reference": {
-                                "name": "items",
-                                "type": "array"
-                            },
-                            "codeClass": null,
-                            "userConfig": {
-                                "id": "allocate",
-                                "name": "allocate",
-                                "value": "\n\\{\n\"number\": \"NR_ST\",\n\"originaltitle\": \"OT\",\n\"title\": \"DT\",\n\"about\": \"ZF\",\n\"originalpremier\": \"EA\",\n\"premier\": \"EAD\"\n\\}",
-                                "fieldLabel": "Zuordnung",
-                                "designer|userClassName": "MyTextField8",
-                                "layout|anchor": "100%"
-                            }
                         }
                     ]
                 }
@@ -1412,6 +1420,87 @@
                     "userConfig": {
                         "name": "name",
                         "designer|userClassName": "MyField16"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "ExtBox1-ext-gen9001",
+            "type": "jsonstore",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "storeId": "Replacements",
+                "designer|userClassName": "Replacements"
+            },
+            "cn": [
+                {
+                    "id": "ExtBox1-ext-gen9005",
+                    "type": "ajaxproxy",
+                    "reference": {
+                        "name": "proxy",
+                        "type": "object"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "url": "../dynamic/?callName=GetReplacements",
+                        "designer|userClassName": "Ajax Proxy4"
+                    },
+                    "cn": [
+                        {
+                            "id": "ExtBox1-ext-gen9011",
+                            "type": "jsonreader",
+                            "reference": {
+                                "name": "reader",
+                                "type": "object"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "designer|userClassName": "Json Reader4"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "ExtBox1-ext-gen9393",
+                    "type": "datafield",
+                    "reference": {
+                        "name": "fields",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "name": "idSerial",
+                        "designer|userClassName": "MyField18"
+                    }
+                },
+                {
+                    "id": "ExtBox1-ext-gen9400",
+                    "type": "datafield",
+                    "reference": {
+                        "name": "fields",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "name": "replace",
+                        "designer|userClassName": "MyField19"
+                    }
+                },
+                {
+                    "id": "ExtBox1-ext-gen9407",
+                    "type": "datafield",
+                    "reference": {
+                        "name": "fields",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "name": "replacewith",
+                        "designer|userClassName": "MyField20"
                     }
                 }
             ]

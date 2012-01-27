@@ -23,8 +23,14 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 	},
 	
 	addEpisode: function(){
+		var SerialStore = Ext.create('TvSeries.store.Serials',{});
+		var SeasonStore = Ext.create('TvSeries.store.Season',{});
+		var ReplacementsStore = Ext.create('TvSeries.store.Replacements',{});
 		var addwindow = Ext.create('TvSeries.view.AddWindow', {
-			renderTo: Ext.getBody()
+			renderTo: Ext.getBody(),
+			serialStore: SerialStore,
+			seasonStore: SeasonStore,
+			replacementsStore: ReplacementsStore
 		});
 		addwindow.show();
 	}

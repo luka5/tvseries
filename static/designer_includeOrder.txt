@@ -17,3 +17,4 @@
 <script type="text/javascript" src="app/store/Season.js"></script>
 <script type="text/javascript" src="app/store/BroadcastTime.js"></script>
 <script type="text/javascript" src="app/store/availabilitystore.js"></script>
+<script type="text/javascript" src="app/store/Replacements.js"></script>

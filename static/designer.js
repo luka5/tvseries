@@ -21,7 +21,8 @@ Ext.application({
         'Serials',
         'Season',
         'BroadcastTime',
-        'availabilitystore'
+        'availabilitystore',
+        'Replacements'
     ],
 
     launch: function() {
