@@ -20,7 +20,7 @@ class Call_UpdateEpg extends Call_Abstract{
 		"infolink" => 15,
 		"programlink" => 16
 	);
-	private $epgdir = "../media/epg/";
+	private $epgdir = "../tmp/";
  	private $allserials = null;
 				 
 	public function __construct(){
