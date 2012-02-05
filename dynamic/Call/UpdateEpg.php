@@ -176,6 +176,7 @@ class Call_UpdateEpg extends Call_Abstract{
 		//ueberpruefe eintrag
 		$btmodel = null;
 		if($var instanceof Model_BroadcastTime){
+			echo "I";
 			$serial = Factory_Serial::getById($var->getIdSerial());
 			
 			$title = $serial->getTitle();
@@ -184,6 +185,7 @@ class Call_UpdateEpg extends Call_Abstract{
 			$time = $var->getTime();
 			$btmodel = $var;
 		}else{
+			echo "N";
 			$title = $var[$this->epgIndices['titel']];
 			$episodeText = $var[$this->epgIndices['text']];
 			$channel = $var[$this->epgIndices['sender']];
@@ -224,9 +226,6 @@ class Call_UpdateEpg extends Call_Abstract{
 						//season passt || serial passt
 						$this->newBroadcastTime($serial, $episode, $time, $channel, $episodeTitle, $btmodel);
 						return 1;
-					}else{
-						//episode gefunden aber sonst nichts. irgnorieren.
-						return 0;
 					}
 				}
 			}
