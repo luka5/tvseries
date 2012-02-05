@@ -228,10 +228,9 @@ class Call_UpdateEpg extends Call_Abstract{
 				}
 			}
 		}
-		return 2;
 		//episode nicht gefunden, aber serial passt
 		$this->newBroadcastTime($serial, null, $time, $channel, $episodeText, $btmodel);
-
+		return 2;
 	}
 	
 	private function otrEquals($dbText, $csvText){
