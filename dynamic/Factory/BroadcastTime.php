@@ -25,7 +25,7 @@
 				// Model hat keine ID, schreibe in Datenbank
 				$query = "INSERT INTO BroadcastTime SET ";
 				$query .= "idSerial = " . $model->getIdSerial() . ", ";
-				if($model->getIdEpisode() !== null)
+				if($model->getIdEpisode() != null)
 					$query .= "idEpisode = " . $model->getIdEpisode() . ", ";
 				$query .= "time = '" . $model->getTime() . "', ";
 				$query .= "channel = '" . $model->getChannel() . "', ";
@@ -34,7 +34,7 @@
 				// Model hat ID, aktualisiere in Datenbank
 				$query = "UPDATE BroadcastTime SET ";
 				$query .= "idSerial = " . $model->getIdSerial() . ", ";
-				if($model->getIdEpisode() !== null)
+				if($model->getIdEpisode() != null)
 					$query .= "idEpisode = " . $model->getIdEpisode() . ", ";
 				$query .= "time = '" . $model->getTime() . "', ";
 				$query .= "channel = '" . $model->getChannel() . "', ";
