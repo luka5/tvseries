@@ -260,7 +260,8 @@ class Call_UpdateEpg extends Call_Abstract{
 			//aktualisiere Model
 			$bt = $btmodel;
 			$bt->setTitle($title);
-			$bt->setIdEpisode($episode->getId());
+			if($episode != null)
+				$bt->setIdEpisode($episode->getId());
 		}
 		
 		Factory_BroadcastTime::createNew($bt);
