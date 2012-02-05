@@ -176,7 +176,6 @@ class Call_UpdateEpg extends Call_Abstract{
 		//ueberpruefe eintrag
 		$btmodel = null;
 		if($var instanceof Model_BroadcastTime){
-			echo "I";
 			$serial = Factory_Serial::getById($var->getIdSerial());
 			
 			$title = $serial->getTitle();
@@ -185,7 +184,6 @@ class Call_UpdateEpg extends Call_Abstract{
 			$time = $var->getTime();
 			$btmodel = $var;
 		}else{
-			echo "N";
 			$title = $var[$this->epgIndices['titel']];
 			$episodeText = $var[$this->epgIndices['text']];
 			$channel = $var[$this->epgIndices['sender']];
