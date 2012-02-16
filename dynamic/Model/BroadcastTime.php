@@ -6,6 +6,7 @@ class Model_BroadcastTime extends Model_Abstract {
 	public $id;
 	public $idSerial;
 	public $idEpisode;
+	public $epgid;
 	public $time;
 	public $channel;
 	public $title;	
@@ -45,13 +46,21 @@ class Model_BroadcastTime extends Model_Abstract {
 	public function setIdSerial($idSerial){
 		$this->idSerial = $idSerial;
 	}	
-	
+		
 	/**
 	*
-	* @return Model_Season
+	* @return Integer
 	*/
-	public function getSeason(){
-		return Factory_Season::getById($this->getIdSeason());
+	public function getEpgid(){
+		return $this->epgid;
+	}
+	
+	/**
+	 *
+	 * @param Integer $epgid
+	 */
+	public function setEpgid($epgid){
+		$this->epgid = $epgid;
 	}	
 	
 	/**

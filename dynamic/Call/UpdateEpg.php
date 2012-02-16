@@ -2,7 +2,7 @@
 class Call_UpdateEpg extends Call_Abstract{
 
 	private $epgIndices = array(
-		"id" => 0,
+		"epgid" => 0,
 		"beginn" => 1,
 		"ende" => 2,
 		"dauer" => 3,
@@ -158,7 +158,7 @@ class Call_UpdateEpg extends Call_Abstract{
 			$values = explode(";", $line);
 
 			// Prüfe Gültigkeit der eingelesenen Zeile
-			if(count($values) < 17 || $values[$this->epgIndices['id']] == "Id"){
+			if(count($values) < 17 || $values[$this->epgIndices['epgid']] == "Id"){
 				echo "!";
 				continue;
 			}
@@ -179,11 +179,13 @@ class Call_UpdateEpg extends Call_Abstract{
 			$serial = Factory_Serial::getById($var->getIdSerial());
 			
 			$title = $serial->getTitle();
+			$epgid = $var->getEpgid();
 			$episodeText = $var->getTitle();
 			$channel = $var->getChannel();
 			$time = $var->getTime();
 			$btmodel = $var;
 		}else{
+			$epgid = $var[$this->epgIndices['epgid']];
 			$title = $var[$this->epgIndices['titel']];
 			$episodeText = $var[$this->epgIndices['text']];
 			$channel = $var[$this->epgIndices['sender']];
@@ -222,14 +224,14 @@ class Call_UpdateEpg extends Call_Abstract{
 					$serial = $serial[0];
 					if($this->otrEquals($season->getTitle(), $title) || $this->otrEquals($serial->getTitle(), $title)){
 						//season passt || serial passt
-						$this->newBroadcastTime($serial, $episode, $time, $channel, $episodeTitle, $btmodel);
+						$this->newBroadcastTime($serial, $episode, $epgid, $time, $channel, $episodeTitle, $btmodel);
 						return 1;
 					}
 				}
 			}
 		}
 		//episode nicht gefunden, aber serial passt
-		$this->newBroadcastTime($serial, null, $time, $channel, $episodeText, $btmodel);
+		$this->newBroadcastTime($serial, null, $epgid, $time, $channel, $episodeText, $btmodel);
 		return 2;
 	}
 	
@@ -246,13 +248,14 @@ class Call_UpdateEpg extends Call_Abstract{
 		return false;
 	}
 	
-	private function newBroadcastTime($serial, $episode, $time, $channel, $title, $btmodel = null){
+	private function newBroadcastTime($serial, $episode, $epgid, $time, $channel, $title, $btmodel = null){
 		if($btmodel == null){
 			//erzeuge neues BrowadcastTime Model
 			$bt = new Model_BroadcastTime();
 			$bt->setIdSerial($serial->getId());
 			if($episode != null)
 				$bt->setIdEpisode($episode->getId());
+			$bt->setEpgid($epgid);
 			$bt->setTime($time);
 			$bt->setChannel($channel);
 			$bt->setTitle($title);

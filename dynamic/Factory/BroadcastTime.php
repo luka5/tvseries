@@ -17,7 +17,7 @@
 		 * @param Model_BroadcastTime $model
 		 */
 		public static function createNew(Model_BroadcastTime $model){
-			if($model->getId() === null){
+			if($model->getId() == null){
 				
 				if(self::checkExistence($model))
 					return;
@@ -27,6 +27,7 @@
 				$query .= "idSerial = " . $model->getIdSerial() . ", ";
 				if($model->getIdEpisode() != null)
 					$query .= "idEpisode = " . $model->getIdEpisode() . ", ";
+				$query .= "epgid = " . $model->getEpgid() . ", ";
 				$query .= "time = '" . $model->getTime() . "', ";
 				$query .= "channel = '" . $model->getChannel() . "', ";
 				$query .= "title = '" . $model->getTitle() . "' ";
@@ -36,6 +37,7 @@
 				$query .= "idSerial = " . $model->getIdSerial() . ", ";
 				if($model->getIdEpisode() != null)
 					$query .= "idEpisode = " . $model->getIdEpisode() . ", ";
+				$query .= "epgid = " . $model->getEpgid() . ", ";
 				$query .= "time = '" . $model->getTime() . "', ";
 				$query .= "channel = '" . $model->getChannel() . "', ";
 				$query .= "title = '" . $model->getTitle() . "' ";
@@ -52,6 +54,7 @@
 			$fields = array(
 				"idSerial" => $model->getIdSerial(),
 				"idEpisode" => $model->getIdEpisode(),
+				"epgid" => $model->getEpgid(),
 				"time" => $model->getTime(),
 				"channel" => $model->getChannel(),
 				"title" => $model->getTitle()
@@ -96,6 +99,7 @@
 					$model->setId($resultItem['id']);
 					$model->setIdSerial($resultItem['idSerial']);
 					$model->setIdEpisode($resultItem['idEpisode']);
+					$model->setEpgid($resultItem['epgid']);
 					$model->setTime($resultItem['time']);
 					$model->setChannel($resultItem['channel']);
 					$model->setTitle($resultItem['title']);
