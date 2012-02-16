@@ -135,7 +135,7 @@ Ext.define('TvSeries.view.ShowWindow', {
         BroadcastTimeGrid.on("itemdblclick", this.click, this);
         
         // Loading the Video into Videoplayer and start!
-	var videourl = "http://c-ha.dyndns.org/tvseries/media/"+serialTitle_+"/"+seasonTitle_+"/"+seasonNumber+"x"+episodeNumber;
+	var videourl = "/tvseries/media/"+serialTitle_+"/"+seasonTitle_+"/"+seasonNumber+"x"+episodeNumber;
         this.videoPlayer.playlist.add(videourl);
         this.videoPlayer.playlist.play();
         var event = "MediaPlayerEndReached";
