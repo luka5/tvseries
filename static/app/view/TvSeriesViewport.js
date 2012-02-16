@@ -49,7 +49,7 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
         this.down("EpisodesGrid").getSelectionModel().on('select', function(sm, record, index, opt){
             var serialRecord = this.down("SerialsGrid").getSelectionModel().getSelection();
             var seasonsRecord = this.down("SeasonsGrid").getSelectionModel().getSelection();
-            this.showWindow.loadVideo(record, seasonsRecord[0], serialRecord[0]);
+            this.showWindow.loadVideo(record, seasonsRecord[0], serialRecord[0], this.down("EpisodesGrid"));
         }, this);
 
         this.showWindow.on('hide', function(){

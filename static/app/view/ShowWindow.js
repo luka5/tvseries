@@ -43,7 +43,11 @@ Ext.define('ShowWindowModel', {
 Ext.define('TvSeries.view.ShowWindow', {
     extend: 'TvSeries.view.ui.ShowWindow',
     idEpisode: null,
-    
+    episodeRecord: null,
+    seasonRecord: null,
+    serialRecord: null,
+    grid: null,
+
     videoPlayer: null,
     
     initComponent: function() {
@@ -61,13 +65,18 @@ Ext.define('TvSeries.view.ShowWindow', {
         this.videoPlayer = Ext.get('videoplayer').dom;
     },
     
-    loadVideo: function(episodeRecord, seasonRecord, serialRecord){
+    loadVideo: function(episodeRecord, seasonRecord, serialRecord, grid){
         
         if(seasonRecord == null){
             this.close();
             return;
         }
-    	
+
+        this.episodeRecord = episodeRecord;
+        this.seasonRecord = seasonRecord;
+        this.serialRecord = serialRecord;
+        this.grid = grid;
+
         this.idEpisode = episodeRecord.get('id');
     	
         var serialTitle = serialRecord.get('title');
@@ -77,7 +86,7 @@ Ext.define('TvSeries.view.ShowWindow', {
         var seasonTitle_ = seasonTitle.replace(/ /gi,"_");
 
         var seasonNumber = seasonRecord.get('number');
-        console.info(seasonNumber);
+        
         if(seasonNumber <= 9){
             seasonNumber = "0" + seasonNumber;
         }
@@ -105,7 +114,7 @@ Ext.define('TvSeries.view.ShowWindow', {
                 availability = 5;
                 break;
         }
-        console.info(availability);
+        
         var rec = Ext.ModelManager.create({
             SerialTitle: serialTitle,
             SeasonTitle: seasonTitle,
@@ -129,6 +138,17 @@ Ext.define('TvSeries.view.ShowWindow', {
 	var videourl = "http://c-ha.dyndns.org/tvseries/media/"+serialTitle_+"/"+seasonTitle_+"/"+seasonNumber+"x"+episodeNumber;
         this.videoPlayer.playlist.add(videourl);
         this.videoPlayer.playlist.play();
+        var event = "MediaPlayerEndReached";
+        if(this.videoPlayer.attachEvent) {
+             // Microsoft
+             this.videoPlayer.attachEvent (event, this.openNext);
+        } else if (this.videoPlayer.addEventListener) {
+             // Mozilla: DOM level 2
+             this.videoPlayer.addEventListener (event, this.openNext, false);
+        } else {
+             // DOM level 0
+             this.videoPlayer["on" + event] = this.openNext;
+        }
         
         this.show();
     },
@@ -170,5 +190,14 @@ Ext.define('TvSeries.view.ShowWindow', {
     stopVideo: function(){
         this.videoPlayer.playlist.stop();
         this.videoPlayer.playlist.items.clear();
+    },
+
+    openNext: function(){
+        var index = this.grid.getStore().indexOf(this.episodeRecord) + 1;
+        if(this.grid.getStore().getCount() >= index)
+             return;
+        this.record = this.grid.getStore().getAt(index);
+        this.loadVideo(this.record, this.seasonRecord, this.serialRecord, this.grid);
     }
+
 });
