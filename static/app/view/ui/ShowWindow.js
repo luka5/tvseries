@@ -139,6 +139,29 @@ Ext.define('TvSeries.view.ui.ShowWindow', {
                         }
                     ]
                 }
+            ],
+            dockedItems: [
+                {
+                    xtype: 'toolbar',
+                    dock: 'bottom',
+                    items: [
+                        {
+                            xtype: 'button',
+                            id: 'playPrevButton',
+                            text: 'vorheriges'
+                        },
+                        {
+                            xtype: 'button',
+                            id: 'playNextButton',
+                            text: 'nächstes'
+                        },
+                        {
+                            xtype: 'button',
+                            id: 'toggleFullscreenButton',
+                            text: 'Vollbild'
+                        }
+                    ]
+                }
             ]
         });
 

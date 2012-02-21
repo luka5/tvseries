@@ -59,6 +59,10 @@ Ext.define('TvSeries.view.ShowWindow', {
         
         this.on('hide', this.stopVideo, this);
         this.on('afterrender', this.getVideoPlayer, this);
+
+        this.down("#playNextButton").on('click', this.openNext, this);
+        this.down("#playPrevButton").on('click', this.openPrev, this);
+        this.down("#toggleFullscreenButton").on('click', this.setFullscreen, this);
     },
     
     getVideoPlayer: function(){
@@ -138,17 +142,6 @@ Ext.define('TvSeries.view.ShowWindow', {
 	var videourl = "/tvseries/media/"+serialTitle_+"/"+seasonTitle_+"/"+seasonNumber+"x"+episodeNumber;
         this.videoPlayer.playlist.add(videourl);
         this.videoPlayer.playlist.play();
-        var event = "MediaPlayerEndReached";
-        if(this.videoPlayer.attachEvent) {
-             // Microsoft
-             this.videoPlayer.attachEvent (event, this.openNext);
-        } else if (this.videoPlayer.addEventListener) {
-             // Mozilla: DOM level 2
-             this.videoPlayer.addEventListener (event, this.openNext, false);
-        } else {
-             // DOM level 0
-             this.videoPlayer["on" + event] = this.openNext;
-        }
         
         this.show();
     },
@@ -193,11 +186,25 @@ Ext.define('TvSeries.view.ShowWindow', {
     },
 
     openNext: function(){
+        this.stopVideo();
         var index = this.grid.getStore().indexOf(this.episodeRecord) + 1;
-        if(this.grid.getStore().getCount() >= index)
-             return;
+        if(index >=  this.grid.getStore().getCount())
+            index = index - this.grid.getStore().getCount();
         this.record = this.grid.getStore().getAt(index);
         this.loadVideo(this.record, this.seasonRecord, this.serialRecord, this.grid);
+    },
+
+    openPrev: function(){
+        this.stopVideo();
+        var index = this.grid.getStore().indexOf(this.episodeRecord) - 1;
+        if(index < 0)
+            index = this.grid.getStore().getCount() - index - 2;
+        this.record = this.grid.getStore().getAt(index);
+        this.loadVideo(this.record, this.seasonRecord, this.serialRecord, this.grid);
+    },
+
+    setFullscreen: function(){
+        this.videoPlayer.video.fullscreen = true;
     }
 
 });

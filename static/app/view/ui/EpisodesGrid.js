@@ -58,6 +58,7 @@ Ext.define('TvSeries.view.ui.EpisodesGrid', {
                     xtype: 'gridcolumn',
                     width: 350,
                     dataIndex: 'title',
+                    flex: 1,
                     text: 'Titel'
                 },
                 {
