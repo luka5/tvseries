@@ -37,6 +37,7 @@ Ext.define('TvSeries.view.ui.SeasonsGrid', {
                     items: [
                         {
                             xtype: 'button',
+                            id: 'addSeasonButton',
                             text: 'Hinzufügen'
                         },
                         {

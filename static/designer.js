@@ -40,9 +40,17 @@ Ext.application({
             renderTo: Ext.getBody()
         });
         cmp3.show();
-        var cmp4 = Ext.create('TvSeries.view.AddWindow', {
+        var cmp4 = Ext.create('TvSeries.view.AddSeasonWindow', {
             renderTo: Ext.getBody()
         });
         cmp4.show();
+        var cmp5 = Ext.create('TvSeries.view.AddSerialWindow', {
+            renderTo: Ext.getBody()
+        });
+        cmp5.show();
+        var cmp6 = Ext.create('TvSeries.view.AddWindow', {
+            renderTo: Ext.getBody()
+        });
+        cmp6.show();
     }
 });

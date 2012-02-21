@@ -314,6 +314,7 @@
                             },
                             "codeClass": null,
                             "userConfig": {
+                                "id": "addSerialButton",
                                 "text": "Hinzufügen",
                                 "designer|userClassName": "MyButton",
                                 "layout|flex": null
@@ -407,6 +408,7 @@
                             },
                             "codeClass": null,
                             "userConfig": {
+                                "id": "addSeasonButton",
                                 "text": "Hinzufügen",
                                 "designer|userClassName": "MyButton1",
                                 "layout|flex": null
@@ -882,6 +884,185 @@
                                 "itemId": null,
                                 "iconCls": null,
                                 "text": "Login",
+                                "designer|userClassName": "MyButton5",
+                                "dock": "bottom"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "ExtBox1-ext-gen10148",
+            "type": "window",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "height": 126,
+                "width": 268,
+                "layout": "border",
+                "title": "Staffel hinzufügen",
+                "modal": true,
+                "designer|userClassName": "AddSeasonWindow"
+            },
+            "cn": [
+                {
+                    "id": "ExtBox1-ext-gen10151",
+                    "type": "form",
+                    "reference": {
+                        "name": "items",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "id": null,
+                        "bodyPadding": 10,
+                        "title": null,
+                        "url": "../dynamic/?callName=UpdateSeason&action=add",
+                        "designer|userClassName": "MyForm1",
+                        "layout|region": "center",
+                        "layout|split": true
+                    },
+                    "cn": [
+                        {
+                            "id": "ExtBox1-ext-gen11837",
+                            "type": "numberfield",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "hidden": true,
+                                "id": "idSerialField",
+                                "inputType": null,
+                                "name": "idSerial",
+                                "fieldLabel": null,
+                                "designer|userClassName": "MyTextField4",
+                                "layout|anchor": "100%"
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen10162",
+                            "type": "textfield",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "id": null,
+                                "name": "title",
+                                "fieldLabel": "Titel",
+                                "designer|userClassName": "MyTextField3",
+                                "layout|anchor": "100%"
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen10169",
+                            "type": "numberfield",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "id": null,
+                                "inputType": null,
+                                "name": "number",
+                                "fieldLabel": "Position",
+                                "designer|userClassName": "MyTextField4",
+                                "layout|anchor": "100%"
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen10176",
+                            "type": "button",
+                            "reference": {
+                                "name": "dockedItems",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "id": "saveSeasonButton",
+                                "itemId": null,
+                                "iconCls": null,
+                                "text": "hinzufügen",
+                                "designer|userClassName": "MyButton5",
+                                "dock": "bottom"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "ExtBox1-ext-gen12405",
+            "type": "window",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "height": 100,
+                "width": 268,
+                "layout": "border",
+                "title": "Serie hinzufügen",
+                "modal": true,
+                "designer|userClassName": "AddSerialWindow"
+            },
+            "cn": [
+                {
+                    "id": "ExtBox1-ext-gen12408",
+                    "type": "form",
+                    "reference": {
+                        "name": "items",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "id": null,
+                        "bodyPadding": 10,
+                        "title": null,
+                        "url": "../dynamic/?callName=UpdateSerial&action=add",
+                        "designer|userClassName": "MyForm1",
+                        "layout|region": "center",
+                        "layout|split": true
+                    },
+                    "cn": [
+                        {
+                            "id": "ExtBox1-ext-gen12426",
+                            "type": "textfield",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "id": null,
+                                "name": "title",
+                                "fieldLabel": "Titel",
+                                "designer|userClassName": "MyTextField3",
+                                "layout|anchor": "100%"
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen12440",
+                            "type": "button",
+                            "reference": {
+                                "name": "dockedItems",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "id": "saveSerialButton",
+                                "itemId": null,
+                                "iconCls": null,
+                                "text": "hinzufügen",
                                 "designer|userClassName": "MyButton5",
                                 "dock": "bottom"
                             }

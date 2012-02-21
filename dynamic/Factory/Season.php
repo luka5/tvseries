@@ -51,7 +51,7 @@
 			$query = "SELECT * FROM Season " . parent::getWhereQuery($values) . " " . parent::getSortQuery($sortBy);
 			$result = Database::getInstance()->executeQuery($query);
 			if($result === false){
-				throw new Exception("Fehler beim Abfragen der Staffeln.".$query);	
+				throw new Exception("Fehler beim Abfragen der Staffeln.".$query);
 			}
 			
 			$models = array();
@@ -76,19 +76,17 @@
 		 * @param Model_Season $model
 		 */
 		public static function store(Model_Season $model){
-			if(isset(self::$models[$model->getId()])){
-				// Model bekannt, schreibe in Datenbank
-				/*$query = "UPDATE " . Database::getInstance()->getHostDatabase() . ".File SET ";
-				$query .= "Folder_idFolder = " . $model->getFolder_id() . ", ";
-				$query .= "Usergroup_idUsergroup = " . $model->getUsergroup_id() . ", ";
-				$query .= "Filetemplate_idFiletemplate = " . $model->getFiletemplate_id() . ", ";
-				$query .= "name = '" . $model->getName() . "', ";
-				$query .= "title = '" . $model->getTitle() . "', ";
-				$query .= "isDynamic = " . $model->isDynamic() . " ";
-				$query .= "WHERE idFile = " . $model->getIdFile();
-				$result = Database::getInstance()->executeUpdate($query);*/
+			if($model->getId() == null){
+				$query = "INSERT INTO Season SET ";
+				$query .= "idSerial = " . $model->getIdSerial() . ", ";
+				$query .= "number = " . $model->getNumber() . ", ";
+				$query .= "title = '" . $model->getTitle() . "' ";
+				
+				$result = Database::getInstance()->executeUpdate($query);
+				if($result === false)
+					throw new Exception("Fehler beim Anlegen der Staffel.");
 			}else
-				throw new Exception("Unknown Model! Try using Factory::createNew(\$model)");
+				throw new Exception("Aktualisieren einer Staffel noch nicht implementiert.");
 		}
 			
 	}

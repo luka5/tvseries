@@ -12,13 +12,44 @@
  */
 
 Ext.define('TvSeries.view.SerialsGrid', {
-    extend: 'TvSeries.view.ui.SerialsGrid',
-    alias: 'widget.SerialsGrid',
+	extend: 'TvSeries.view.ui.SerialsGrid',
+	alias: 'widget.SerialsGrid',
 
-    initComponent: function() {
-        var me = this;
-        me.callParent(arguments);
+	initComponent: function() {
+		this.callParent(arguments);
 
-        me.getStore().on('load', onload, this);
-    }
+		this.getStore().on('load', onload, this);
+		this.down("#addSerialButton").on("click", this.addSerial, this);
+		
+		this.getSelectionModel().on('select', this.select, this);
+		this.down("textfield").on('specialkey', this.search, this);
+		
+		this.on('reload', this.reload, this);
+	},
+	
+	reload: function(){
+		this.getStore().load();
+	},
+	
+	select: function(sm, record, index, opt){
+		this.fireEvent("loadSeason", record);
+	},
+
+	addSerial: function(){
+		var addwindow = Ext.create('TvSeries.view.AddSerialWindow', {
+			renderTo: Ext.getBody()
+		});
+		addwindow.show();
+		addwindow.on("close", this.reload, this);
+	},
+	
+	search: function(field, e){
+		if (e.getKey() == e.ENTER) {
+			var value = field.getValue();
+			this.getStore().getProxy().extraParams = {
+				title: value
+			};
+			this.getStore().load();
+		}
+	}
 });

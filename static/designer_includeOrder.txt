@@ -10,6 +10,10 @@
 <script type="text/javascript" src="app/view/ShowWindow.js"></script>
 <script type="text/javascript" src="app/view/ui/LoginWindow.js"></script>
 <script type="text/javascript" src="app/view/LoginWindow.js"></script>
+<script type="text/javascript" src="app/view/ui/AddSeasonWindow.js"></script>
+<script type="text/javascript" src="app/view/AddSeasonWindow.js"></script>
+<script type="text/javascript" src="app/view/ui/AddSerialWindow.js"></script>
+<script type="text/javascript" src="app/view/AddSerialWindow.js"></script>
 <script type="text/javascript" src="app/view/ui/AddWindow.js"></script>
 <script type="text/javascript" src="app/view/AddWindow.js"></script>
 <script type="text/javascript" src="app/store/Episodes.js"></script>

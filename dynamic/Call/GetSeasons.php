@@ -8,7 +8,11 @@ class Call_GetSeasons extends Call_Abstract{
 	public function handle(){
 		try{
 			$idSerial = getRequestVar("idSerial");
-			$data = array("idSerial" => $idSerial);
+			$title = forceGetRequestVar("title");
+			$data = array(
+				"idSerial" => $idSerial,
+				"title" => "%".$title."%"
+			);
 		}catch(Exception_IndexNotFound $e){
 			$data = null;
 		}

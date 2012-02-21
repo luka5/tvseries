@@ -38,6 +38,7 @@ Ext.define('TvSeries.view.ui.SerialsGrid', {
                     items: [
                         {
                             xtype: 'button',
+                            id: 'addSerialButton',
                             text: 'Hinzufügen'
                         },
                         {

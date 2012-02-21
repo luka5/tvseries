@@ -15,11 +15,41 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 	extend: 'TvSeries.view.ui.EpisodesGrid',
 	alias: 'widget.EpisodesGrid',
 
+	season: null,
+	serial: null,
+
 	initComponent: function() {
 		var me = this;
 		me.callParent(arguments);
 		
 		me.down("#addEpisodeButton").on("click", me.addEpisode, me);
+		
+		this.getSelectionModel().on('select', this.select, this);
+		this.down("textfield").on('specialkey', this.search, this);
+
+		this.on('reload', this.reload, this);
+	},
+	
+	load: function(obj){
+		this.season = obj.season;
+		this.serial = obj.serial;
+		
+		this.getStore().getProxy().extraParams = {
+			idSeason: this.season.data.id
+		};
+		this.getStore().load();
+	},
+	
+	reload: function(){
+		var obj = {
+			season: this.season,
+			serial: this.serial
+		};
+		this.load(obj);
+	},
+	
+	select: function(sm, record, index, opt){
+		this.fireEvent("loadShowWindow", record, this.season, this.serial);
 	},
 	
 	addEpisode: function(){
@@ -33,5 +63,17 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 			replacementsStore: ReplacementsStore
 		});
 		addwindow.show();
+		addwindow.on("hide", this.reload, this);
+	},
+	
+	search: function(field, e){
+		if (e.getKey() == e.ENTER) {
+			var value = field.getValue();
+			this.getStore().getProxy().extraParams = {
+				idSeason: this.season.data.id,
+				title: value
+			};
+			this.getStore().load();
+		}
 	}
 });

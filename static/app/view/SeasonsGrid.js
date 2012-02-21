@@ -12,11 +12,57 @@
  */
 
 Ext.define('TvSeries.view.SeasonsGrid', {
-    extend: 'TvSeries.view.ui.SeasonsGrid',
-    alias: 'widget.SeasonsGrid',
+	extend: 'TvSeries.view.ui.SeasonsGrid',
+	alias: 'widget.SeasonsGrid',
 
-    initComponent: function() {
-        var me = this;
-        me.callParent(arguments);
-    }
+	serial: null,
+
+	initComponent: function() {
+		var me = this;
+		me.callParent(arguments);
+		
+		this.down("#addSeasonButton").on("click", this.addSeason, this);
+		
+		this.getSelectionModel().on('select', this.select, this);
+		this.down("textfield").on('specialkey', this.search, this);
+		
+		this.on('reload', this.reload, this);
+	},
+	
+	load: function(serial){
+		this.serial = serial;
+		
+		this.getStore().getProxy().extraParams = {
+			idSerial: this.serial.data.id
+		};
+		this.getStore().load();
+	},
+	
+	reload: function(){
+		this.load(this.serial);
+	},
+	
+	select: function(sm, record, index, opt){
+		this.fireEvent("loadEpisode", {season: record, serial: this.serial});
+	},
+	
+	addSeason: function(){
+		var addwindow = Ext.create('TvSeries.view.AddSeasonWindow', {
+			renderTo: Ext.getBody()
+		});
+		addwindow.down("#idSerialField").setValue(this.serial.data.id);
+		addwindow.show();
+		addwindow.on("close", this.reload, this);
+	},
+	
+	search: function(field, e){
+		if (e.getKey() == e.ENTER) {
+			var value = field.getValue();
+			this.getStore().getProxy().extraParams = {
+				idSerial: this.serial.data.id,
+				title: value
+			};
+			this.getStore().load();
+		}
+	}
 });

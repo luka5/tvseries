@@ -72,19 +72,15 @@
 		 * @param Model_Serial $model
 		 */
 		public static function store(Model_Serial $model){
-			if(isset(self::$models[$model->getId()])){
-				// Model bekannt, schreibe in Datenbank
-				/*$query = "UPDATE " . Database::getInstance()->getHostDatabase() . ".File SET ";
-				$query .= "Folder_idFolder = " . $model->getFolder_id() . ", ";
-				$query .= "Usergroup_idUsergroup = " . $model->getUsergroup_id() . ", ";
-				$query .= "Filetemplate_idFiletemplate = " . $model->getFiletemplate_id() . ", ";
-				$query .= "name = '" . $model->getName() . "', ";
-				$query .= "title = '" . $model->getTitle() . "', ";
-				$query .= "isDynamic = " . $model->isDynamic() . " ";
-				$query .= "WHERE idFile = " . $model->getIdFile();
-				$result = Database::getInstance()->executeUpdate($query);*/
+			if($model->getId() == null){
+				$query = "INSERT INTO Serial SET ";
+				$query .= "title = '" . $model->getTitle() . "' ";
+
+				$result = Database::getInstance()->executeUpdate($query);
+				if($result === false)
+					throw new Exception("Fehler beim Anlegen der Serie.");
 			}else
-				throw new Exception("Unknown Model! Try using Factory::createNew(\$model)");
+				throw new Exception("Aktualisieren einer Staffel noch nicht implementiert.");
 		}
 			
 	}
