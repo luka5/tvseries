@@ -5,7 +5,10 @@
 		public static function getById($id){}
 		public static function store($model){}
 
-		protected static function getFieldQuery($values){
+		protected static function getWhereQuery($values){
+                        if($values === NULL)
+                            return "";
+                        
 			$query = "";
 			foreach($values as $key=>$value){
 				if(!empty($query))
@@ -18,8 +21,25 @@
 				else
 					$query .= " " . $key . " = '" . $value . "' ";
 			}			
-			return $query;
+			return "WHERE " . $query;
 		}
+                
+                protected static function getSortQuery($values){
+                        if($values === NULL)
+                            return "";                    
+                        
+			$query = "";
+			foreach($values as $fieldName=>$direction){
+				if(!empty($query))
+					$query .= ", ";
+					
+				if($direction === null)
+					$direction = "ASC";
+
+                                $query .= " " . $fieldName . " " . $direction . " ";
+			}			
+			return "ORDER BY " . $query;
+		}                
 		
 	}
 

@@ -44,11 +44,9 @@
 		 * @param array $values Array with (Fieldname => Fieldvalue, ...) that will be queried.
 		 * @return Model_Serial[]
 		 */
-		public static function getByFields($values){
-			$query = "";
-			if($values !== NULL)
-				$query = "WHERE " . parent::getFieldQuery($values);
-			$query = "SELECT * FROM Serial " . $query;
+		public static function getByFields($values, $sortBy = NULL){
+
+			$query = "SELECT * FROM Serial " . parent::getWhereQuery($values) . " " . parent::getSortQuery($sortBy);
 			$result = Database::getInstance()->executeQuery($query);
 			if($result === false){
 				throw new Exception("Fehler beim Abfragen der Serien.".$query);	

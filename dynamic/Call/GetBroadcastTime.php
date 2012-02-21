@@ -10,7 +10,8 @@ class Call_GetBroadcastTime extends Call_Abstract{
 		try{
 			//BroadcastTime zu einer idEdpisode anzeigen
 			$idEpisode = getRequestVar("idEpisode");
-			$broadcasttimes = Factory_BroadcastTime::getByFields(array("idEpisode" => $idEpisode));
+                        $sortCondition = array("time" => "DESC");
+			$broadcasttimes = Factory_BroadcastTime::getByFields(array("idEpisode" => $idEpisode), $sortCondition);
 			
 		}catch(Exception_IndexNotFound $e){
 

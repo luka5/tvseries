@@ -300,8 +300,8 @@ class Call_UpdateEpg extends Call_Abstract{
 			$values = array(
 				"time" => $date->format("Y-m-d") . "%"
 			);
-			
-			$broadcastmodels[$date->format("d.m.Y")] =  Factory_BroadcastTime::getByFields($values);
+			$sortCondition = array("time" => "DESC");
+			$broadcastmodels[$date->format("d.m.Y")] =  Factory_BroadcastTime::getByFields($values, $sortCondition);
 			
 			$year = $date->format('Y');
 			$month = $date->format('m');
@@ -351,9 +351,10 @@ class Call_UpdateEpg extends Call_Abstract{
 	}
 	
 	private function recheck(){
+                $sortCondition = array("time" => "DESC");
 		$broadcastmodels =  Factory_BroadcastTime::getByFields(array(
 				"idEpisode" => null
-			));
+			), $sortCondition);
 		$mapped = array();
 		foreach($broadcastmodels as $model){
 			$success = $this->checkRow($model);

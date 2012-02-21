@@ -80,11 +80,9 @@
 		 * @param array $values Array with (Fieldname => Fieldvalue, ...) that will be queried.
 		 * @return Model_BroadcastTime[]
 		 */
-		public static function getByFields($values){
-			$query = "";
-			if($values !== NULL)
-				$query = "WHERE " . parent::getFieldQuery($values);
-			$query = "SELECT * FROM BroadcastTime " . $query . " ORDER BY time DESC";
+		public static function getByFields($values, $sortBy = NULL){
+
+			$query = "SELECT * FROM BroadcastTime " . parent::getWhereQuery($values) . " " . parent::getSortQuery($sortBy);
 			$result = Database::getInstance()->executeQuery($query);
 
 			$models = array();

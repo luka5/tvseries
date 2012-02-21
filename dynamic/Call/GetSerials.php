@@ -6,7 +6,8 @@ class Call_GetSerials extends Call_Abstract{
 	}
 	
 	public function handle(){
-		$serials = Factory_Serial::getByFields(null);
+                $sort = array("title" => "ASC");
+		$serials = Factory_Serial::getByFields(null, $sort);
 		parent::encodeAndPrint($serials);	
 	}
 }
