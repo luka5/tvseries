@@ -208,6 +208,7 @@
                     "userConfig": {
                         "width": 350,
                         "dataIndex": "title",
+                        "flex": 1,
                         "text": "Titel",
                         "designer|userClassName": "MyColumn"
                     }
@@ -713,6 +714,66 @@
                                 "width": 640,
                                 "title": null,
                                 "designer|userClassName": "MyPanel3"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "ExtBox1-ext-gen6728",
+                    "type": "toolbar",
+                    "reference": {
+                        "name": "dockedItems",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "designer|userClassName": "MyToolbar4",
+                        "dock": "bottom"
+                    },
+                    "cn": [
+                        {
+                            "id": "ExtBox1-ext-gen7108",
+                            "type": "button",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "id": "playPrevButton",
+                                "text": "vorheriges",
+                                "designer|userClassName": "MyButton6",
+                                "layout|flex": null
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen7312",
+                            "type": "button",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "id": "playNextButton",
+                                "text": "nächstes",
+                                "designer|userClassName": "MyButton7",
+                                "layout|flex": null
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen7715",
+                            "type": "button",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "id": "toggleFullscreenButton",
+                                "text": "Vollbild",
+                                "designer|userClassName": "MyButton8",
+                                "layout|flex": null
                             }
                         }
                     ]
