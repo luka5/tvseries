@@ -104,17 +104,21 @@ Ext.define('TvSeries.view.ui.ShowWindow', {
                             columns: [
                                 {
                                     xtype: 'gridcolumn',
+                                    width: 59,
                                     dataIndex: 'channel',
                                     text: 'Sender'
                                 },
                                 {
                                     xtype: 'datecolumn',
+                                    width: 113,
                                     dataIndex: 'time',
-                                    text: 'Sendezeit'
+                                    text: 'Sendezeit',
+                                    format: 'd.m.Y H:i'
                                 },
                                 {
                                     xtype: 'gridcolumn',
                                     dataIndex: 'title',
+                                    flex: 1,
                                     text: 'Titel'
                                 }
                             ],
@@ -143,6 +147,8 @@ Ext.define('TvSeries.view.ui.ShowWindow', {
             dockedItems: [
                 {
                     xtype: 'toolbar',
+                    width: 150,
+                    region: 'east',
                     dock: 'bottom',
                     items: [
                         {
@@ -159,6 +165,12 @@ Ext.define('TvSeries.view.ui.ShowWindow', {
                             xtype: 'button',
                             id: 'toggleFullscreenButton',
                             text: 'Vollbild'
+                        },
+                        {
+                            xtype: 'button',
+                            id: 'playToggleButton',
+                            allowDepress: false,
+                            text: 'Play / Pause'
                         }
                     ]
                 }

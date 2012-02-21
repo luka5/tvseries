@@ -63,6 +63,7 @@ Ext.define('TvSeries.view.ShowWindow', {
         this.down("#playNextButton").on('click', this.openNext, this);
         this.down("#playPrevButton").on('click', this.openPrev, this);
         this.down("#toggleFullscreenButton").on('click', this.setFullscreen, this);
+        this.down("#playToggleButton").on('click', this.playToggle, this);
     },
     
     getVideoPlayer: function(){
@@ -142,7 +143,7 @@ Ext.define('TvSeries.view.ShowWindow', {
 	var videourl = "/tvseries/media/"+serialTitle_+"/"+seasonTitle_+"/"+seasonNumber+"x"+episodeNumber;
         this.videoPlayer.playlist.add(videourl);
         this.videoPlayer.playlist.play();
-        
+
         this.show();
     },
 	
@@ -205,6 +206,10 @@ Ext.define('TvSeries.view.ShowWindow', {
 
     setFullscreen: function(){
         this.videoPlayer.video.fullscreen = true;
+    },
+
+    playToggle: function(){
+        this.videoPlayer.playlist.togglePause();
     }
 
 });

@@ -632,6 +632,7 @@
                                     },
                                     "codeClass": null,
                                     "userConfig": {
+                                        "width": 59,
                                         "dataIndex": "channel",
                                         "text": "Sender",
                                         "designer|userClassName": "MyColumn5"
@@ -646,8 +647,10 @@
                                     },
                                     "codeClass": null,
                                     "userConfig": {
+                                        "width": 113,
                                         "dataIndex": "time",
                                         "text": "Sendezeit",
+                                        "format": "d.m.Y H:i",
                                         "designer|userClassName": "MyColumn6"
                                     }
                                 },
@@ -661,6 +664,7 @@
                                     "codeClass": null,
                                     "userConfig": {
                                         "dataIndex": "title",
+                                        "flex": 1,
                                         "text": "Titel",
                                         "designer|userClassName": "MyColumn7"
                                     }
@@ -727,7 +731,9 @@
                     },
                     "codeClass": null,
                     "userConfig": {
+                        "width": 150,
                         "designer|userClassName": "MyToolbar4",
+                        "layout|region": "east",
                         "dock": "bottom"
                     },
                     "cn": [
@@ -773,6 +779,22 @@
                                 "id": "toggleFullscreenButton",
                                 "text": "Vollbild",
                                 "designer|userClassName": "MyButton8",
+                                "layout|flex": null
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen6863",
+                            "type": "button",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "id": "playToggleButton",
+                                "allowDepress": false,
+                                "text": "Play / Pause",
+                                "designer|userClassName": "MyButton9",
                                 "layout|flex": null
                             }
                         }
