@@ -38,7 +38,7 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
 	},
 	
 	loadShowWindow: function(episode, season, serial){
-		this.showWindow.loadVideo(episode, season, serial, this.down("EpisodeGrid"));
+		this.showWindow.loadVideo(episode, season, serial, this.down("EpisodesGrid"));
 	},
 	
 	reloadEpisodesGrid: function(){
