@@ -15,7 +15,7 @@ Ext.define('TvSeries.view.ui.AddSerialWindow', {
     height: 100,
     width: 268,
     layout: {
-        type: 'border'
+        type: 'fit'
     },
     title: 'Serie hinzufügen',
     modal: true,
@@ -27,6 +27,7 @@ Ext.define('TvSeries.view.ui.AddSerialWindow', {
             items: [
                 {
                     xtype: 'form',
+                    border: 0,
                     bodyPadding: 10,
                     url: '../dynamic/?callName=UpdateSerial&action=add',
                     region: 'center',
@@ -37,14 +38,13 @@ Ext.define('TvSeries.view.ui.AddSerialWindow', {
                             name: 'title',
                             fieldLabel: 'Titel',
                             anchor: '100%'
-                        }
-                    ],
-                    dockedItems: [
+                        },
                         {
                             xtype: 'button',
                             id: 'saveSerialButton',
-                            text: 'hinzufügen',
-                            dock: 'bottom'
+                            width: 140,
+                            icon: 'icons/save.png',
+                            text: 'speichern'
                         }
                     ]
                 }

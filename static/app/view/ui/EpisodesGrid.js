@@ -12,9 +12,8 @@
 Ext.define('TvSeries.view.ui.EpisodesGrid', {
     extend: 'Ext.grid.Panel',
 
-    border: 0,
     id: 'episodeGrid',
-    title: 'Episoden',
+    title: '3 Episoden',
     store: 'Episodes',
 
     initComponent: function() {
@@ -30,16 +29,22 @@ Ext.define('TvSeries.view.ui.EpisodesGrid', {
                             xtype: 'button',
                             id: 'addEpisodeButton',
                             itemId: 'addEpisodeButton',
-                            text: 'Hinzufügen'
+                            icon: 'icons/add.png'
                         },
                         {
-                            xtype: 'tbseparator'
+                            xtype: 'tbfill'
                         },
                         {
                             xtype: 'textfield',
-                            fieldLabel: 'Filtern',
+                            width: 150,
                             labelWidth: 45,
                             size: 10
+                        },
+                        {
+                            xtype: 'button',
+                            disabled: true,
+                            icon: 'icons/search.png',
+                            text: ''
                         }
                     ]
                 }

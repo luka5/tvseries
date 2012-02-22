@@ -27,6 +27,7 @@ Ext.define('TvSeries.view.ui.AddWindow', {
             items: [
                 {
                     xtype: 'form',
+                    border: 0,
                     bodyPadding: 10,
                     url: '../dynamic/?callName=UpdateEpisodes&action=updateoradd',
                     region: 'center',
@@ -75,25 +76,20 @@ Ext.define('TvSeries.view.ui.AddWindow', {
                             name: 'data',
                             fieldLabel: 'Json-Code',
                             anchor: '100%'
-                        }
-                    ],
-                    dockedItems: [
+                        },
                         {
-                            xtype: 'toolbar',
-                            anchor: '100%',
-                            dock: 'bottom',
-                            items: [
-                                {
-                                    xtype: 'button',
-                                    id: 'replaceButton',
-                                    text: 'ersetzten'
-                                },
-                                {
-                                    xtype: 'button',
-                                    id: 'submitButton',
-                                    text: 'hinzufügen'
-                                }
-                            ]
+                            xtype: 'button',
+                            id: 'replaceButton',
+                            width: 140,
+                            text: 'ersetzten'
+                        },
+                        {
+                            xtype: 'button',
+                            id: 'submitButton',
+                            margin: '0 0 0 10',
+                            width: 140,
+                            icon: 'icons/save.png',
+                            text: 'speichern'
                         }
                     ]
                 }

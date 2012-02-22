@@ -18,7 +18,7 @@ Ext.define('TvSeries.view.ui.TvSeriesViewport', {
     ],
 
     layout: {
-        type: 'border'
+        type: 'fit'
     },
 
     initComponent: function() {
@@ -29,29 +29,59 @@ Ext.define('TvSeries.view.ui.TvSeriesViewport', {
                 {
                     xtype: 'panel',
                     border: 0,
-                    id: 'navigation',
-                    width: 250,
                     layout: {
-                        align: 'stretch',
-                        type: 'vbox'
+                        type: 'border'
                     },
-                    region: 'west',
-                    split: true,
+                    bodyPadding: 5,
+                    region: 'north',
+                    dockedItems: [
+                        {
+                            xtype: 'toolbar',
+                            width: 150,
+                            region: 'east',
+                            dock: 'top',
+                            items: [
+                                {
+                                    xtype: 'tbfill'
+                                },
+                                {
+                                    xtype: 'button',
+                                    icon: 'icons/logout.png',
+                                    text: 'abmelden'
+                                }
+                            ]
+                        }
+                    ],
                     items: [
                         {
-                            xtype: 'SerialsGrid',
-                            flex: 1,
-                            store: 'Serials'
+                            xtype: 'panel',
+                            border: 0,
+                            id: 'navigation',
+                            width: 250,
+                            layout: {
+                                align: 'stretch',
+                                type: 'vbox'
+                            },
+                            region: 'west',
+                            split: true,
+                            items: [
+                                {
+                                    xtype: 'SerialsGrid',
+                                    flex: 1,
+                                    padding: '0 0 5 0',
+                                    store: 'Serials'
+                                },
+                                {
+                                    xtype: 'SeasonsGrid',
+                                    flex: 1
+                                }
+                            ]
                         },
                         {
-                            xtype: 'SeasonsGrid',
-                            flex: 1
+                            xtype: 'EpisodesGrid',
+                            region: 'center'
                         }
                     ]
-                },
-                {
-                    xtype: 'EpisodesGrid',
-                    region: 'center'
                 }
             ]
         });

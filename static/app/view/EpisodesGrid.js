@@ -17,6 +17,8 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 
 	season: null,
 	serial: null,
+        
+        filterTask:  null,
 
 	initComponent: function() {
 		var me = this;
@@ -25,9 +27,11 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 		me.down("#addEpisodeButton").on("click", me.addEpisode, me);
 		
 		this.getSelectionModel().on('select', this.select, this);
-		this.down("textfield").on('specialkey', this.search, this);
+		this.down("textfield").on('change', this.search, this);
 
 		this.on('reload', this.reload, this);
+                
+                this.filterTask = new Ext.util.DelayedTask(this.executeSearch, this);
 	},
 	
 	load: function(obj){
@@ -38,9 +42,12 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 			idSeason: this.season.data.id
 		};
 		this.getStore().load();
+                
+                this.setTitle("3. " + this.serial.data.title + ", " + this.season.data.title);
 	},
 	
 	reload: function(){
+                this.filterTask.cancel();
 		var obj = {
 			season: this.season,
 			serial: this.serial
@@ -49,6 +56,7 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 	},
 	
 	select: function(sm, record, index, opt){
+                this.filterTask.cancel();
 		this.fireEvent("loadShowWindow", record, this.season, this.serial);
 	},
 	
@@ -65,15 +73,17 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 		addwindow.show();
 		addwindow.on("hide", this.reload, this);
 	},
-	
-	search: function(field, e){
-		if (e.getKey() == e.ENTER) {
-			var value = field.getValue();
-			this.getStore().getProxy().extraParams = {
-				idSeason: this.season.data.id,
-				title: value
-			};
-			this.getStore().load();
-		}
-	}
+
+	search: function(){
+            this.filterTask.delay(200);
+	},
+        
+        executeSearch: function(){
+                var value = this.down("textfield").getValue();
+                this.getStore().getProxy().extraParams = {
+                        idSeason: this.season.data.id,
+                        title: value
+                };
+                this.getStore().load();            
+        }         
 });

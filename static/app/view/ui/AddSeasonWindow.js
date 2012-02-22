@@ -15,7 +15,7 @@ Ext.define('TvSeries.view.ui.AddSeasonWindow', {
     height: 126,
     width: 268,
     layout: {
-        type: 'border'
+        type: 'fit'
     },
     title: 'Staffel hinzufügen',
     modal: true,
@@ -27,10 +27,9 @@ Ext.define('TvSeries.view.ui.AddSeasonWindow', {
             items: [
                 {
                     xtype: 'form',
+                    border: 0,
                     bodyPadding: 10,
                     url: '../dynamic/?callName=UpdateSeason&action=add',
-                    region: 'center',
-                    split: true,
                     items: [
                         {
                             xtype: 'numberfield',
@@ -50,14 +49,13 @@ Ext.define('TvSeries.view.ui.AddSeasonWindow', {
                             name: 'number',
                             fieldLabel: 'Position',
                             anchor: '100%'
-                        }
-                    ],
-                    dockedItems: [
+                        },
                         {
                             xtype: 'button',
                             id: 'saveSeasonButton',
-                            text: 'hinzufügen',
-                            dock: 'bottom'
+                            width: 140,
+                            icon: 'icons/save.png',
+                            text: 'speichern'
                         }
                     ]
                 }

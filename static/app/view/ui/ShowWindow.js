@@ -152,25 +152,41 @@ Ext.define('TvSeries.view.ui.ShowWindow', {
                     dock: 'bottom',
                     items: [
                         {
-                            xtype: 'button',
-                            id: 'playPrevButton',
-                            text: 'vorheriges'
-                        },
-                        {
-                            xtype: 'button',
-                            id: 'playNextButton',
-                            text: 'nächstes'
-                        },
-                        {
-                            xtype: 'button',
-                            id: 'toggleFullscreenButton',
-                            text: 'Vollbild'
+                            xtype: 'tbfill'
                         },
                         {
                             xtype: 'button',
                             id: 'playToggleButton',
+                            width: 120,
                             allowDepress: false,
-                            text: 'Play / Pause'
+                            icon: '',
+                            iconCls: 'playPauseIcon',
+                            text: '   Play / Pause'
+                        },
+                        {
+                            xtype: 'tbseparator'
+                        },
+                        {
+                            xtype: 'button',
+                            id: 'playPrevButton',
+                            icon: 'icons/reverse.png',
+                            text: 'Zurück'
+                        },
+                        {
+                            xtype: 'button',
+                            id: 'playNextButton',
+                            icon: 'icons/forward.png',
+                            iconCls: '',
+                            text: 'Weiter'
+                        },
+                        {
+                            xtype: 'tbseparator'
+                        },
+                        {
+                            xtype: 'button',
+                            id: 'toggleFullscreenButton',
+                            icon: 'icons/fullscreen.png',
+                            text: 'Vollbild'
                         }
                     ]
                 }

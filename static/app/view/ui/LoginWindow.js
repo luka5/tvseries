@@ -15,7 +15,7 @@ Ext.define('TvSeries.view.ui.LoginWindow', {
     height: 126,
     width: 268,
     layout: {
-        type: 'border'
+        type: 'fit'
     },
     title: 'Login window',
     modal: true,
@@ -27,10 +27,9 @@ Ext.define('TvSeries.view.ui.LoginWindow', {
             items: [
                 {
                     xtype: 'form',
+                    border: 0,
                     bodyPadding: 10,
                     url: '../dynamic/?callName=Login',
-                    region: 'center',
-                    split: true,
                     items: [
                         {
                             xtype: 'textfield',
@@ -46,14 +45,12 @@ Ext.define('TvSeries.view.ui.LoginWindow', {
                             name: 'secret',
                             fieldLabel: 'Secret',
                             anchor: '100%'
-                        }
-                    ],
-                    dockedItems: [
+                        },
                         {
                             xtype: 'button',
                             id: 'loginbutton',
-                            text: 'Login',
-                            dock: 'bottom'
+                            width: 140,
+                            text: 'Login'
                         }
                     ]
                 }

@@ -5,7 +5,7 @@
         "directAPI": "",
         "spacesToIndent": "4",
         "codeGenFormat": "Class",
-        "exportPath": "/home/lukas/Documents/NetBeansProjects/tvseries/static/",
+        "exportPath": "static/",
         "extPath": "http://www.somehost.eu/lib/ext-4.0.2a/",
         "lineEnding": "LF",
         "instantiateStore": true,
@@ -24,12 +24,12 @@
             },
             "codeClass": null,
             "userConfig": {
-                "layout": "border",
+                "layout": "fit",
                 "designer|userClassName": "TvSeriesViewport"
             },
             "cn": [
                 {
-                    "id": "ExtBox1-ext-gen7052",
+                    "id": "ExtBox1-ext-gen23819",
                     "type": "panel",
                     "reference": {
                         "name": "items",
@@ -38,35 +38,117 @@
                     "codeClass": null,
                     "userConfig": {
                         "border": 0,
-                        "id": "navigation",
-                        "width": 250,
-                        "layout": "vbox",
+                        "padding": null,
+                        "layout": "border",
+                        "bodyPadding": 5,
                         "title": null,
-                        "designer|userClassName": "MyPanel1",
-                        "container|align": "stretch",
-                        "layout|region": "west",
-                        "layout|split": true
+                        "designer|userClassName": "MyPanel4",
+                        "layout|region": "north"
                     },
                     "cn": [
                         {
-                            "id": "ExtBox1-ext-gen27208",
-                            "type": "linkedinstance",
+                            "id": "ExtBox1-ext-gen22068",
+                            "type": "toolbar",
                             "reference": {
-                                "name": "items",
+                                "name": "dockedItems",
                                 "type": "array"
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "layout|flex": 1,
-                                "store": "Serials",
-                                "designer|userClassName": "SerialsGrid",
-                                "designer|userAlias": "SerialsGrid"
+                                "width": 150,
+                                "designer|userClassName": "MyToolbar4",
+                                "layout|region": "east",
+                                "dock": "top"
                             },
-                            "iconCls": "icon-linkedinstance",
-                            "masterInstanceId": "ExtBox1-ext-gen7525"
+                            "cn": [
+                                {
+                                    "id": "ExtBox1-ext-gen22937",
+                                    "type": "tbfill",
+                                    "reference": {
+                                        "name": "items",
+                                        "type": "array"
+                                    },
+                                    "codeClass": null,
+                                    "userConfig": {
+                                        "designer|userClassName": "MyFill4",
+                                        "layout|flex": null
+                                    }
+                                },
+                                {
+                                    "id": "ExtBox1-ext-gen22689",
+                                    "type": "button",
+                                    "reference": {
+                                        "name": "items",
+                                        "type": "array"
+                                    },
+                                    "codeClass": null,
+                                    "userConfig": {
+                                        "icon": "icons/logout.png",
+                                        "text": "abmelden",
+                                        "designer|userClassName": "MyButton15",
+                                        "layout|flex": null
+                                    }
+                                }
+                            ]
                         },
                         {
-                            "id": "ExtBox1-ext-gen28591",
+                            "id": "ExtBox1-ext-gen7052",
+                            "type": "panel",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "border": 0,
+                                "id": "navigation",
+                                "width": 250,
+                                "layout": "vbox",
+                                "title": null,
+                                "designer|userClassName": "MyPanel1",
+                                "container|align": "stretch",
+                                "layout|region": "west",
+                                "layout|split": true
+                            },
+                            "cn": [
+                                {
+                                    "id": "ExtBox1-ext-gen27208",
+                                    "type": "linkedinstance",
+                                    "reference": {
+                                        "name": "items",
+                                        "type": "array"
+                                    },
+                                    "codeClass": null,
+                                    "userConfig": {
+                                        "layout|flex": 1,
+                                        "padding": "0 0 5 0",
+                                        "store": "Serials",
+                                        "designer|userClassName": "SerialsGrid",
+                                        "designer|userAlias": "SerialsGrid"
+                                    },
+                                    "iconCls": "icon-linkedinstance",
+                                    "masterInstanceId": "ExtBox1-ext-gen7525"
+                                },
+                                {
+                                    "id": "ExtBox1-ext-gen28591",
+                                    "type": "linkedinstance",
+                                    "reference": {
+                                        "name": "items",
+                                        "type": "array"
+                                    },
+                                    "codeClass": null,
+                                    "userConfig": {
+                                        "layout|flex": 1,
+                                        "designer|userClassName": "SeasonsGrid",
+                                        "designer|userAlias": "SeasonsGrid"
+                                    },
+                                    "iconCls": "icon-linkedinstance",
+                                    "masterInstanceId": "ExtBox1-ext-gen8230"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen25775",
                             "type": "linkedinstance",
                             "reference": {
                                 "name": "items",
@@ -74,30 +156,14 @@
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "layout|flex": 1,
-                                "designer|userClassName": "SeasonsGrid",
-                                "designer|userAlias": "SeasonsGrid"
+                                "layout|region": "center",
+                                "designer|userClassName": "EpisodesGrid",
+                                "designer|userAlias": "EpisodesGrid"
                             },
                             "iconCls": "icon-linkedinstance",
-                            "masterInstanceId": "ExtBox1-ext-gen8230"
+                            "masterInstanceId": "ExtBox1-ext-gen2602"
                         }
                     ]
-                },
-                {
-                    "id": "ExtBox1-ext-gen25775",
-                    "type": "linkedinstance",
-                    "reference": {
-                        "name": "items",
-                        "type": "array"
-                    },
-                    "codeClass": null,
-                    "userConfig": {
-                        "layout|region": "center",
-                        "designer|userClassName": "EpisodesGrid",
-                        "designer|userAlias": "EpisodesGrid"
-                    },
-                    "iconCls": "icon-linkedinstance",
-                    "masterInstanceId": "ExtBox1-ext-gen2602"
                 }
             ]
         },
@@ -110,9 +176,9 @@
             },
             "codeClass": null,
             "userConfig": {
-                "border": 0,
+                "border": null,
                 "id": "episodeGrid",
-                "title": "Episoden",
+                "title": "3 Episoden",
                 "hideHeaders": null,
                 "store": "Episodes",
                 "designer|userClassName": "EpisodesGrid",
@@ -143,21 +209,22 @@
                             "userConfig": {
                                 "id": "addEpisodeButton",
                                 "itemId": "addEpisodeButton",
-                                "text": "Hinzufügen",
+                                "icon": "icons/add.png",
+                                "text": null,
                                 "designer|userClassName": "MyButton2",
                                 "layout|flex": null
                             }
                         },
                         {
-                            "id": "ExtBox1-ext-gen36466",
-                            "type": "tbseparator",
+                            "id": "ExtBox1-ext-gen13582",
+                            "type": "tbfill",
                             "reference": {
                                 "name": "items",
                                 "type": "array"
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "designer|userClassName": "MySeparator2",
+                                "designer|userClassName": "MyFill1",
                                 "layout|flex": null
                             }
                         },
@@ -170,10 +237,28 @@
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "fieldLabel": "Filtern",
+                                "width": 150,
+                                "fieldLabel": null,
                                 "labelWidth": 45,
+                                "enableKeyEvents": null,
                                 "size": 10,
                                 "designer|userClassName": "MyTextField",
+                                "layout|flex": null
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen11577",
+                            "type": "button",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "disabled": true,
+                                "icon": "icons/search.png",
+                                "text": "",
+                                "designer|userClassName": "MyButton12",
                                 "layout|flex": null
                             }
                         }
@@ -267,9 +352,9 @@
             },
             "codeClass": null,
             "userConfig": {
-                "border": 0,
+                "border": null,
                 "id": "seriesGrid",
-                "title": "Serien",
+                "title": "1. Serien",
                 "hideHeaders": true,
                 "store": "Serials",
                 "designer|userClassName": "SerialsGrid",
@@ -286,7 +371,7 @@
                     "codeClass": null,
                     "userConfig": {
                         "id": "name",
-                        "width": 250,
+                        "width": 248,
                         "dataIndex": "title",
                         "text": "Name",
                         "designer|userClassName": "MyColumn1"
@@ -315,21 +400,22 @@
                             "codeClass": null,
                             "userConfig": {
                                 "id": "addSerialButton",
-                                "text": "Hinzufügen",
+                                "icon": "icons/add.png",
+                                "text": null,
                                 "designer|userClassName": "MyButton",
                                 "layout|flex": null
                             }
                         },
                         {
-                            "id": "ExtBox1-ext-gen34850",
-                            "type": "tbseparator",
+                            "id": "ExtBox1-ext-gen14254",
+                            "type": "tbfill",
                             "reference": {
                                 "name": "items",
                                 "type": "array"
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "designer|userClassName": "MySeparator",
+                                "designer|userClassName": "MyFill2",
                                 "layout|flex": null
                             }
                         },
@@ -342,10 +428,28 @@
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "fieldLabel": "Filtern",
+                                "width": 150,
+                                "fieldLabel": null,
                                 "labelWidth": 45,
+                                "enableKeyEvents": null,
                                 "size": 10,
                                 "designer|userClassName": "MyTextField1",
+                                "layout|flex": null
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen14368",
+                            "type": "button",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "disabled": true,
+                                "icon": "icons/search.png",
+                                "text": null,
+                                "designer|userClassName": "MyButton13",
                                 "layout|flex": null
                             }
                         }
@@ -362,9 +466,9 @@
             },
             "codeClass": null,
             "userConfig": {
-                "border": 0,
+                "border": null,
                 "id": "seasonGrid",
-                "title": "Staffeln",
+                "title": "2. Staffeln",
                 "hideHeaders": true,
                 "store": "Season",
                 "designer|userClassName": "SeasonsGrid",
@@ -409,21 +513,22 @@
                             "codeClass": null,
                             "userConfig": {
                                 "id": "addSeasonButton",
-                                "text": "Hinzufügen",
+                                "icon": "icons/add.png",
+                                "text": null,
                                 "designer|userClassName": "MyButton1",
                                 "layout|flex": null
                             }
                         },
                         {
-                            "id": "ExtBox1-ext-gen35613",
-                            "type": "tbseparator",
+                            "id": "ExtBox1-ext-gen15239",
+                            "type": "tbfill",
                             "reference": {
                                 "name": "items",
                                 "type": "array"
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "designer|userClassName": "MySeparator1",
+                                "designer|userClassName": "MyFill3",
                                 "layout|flex": null
                             }
                         },
@@ -436,11 +541,28 @@
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "width": null,
-                                "fieldLabel": "Filtern",
+                                "width": 150,
+                                "fieldLabel": null,
                                 "labelWidth": 45,
+                                "enableKeyEvents": null,
                                 "size": 10,
                                 "designer|userClassName": "MyTextField2",
+                                "layout|flex": null
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen15099",
+                            "type": "button",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "disabled": true,
+                                "icon": "icons/search.png",
+                                "text": null,
+                                "designer|userClassName": "MyButton14",
                                 "layout|flex": null
                             }
                         }
@@ -740,6 +862,52 @@
                     },
                     "cn": [
                         {
+                            "id": "ExtBox1-ext-gen7965",
+                            "type": "tbfill",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "designer|userClassName": "MyFill",
+                                "layout|flex": null
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen6863",
+                            "type": "button",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "height": null,
+                                "id": "playToggleButton",
+                                "width": 120,
+                                "allowDepress": false,
+                                "icon": "",
+                                "iconCls": "playPauseIcon",
+                                "text": "   Play / Pause",
+                                "designer|userClassName": "MyButton9",
+                                "layout|flex": null
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen9504",
+                            "type": "tbseparator",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "designer|userClassName": "MySeparator4",
+                                "layout|flex": null
+                            }
+                        },
+                        {
                             "id": "ExtBox1-ext-gen7108",
                             "type": "button",
                             "reference": {
@@ -748,8 +916,11 @@
                             },
                             "codeClass": null,
                             "userConfig": {
+                                "height": null,
                                 "id": "playPrevButton",
-                                "text": "vorheriges",
+                                "icon": "icons/reverse.png",
+                                "iconCls": null,
+                                "text": "Zurück",
                                 "designer|userClassName": "MyButton6",
                                 "layout|flex": null
                             }
@@ -763,9 +934,25 @@
                             },
                             "codeClass": null,
                             "userConfig": {
+                                "height": null,
                                 "id": "playNextButton",
-                                "text": "nächstes",
+                                "icon": "icons/forward.png",
+                                "iconCls": "",
+                                "text": "Weiter",
                                 "designer|userClassName": "MyButton7",
+                                "layout|flex": null
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen8821",
+                            "type": "tbseparator",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "designer|userClassName": "MySeparator3",
                                 "layout|flex": null
                             }
                         },
@@ -778,25 +965,12 @@
                             },
                             "codeClass": null,
                             "userConfig": {
+                                "height": null,
                                 "id": "toggleFullscreenButton",
+                                "icon": "icons/fullscreen.png",
+                                "iconCls": null,
                                 "text": "Vollbild",
                                 "designer|userClassName": "MyButton8",
-                                "layout|flex": null
-                            }
-                        },
-                        {
-                            "id": "ExtBox1-ext-gen6863",
-                            "type": "button",
-                            "reference": {
-                                "name": "items",
-                                "type": "array"
-                            },
-                            "codeClass": null,
-                            "userConfig": {
-                                "id": "playToggleButton",
-                                "allowDepress": false,
-                                "text": "Play / Pause",
-                                "designer|userClassName": "MyButton9",
                                 "layout|flex": null
                             }
                         }
@@ -815,7 +989,7 @@
             "userConfig": {
                 "height": 126,
                 "width": 268,
-                "layout": "border",
+                "layout": "fit",
                 "title": "Login window",
                 "modal": true,
                 "designer|userClassName": "LoginWindow"
@@ -830,12 +1004,12 @@
                     },
                     "codeClass": null,
                     "userConfig": {
+                        "border": 0,
+                        "padding": null,
                         "bodyPadding": 10,
                         "title": null,
                         "url": "../dynamic/?callName=Login",
-                        "designer|userClassName": "MyForm1",
-                        "layout|region": "center",
-                        "layout|split": true
+                        "designer|userClassName": "MyForm1"
                     },
                     "cn": [
                         {
@@ -875,17 +1049,19 @@
                             "id": "ExtBox1-ext-gen9074",
                             "type": "button",
                             "reference": {
-                                "name": "dockedItems",
+                                "name": "items",
                                 "type": "array"
                             },
                             "codeClass": null,
                             "userConfig": {
                                 "id": "loginbutton",
                                 "itemId": null,
+                                "margin": null,
+                                "width": 140,
                                 "iconCls": null,
                                 "text": "Login",
                                 "designer|userClassName": "MyButton5",
-                                "dock": "bottom"
+                                "dock": null
                             }
                         }
                     ]
@@ -901,9 +1077,10 @@
             },
             "codeClass": null,
             "userConfig": {
+                "border": null,
                 "height": 126,
                 "width": 268,
-                "layout": "border",
+                "layout": "fit",
                 "title": "Staffel hinzufügen",
                 "modal": true,
                 "designer|userClassName": "AddSeasonWindow"
@@ -918,13 +1095,12 @@
                     },
                     "codeClass": null,
                     "userConfig": {
+                        "border": 0,
                         "id": null,
                         "bodyPadding": 10,
                         "title": null,
                         "url": "../dynamic/?callName=UpdateSeason&action=add",
-                        "designer|userClassName": "MyForm1",
-                        "layout|region": "center",
-                        "layout|split": true
+                        "designer|userClassName": "MyForm1"
                     },
                     "cn": [
                         {
@@ -982,17 +1158,20 @@
                             "id": "ExtBox1-ext-gen10176",
                             "type": "button",
                             "reference": {
-                                "name": "dockedItems",
+                                "name": "items",
                                 "type": "array"
                             },
                             "codeClass": null,
                             "userConfig": {
                                 "id": "saveSeasonButton",
                                 "itemId": null,
+                                "width": 140,
+                                "icon": "icons/save.png",
+                                "iconAlign": null,
                                 "iconCls": null,
-                                "text": "hinzufügen",
+                                "text": "speichern",
                                 "designer|userClassName": "MyButton5",
-                                "dock": "bottom"
+                                "dock": null
                             }
                         }
                     ]
@@ -1010,7 +1189,7 @@
             "userConfig": {
                 "height": 100,
                 "width": 268,
-                "layout": "border",
+                "layout": "fit",
                 "title": "Serie hinzufügen",
                 "modal": true,
                 "designer|userClassName": "AddSerialWindow"
@@ -1025,6 +1204,7 @@
                     },
                     "codeClass": null,
                     "userConfig": {
+                        "border": 0,
                         "id": null,
                         "bodyPadding": 10,
                         "title": null,
@@ -1054,17 +1234,19 @@
                             "id": "ExtBox1-ext-gen12440",
                             "type": "button",
                             "reference": {
-                                "name": "dockedItems",
+                                "name": "items",
                                 "type": "array"
                             },
                             "codeClass": null,
                             "userConfig": {
                                 "id": "saveSerialButton",
                                 "itemId": null,
+                                "width": 140,
+                                "icon": "icons/save.png",
                                 "iconCls": null,
-                                "text": "hinzufügen",
+                                "text": "speichern",
                                 "designer|userClassName": "MyButton5",
-                                "dock": "bottom"
+                                "dock": null
                             }
                         }
                     ]
@@ -1097,6 +1279,7 @@
                     },
                     "codeClass": null,
                     "userConfig": {
+                        "border": 0,
                         "bodyPadding": 10,
                         "title": null,
                         "url": "../dynamic/?callName=UpdateEpisodes&action=updateoradd",
@@ -1195,50 +1378,36 @@
                             }
                         },
                         {
-                            "id": "ExtBox1-ext-gen8301",
-                            "type": "toolbar",
+                            "id": "ExtBox1-ext-gen8520",
+                            "type": "button",
                             "reference": {
-                                "name": "dockedItems",
+                                "name": "items",
                                 "type": "array"
                             },
                             "codeClass": null,
                             "userConfig": {
-                                "designer|userClassName": "MyToolbar4",
-                                "layout|anchor": "100%",
-                                "dock": "bottom"
+                                "id": "replaceButton",
+                                "width": 140,
+                                "text": "ersetzten",
+                                "designer|userClassName": "MyButton6"
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen8731",
+                            "type": "button",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
                             },
-                            "cn": [
-                                {
-                                    "id": "ExtBox1-ext-gen8520",
-                                    "type": "button",
-                                    "reference": {
-                                        "name": "items",
-                                        "type": "array"
-                                    },
-                                    "codeClass": null,
-                                    "userConfig": {
-                                        "id": "replaceButton",
-                                        "text": "ersetzten",
-                                        "designer|userClassName": "MyButton6",
-                                        "layout|flex": null
-                                    }
-                                },
-                                {
-                                    "id": "ExtBox1-ext-gen8731",
-                                    "type": "button",
-                                    "reference": {
-                                        "name": "items",
-                                        "type": "array"
-                                    },
-                                    "codeClass": null,
-                                    "userConfig": {
-                                        "id": "submitButton",
-                                        "text": "hinzufügen",
-                                        "designer|userClassName": "MyButton7",
-                                        "layout|flex": null
-                                    }
-                                }
-                            ]
+                            "codeClass": null,
+                            "userConfig": {
+                                "id": "submitButton",
+                                "margin": "0 0 0 10",
+                                "width": 140,
+                                "icon": "icons/save.png",
+                                "text": "speichern",
+                                "designer|userClassName": "MyButton7"
+                            }
                         }
                     ]
                 }
