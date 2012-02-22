@@ -32,25 +32,29 @@ Ext.application({
             renderTo: Ext.getBody()
         });
         cmp1.show();
-        var cmp2 = Ext.create('TvSeries.view.ShowWindow', {
+        var cmp2 = Ext.create('TvSeries.view.EpisodesGrid', {
             renderTo: Ext.getBody()
         });
         cmp2.show();
-        var cmp3 = Ext.create('TvSeries.view.LoginWindow', {
+        var cmp3 = Ext.create('TvSeries.view.ShowWindow', {
             renderTo: Ext.getBody()
         });
         cmp3.show();
-        var cmp4 = Ext.create('TvSeries.view.AddSeasonWindow', {
+        var cmp4 = Ext.create('TvSeries.view.LoginWindow', {
             renderTo: Ext.getBody()
         });
         cmp4.show();
-        var cmp5 = Ext.create('TvSeries.view.AddSerialWindow', {
+        var cmp5 = Ext.create('TvSeries.view.AddSeasonWindow', {
             renderTo: Ext.getBody()
         });
         cmp5.show();
-        var cmp6 = Ext.create('TvSeries.view.AddWindow', {
+        var cmp6 = Ext.create('TvSeries.view.AddSerialWindow', {
             renderTo: Ext.getBody()
         });
         cmp6.show();
+        var cmp7 = Ext.create('TvSeries.view.AddWindow', {
+            renderTo: Ext.getBody()
+        });
+        cmp7.show();
     }
 });

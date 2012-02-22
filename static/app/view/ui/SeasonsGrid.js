@@ -12,9 +12,8 @@
 Ext.define('TvSeries.view.ui.SeasonsGrid', {
     extend: 'Ext.grid.Panel',
 
-    border: 0,
     id: 'seasonGrid',
-    title: 'Staffeln',
+    title: '2. Staffeln',
     hideHeaders: true,
     store: 'Season',
 
@@ -38,16 +37,21 @@ Ext.define('TvSeries.view.ui.SeasonsGrid', {
                         {
                             xtype: 'button',
                             id: 'addSeasonButton',
-                            text: 'Hinzufügen'
+                            icon: 'icons/add.png'
                         },
                         {
-                            xtype: 'tbseparator'
+                            xtype: 'tbfill'
                         },
                         {
                             xtype: 'textfield',
-                            fieldLabel: 'Filtern',
+                            width: 150,
                             labelWidth: 45,
                             size: 10
+                        },
+                        {
+                            xtype: 'button',
+                            disabled: true,
+                            icon: 'icons/search.png'
                         }
                     ]
                 }

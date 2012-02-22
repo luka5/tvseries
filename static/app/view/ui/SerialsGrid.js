@@ -12,9 +12,8 @@
 Ext.define('TvSeries.view.ui.SerialsGrid', {
     extend: 'Ext.grid.Panel',
 
-    border: 0,
     id: 'seriesGrid',
-    title: 'Serien',
+    title: '1. Serien',
     hideHeaders: true,
     store: 'Serials',
 
@@ -26,7 +25,7 @@ Ext.define('TvSeries.view.ui.SerialsGrid', {
                 {
                     xtype: 'gridcolumn',
                     id: 'name',
-                    width: 250,
+                    width: 248,
                     dataIndex: 'title',
                     text: 'Name'
                 }
@@ -39,16 +38,21 @@ Ext.define('TvSeries.view.ui.SerialsGrid', {
                         {
                             xtype: 'button',
                             id: 'addSerialButton',
-                            text: 'Hinzufügen'
+                            icon: 'icons/add.png'
                         },
                         {
-                            xtype: 'tbseparator'
+                            xtype: 'tbfill'
                         },
                         {
                             xtype: 'textfield',
-                            fieldLabel: 'Filtern',
+                            width: 150,
                             labelWidth: 45,
                             size: 10
+                        },
+                        {
+                            xtype: 'button',
+                            disabled: true,
+                            icon: 'icons/search.png'
                         }
                     ]
                 }
