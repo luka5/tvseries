@@ -1,5 +1,6 @@
 <?php
-class Call_UpdateEpg extends Call_Abstract{
+
+class Call_UpdateEpg extends Call_Abstract {
 
 	private $epgIndices = array(
 		"epgid" => 0,
@@ -21,44 +22,49 @@ class Call_UpdateEpg extends Call_Abstract{
 		"programlink" => 16
 	);
 	private $epgdir = "../tmp/";
- 	private $allserials = null;
-				 
-	public function __construct(){
-
+	private $allserials = null;
+	private $checksum = null;
+	private $configArray = null;
+	
+	public function __construct() {
+		
 	}
 
-	public function handle(){
+	public function handle() {
+		$this->configArray = parse_ini_file("config.ini", true);
+		
 		//get request vars
-		if(isset($_SERVER['argv'][2])){
+		if (isset($_SERVER['argv'][2])) {
 			$action = $_SERVER['argv'][2];
-		}else{
+		} else {
 			$action = "";
 		}
-		
-		if(isset($_SERVER['argv'][3])){
+
+		if (isset($_SERVER['argv'][3])) {
 			$dateFrom = $_SERVER['argv'][3];
-		}else{
+		} else {
 			//kein Datum übergeben: wähle heutigen Tag
 			$dateFrom = date("d.m.Y");
 		}
-		
-		if(isset($_SERVER['argv'][4])){
+
+		if (isset($_SERVER['argv'][4])) {
 			$dateTo = $_SERVER['argv'][4];
-		}else{
+		} else {
 			$dateTo = $dateFrom;
 		}
 
 		echo "Starting with action " . $action . " (" . date("d.m.Y H:i") . ")\n\n";
 
 		$time1 = microtime(true);
-
-		try{
-			switch($action){
+		
+		try {
+			switch ($action) {
 				case "all":
 					$this->downloadEpgfiles($dateFrom, $dateTo);
 					$this->importEpgfiles();
 					$oldmapped = $this->recheck();
 					$this->sendMail($dateFrom, $dateTo, $oldmapped);
+					//$this->addFtppushs($dateFrom, $dateTo, $oldmapped);
 					break;
 
 				case "import":
@@ -68,161 +74,165 @@ class Call_UpdateEpg extends Call_Abstract{
 				case "download":
 					$this->downloadEpgfiles($dateFrom, $dateTo);
 					break;
-				
+
 				case "mail":
 					$this->sendMail($dateFrom, $dateTo);
 					break;
-				
+
 				case "recheck":
 					$this->recheck();
 					break;
 				
+				case "ftppush":
+					$this->addFtppushs($dateFrom, $dateTo);
+					break;
+
 				default:
-					throw new Exception("all | import | download | mail | recheck");
+					throw new Exception("all | import | download | mail | recheck | ftppush");
 			}
-		}catch(Exception $e){
-			echo "\n\nForced Finish. ".$e->getMessage();
+		} catch (Exception $e) {
+			echo "\n\nForced Finish. " . $e->getMessage();
 		}
 
-		echo "\n\n Finished. (" . (microtime(true)-$time1) . "s, " . date("d.m.Y H:i") . ").\n";
+		echo "\n\n Finished. (" . (microtime(true) - $time1) . "s, " . date("d.m.Y H:i") . ").\n";
 	}
 
 	/*
 	 * 
 	 * Lädt alle csv Dateien von $dateFrom bis $dateTo von onlinetvrecorder runter
 	 */
-	private function downloadEpgfiles($dateFrom, $dateTo){
-		
+
+	private function downloadEpgfiles($dateFrom, $dateTo) {
+
 		$from = new DateTime($dateFrom);
 		$to = new DateTime($dateTo);
-		
-		while($from <= $to){
+
+		while ($from <= $to) {
 			$sourcefile = "http://www.onlinetvrecorder.com/epg/csv/epg_" . $from->format('Y_m_d') . ".csv";
 			$targetfile = $this->epgdir . "epg_" . $from->format('Y_m_d') . ".csv";
 			$this->downloadfile($sourcefile, $targetfile);
-			
+
 			$year = $from->format('Y');
 			$month = $from->format('m');
 			$day = $from->format('d');
-			$from->setDate($year, $month, $day+1);
+			$from->setDate($year, $month, $day + 1);
 		}
-		
 	}
-	
-	private function importEpgfiles(){
+
+	private function importEpgfiles() {
 		//Gehe alle Dateien des $epgdir ordners durch und rufe importEpgfile auf.
 		$time1 = microtime(true);
 		echo "Start importing epgfile " . date("d.m.Y H:i") . "\n";
 
 		//wechsle in KB-Daten-Pfad
-		if($handle = opendir($this->epgdir)){
+		if ($handle = opendir($this->epgdir)) {
 			while (false !== ($sourcefile = readdir($handle))) {
-				if(strpos($sourcefile, ".csv") !== false && strpos($sourcefile, ".csv") == strlen($sourcefile)-4){
+				if (strpos($sourcefile, ".csv") !== false && strpos($sourcefile, ".csv") == strlen($sourcefile) - 4) {
 					//check file
 					$this->importEpgfile($sourcefile);
-					
+
 					//delete file
 					unlink($this->epgdir . $sourcefile);
 				}
 			}
 			closedir($handle);
 		}
-		
-		echo "\nfinished. duration: " . (microtime(true)-$time1) . "s\n";
+
+		echo "\nfinished. duration: " . (microtime(true) - $time1) . "s\n";
 	}
 
-	private function importEpgfile($sourcefile){
+	private function importEpgfile($sourcefile) {
 		/*
 		 * Struktur
 		 * Id;beginn;ende;dauer;sender;titel;typ;text;genre_id;fsk;language;weekday;zusatz;wdh;downloadlink;infolink;programlink;
 		 */
 
-		echo "\nReading input file ".$sourcefile." \n";
-		
+		echo "\nReading input file " . $sourcefile . " \n";
+
 		// open $sourcefile
 		$sourcehandle = fopen($this->epgdir . $sourcefile, "rb");
-		if(!$sourcehandle)
+		if (!$sourcehandle)
 			throw new Exception("File " . $sourcefile . " could not be opened");
-		
+
 		$lineCounter = 0;
 		// Datei Zeile für Zeile durchgehen
-		while( !feof($sourcehandle)) {
+		while (!feof($sourcehandle)) {
 			$lineCounter++;
 
 			echo ".";
-			if($lineCounter%4000 == 0)
-			echo "\n";
+			if ($lineCounter % 4000 == 0)
+				echo "\n";
 
 			$line = fgets($sourcehandle, 1024);
 			$line = utf8_encode($line);
 			$values = explode(";", $line);
 
 			// Prüfe Gültigkeit der eingelesenen Zeile
-			if(count($values) < 17 || $values[$this->epgIndices['epgid']] == "Id"){
+			if (count($values) < 17 || $values[$this->epgIndices['epgid']] == "Id") {
 				echo "!";
 				continue;
 			}
-				
+
 			//arbeite mit inhalt.
 			$success = $this->checkRow($values);
-			if($success == 1)
+			if ($success == 1)
 				echo ":";
-			else if($success == 2)
+			else if ($success == 2)
 				echo ";";
 		}
 	}
 
-	private function checkRow($var){
+	private function checkRow($var) {
 		//ueberpruefe eintrag
 		$btmodel = null;
-		if($var instanceof Model_BroadcastTime){
+		if ($var instanceof Model_BroadcastTime) {
 			$serial = Factory_Serial::getById($var->getIdSerial());
-			
+
 			$title = $serial->getTitle();
 			$epgid = $var->getEpgid();
 			$episodeText = $var->getTitle();
 			$channel = $var->getChannel();
 			$time = $var->getTime();
 			$btmodel = $var;
-		}else{
+		} else {
 			$epgid = $var[$this->epgIndices['epgid']];
 			$title = $var[$this->epgIndices['titel']];
 			$episodeText = $var[$this->epgIndices['text']];
 			$channel = $var[$this->epgIndices['sender']];
 			$time = $var[$this->epgIndices['beginn']];
 		}
-		
+
 		$found = false;
-		if($this->allserials == null)
+		if ($this->allserials == null)
 			$this->allserials = Factory_Serial::getByFields(null);
-		foreach($this->allserials as $serial){
-			if($this->otrEquals($serial->getTitle(), $title)){
+		foreach ($this->allserials as $serial) {
+			if ($this->otrEquals($serial->getTitle(), $title)) {
 				$found = true;
 				break;
 			}
 		}
-		if(!$found)
+		if (!$found)
 			return;
 
 		$episodeTitles = explode(",", $episodeText);
-		
+
 		$tmptime = new DateTime($time);
 		$time = $tmptime->format('Y-m-d H:i:s');
-		
-		foreach($episodeTitles as $episodeTitle){
+
+		foreach ($episodeTitles as $episodeTitle) {
 			//problem title steht mehreres mit Komma getrennt!
 			$episodeTitle = trim($episodeTitle);
-			$episodes = Factory_Episode::getByFields(array("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(`title`, 'ä', 'ae'), 'ö', 'oe'), 'ü', 'ue'), 'Ä', 'Ae'), 'Ö', 'Oe'), 'Ü', 'Ue'), 'ß', 'ss'), '-', ' '), ',', ''),' ','')" => "%".str_replace(" ", "", $episodeTitle)."%"));
+			$episodes = Factory_Episode::getByFields(array("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(`title`, 'ä', 'ae'), 'ö', 'oe'), 'ü', 'ue'), 'Ä', 'Ae'), 'Ö', 'Oe'), 'Ü', 'Ue'), 'ß', 'ss'), '-', ' '), ',', ''),' ','')" => "%" . str_replace(" ", "", $episodeTitle) . "%"));
 
-			if(count($episodes) > 0){
+			if (count($episodes) > 0) {
 				//eintraege gefunden suche passende serial oder season
-				foreach($episodes as $episode){
+				foreach ($episodes as $episode) {
 					//ueberpruefe ob serial oder season zum aktuellen passt
 					$season = Factory_Season::getByFields(array("id" => $episode->getIdSeason()));
 					$season = $season[0];
 					$serial = Factory_Serial::getByFields(array("id" => $season->getIdSerial()));
 					$serial = $serial[0];
-					if($this->otrEquals($season->getTitle(), $title) || $this->otrEquals($serial->getTitle(), $title)){
+					if ($this->otrEquals($season->getTitle(), $title) || $this->otrEquals($serial->getTitle(), $title)) {
 						//season passt || serial passt
 						$this->newBroadcastTime($serial, $episode, $epgid, $time, $channel, $episodeTitle, $btmodel);
 						return 1;
@@ -234,47 +244,47 @@ class Call_UpdateEpg extends Call_Abstract{
 		$this->newBroadcastTime($serial, null, $epgid, $time, $channel, $episodeText, $btmodel);
 		return 2;
 	}
-	
-	private function otrEquals($dbText, $csvText){
+
+	private function otrEquals($dbText, $csvText) {
 		//in csvText steht statt ü ue
 		//in dbText aus der DB natürlich nicht!
 		$replaceSearch = array('ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü', 'ß', '-', ',', ' ', '.');
 		$replaceReplace = array('ae', 'oe', 'ue', 'Ae', 'Oe', 'Ue', 'ss', ' ', '', '', '');
 		$dbText = str_replace($replaceSearch, $replaceReplace, $dbText);
 		$csvText = str_replace($replaceSearch, $replaceReplace, $csvText);
-		
-		if($dbText == $csvText)
+
+		if ($dbText == $csvText)
 			return true;
 		return false;
 	}
-	
-	private function newBroadcastTime($serial, $episode, $epgid, $time, $channel, $title, $btmodel = null){
-		if($btmodel == null){
+
+	private function newBroadcastTime($serial, $episode, $epgid, $time, $channel, $title, $btmodel = null) {
+		if ($btmodel == null) {
 			//erzeuge neues BrowadcastTime Model
 			$bt = new Model_BroadcastTime();
 			$bt->setIdSerial($serial->getId());
-			if($episode != null)
+			if ($episode != null)
 				$bt->setIdEpisode($episode->getId());
 			$bt->setEpgid($epgid);
 			$bt->setTime($time);
 			$bt->setChannel($channel);
 			$bt->setTitle($title);
-		}else{
+		}else {
 			//aktualisiere Model
 			$bt = $btmodel;
 			$bt->setTitle($title);
-			if($episode != null)
+			if ($episode != null)
 				$bt->setIdEpisode($episode->getId());
 		}
-		
+
 		Factory_BroadcastTime::createNew($bt);
 	}
-	
+
 	private function downloadfile($file_source, $file_target) {
-		
+
 		$rh = fopen($file_source, 'rb');
 		$wh = fopen($file_target, 'wb');
-		if ($rh===false || $wh===false) {
+		if ($rh === false || $wh === false) {
 			// error reading or opening file
 			return true;
 		}
@@ -290,79 +300,204 @@ class Call_UpdateEpg extends Call_Abstract{
 		return false;
 	}
 
-	private function sendMail($dateFrom, $dateTo, $oldmapped = array()){
+	private function sendMail($dateFrom, $dateTo, $oldmapped = array()) {
 		$from = new DateTime($dateFrom);
 		$to = new DateTime($dateTo);
 		$broadcastmodels = array();
-		
+
 		$date = new DateTime($from->format("d.m.Y H:i"));
-		while($date <= $to){
+		while ($date <= $to) {
 			$values = array(
 				"time" => $date->format("Y-m-d") . "%"
 			);
 			$sortCondition = array("time" => "DESC");
-			$broadcastmodels[$date->format("d.m.Y")] =  Factory_BroadcastTime::getByFields($values, $sortCondition);
-			
+			$broadcastmodels[$date->format("d.m.Y")] = Factory_BroadcastTime::getByFields($values, $sortCondition);
+
 			$year = $date->format('Y');
 			$month = $date->format('m');
 			$day = $date->format('d');
-			$date->setDate($year, $month, $day+1);
+			$date->setDate($year, $month, $day + 1);
 		}
-		
-		if(count($oldmapped) > 0){
+
+		if (count($oldmapped) > 0) {
 			$broadcastmodels["diversen Tage"] = $oldmapped;
 		}
-		
+
 		$nachricht = "Hallole,\nim folgenden die neuen Sendungen.\n";
-		foreach($broadcastmodels as $date => $models){
-			$nachricht .= "\n\nSendungen vom ".$date ."\n";
+		foreach ($broadcastmodels as $date => $models) {
+			$nachricht .= "\n\nSendungen vom " . $date . "\n";
 			$unavailable = "";
 			$available = "";
 			$unassigned = "";
-			
-			foreach($models as $model){
+
+			foreach ($models as $model) {
 				$time = new DateTime($model->getTime());
 				$serial = Factory_Serial::getById($model->getIdSerial());
-				if($model->getIdEpisode() != null){
+				if ($model->getIdEpisode() != null) {
 					$episode = Factory_Episode::getById($model->getIdEpisode());
 					$season = Factory_Season::getById($episode->getIdSeason());
-					
-					if($episode->getAvailability() == "high" || $episode->getAvailability() == "medium")
-						$available .= $time->format("H:i") . " " . $model->getChannel() .  ": " . $serial->getTitle() . " - " . $episode->getTitle() . " (" . $season->getTitle() . ") \n";
+
+					if ($episode->getAvailability() == "high" || $episode->getAvailability() == "medium")
+						$available .= $time->format("H:i") . " " . $model->getChannel() . ": " . $serial->getTitle() . " - " . $episode->getTitle() . " (" . $season->getTitle() . ") \n";
 					else
 						$unavailable .= $time->format("H:i") . " " . $model->getChannel() . ": " . $serial->getTitle() . " - " . $episode->getTitle() . " (" . $season->getTitle() . ") \n";
-					
-				}else{
+				}else {
 					$unassigned .= $time->format("H:i") . " " . $model->getChannel() . ": " . $serial->getTitle() . " - " . $model->getTitle() . " \n";
 				}
 			}
-			
+
 			$nachricht .= "Fehlende:\n" . $unavailable . "\nVorhandene:\n" . $available . "\nOhne Zuordnung:\n" . $unassigned;
 		}
-		
-		$mail_header  = "From: Marge<margesimpson@luka5.de>\n";
+
+		$mail_header = "From: Marge<margesimpson@luka5.de>\n";
 		$mail_header .= "MIME-Version: 1.0";
 		$mail_header .= "\nContent-Type: text/plain; charset=UTF-8";
 		$mail_header .= "\nContent-Transfer-Encoding: 8bit";
-		
-		$emailaddress = "example@example.com";
-		mail($emailaddress, "Sendungen vom " . $from->format("d.m.Y") . ($from < $to ? " bis ".$to->format("d.m.Y"):""), $nachricht, $mail_header);
 
+		$emailaddress = "example@example.com";
+		mail($emailaddress, "Sendungen vom " . $from->format("d.m.Y") . ($from < $to ? " bis " . $to->format("d.m.Y") : ""), $nachricht, $mail_header);
 	}
-	
-	private function recheck(){
-                $sortCondition = array("time" => "DESC");
-		$broadcastmodels =  Factory_BroadcastTime::getByFields(array(
-				"idEpisode" => null
-			), $sortCondition);
+
+	private function recheck() {
+		$sortCondition = array("time" => "DESC");
+		$broadcastmodels = Factory_BroadcastTime::getByFields(array(
+					"idEpisode" => null
+						), $sortCondition);
 		$mapped = array();
-		foreach($broadcastmodels as $model){
+		foreach ($broadcastmodels as $model) {
 			$success = $this->checkRow($model);
-			if($success == 1)
+			if ($success == 1)
 				$mapped[] = $model;
 		}
 		return $mapped;
 	}
+
+	private function addFtppushs($dateFrom, $dateTo, $oldmapped = array()) {
+		$from = new DateTime($dateFrom);
+		$to = new DateTime($dateTo);
+		$broadcastmodels = array();
+
+		$date = new DateTime($from->format("d.m.Y H:i"));
+		while ($date <= $to) {
+			$values = array(
+				"time" => $date->format("Y-m-d") . "%"
+			);
+			$sortCondition = array("time" => "DESC");
+			$tmp = Factory_BroadcastTime::getByFields($values, $sortCondition);
+			$broadcastmodels = array_merge($tmp, $broadcastmodels);
+			
+			$year = $date->format('Y');
+			$month = $date->format('m');
+			$day = $date->format('d');
+			$date->setDate($year, $month, $day + 1);
+		}
+
+		if (count($oldmapped) > 0)
+			$broadcastmodels = array_merge($oldmapped, $broadcastmodels);
+		
+		foreach($broadcastmodels as $broadcastmodel){
+			try{
+				if ($broadcastmodel->getIdEpisode() != null) {
+					$result = $this->addFtppush($broadcastmodel->getEpgid());
+					if($result === true){
+						$idEpisode = $broadcastmodel->getIdEpisode();
+						$episode = Factory_Episode::getById($idEpisode);
+						$episode->setAvailability(2);
+						Factory_Episode::store($episode);
+					}
+				}
+			}catch(Exception $e){
+				//$e->getMessage();
+				//TODO: log to somewhere
+			}
+			
+		}
+	}
 	
+	private function addFtppush($epgid) {
+		$cookiefilename = "/tmp/cookie_" . uniqid() . ".txt";
+		
+		$fp = fopen($cookiefilename, "w");
+		fclose($fp);
+		
+		// create a new cURL resource
+		$ch = curl_init();
+		
+		// set URL and other appropriate options
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiefilename);
+		curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiefilename);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		
+		if($this->checksum == null){
+			$codeUrl = "https://www.onlinetvrecorder.com/downloader/api/getcode.php";
+			curl_setopt($ch, CURLOPT_URL, $codeUrl);
+
+			// grab URL and pass it to the browser
+			$code = curl_exec($ch);
+			
+			$this->checksum = md5($this->configArray['otr']['checksumPart1'] . $code . $this->configArray['otr']['checksumPart2']);
+		}
+		
+		$loginUrl = "https://www.onlinetvrecorder.com/downloader/api/login.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum ."&email=" . $this->configArray['otr']['email'] . "&pass=" . $this->configArray['otr']['pass'];
+		curl_setopt($ch, CURLOPT_URL, $loginUrl);
+		// grab URL and pass it to the browser
+		curl_exec($ch);
+
+		$base64epgid = base64_encode($epgid);
+		$filenameUrl = "https://www.onlinetvrecorder.com/downloader/api/request_file2.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&epgid=" . $base64epgid;
+		curl_setopt($ch, CURLOPT_URL, $filenameUrl);
+		$xmlData = curl_exec($ch);		
+		$filename = $this->parseFilenameXml($xmlData);
+		
+		$ftppushUrl = "https://www.onlinetvrecorder.com/downloader/api/ftppush.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum ."&host=" . $this->configArray['otr']['ftphost'] . "&port=" . $this->configArray['otr']['ftpport'] . "&username=".$this->configArray['otr']['ftpuser'] . "&password=" . $this->configArray['otr']['ftppassword'] . "&directory=" . $this->configArray['otr']['ftpdir'] . "&filename=" . $filename;
+		curl_setopt($ch, CURLOPT_URL, $ftppushUrl);
+		$xmlData = curl_exec($ch);
+		$result = $this->parseFtppushXml($xmlData);
+
+		// close cURL resource, and free up system resources
+		curl_close($ch);
+		unlink($cookiefilename);
+		
+		return $result;
+	}
+	
+	
+	private function parseFilenameXml($data){
+		
+		$filenames = array();
+		
+		$tmp = new SimpleXMLElement($data);
+		
+		$filenames[] = $tmp->HQMP4_geschnitten->FILENAME;
+		$filenames[] = $tmp->HQAVI_unkodiert->FILENAME;
+		$filenames[] = $tmp->HQ->FILENAME;
+		$filenames[] = $tmp->AVI_unkodiert->FILENAME;
+		$filenames[] = $tmp->AVI->FILENAME;
+
+		$filename = null;
+		foreach($filenames as $tmp){
+			if($tmp != ""){
+				$filename = $tmp;
+				break;
+			}
+		}
+		if($filename == null)
+			throw new Exception("Kein Dateiformate gefunden.");
+		
+		return $filename;
+	}
+	
+	private function parseFtppushXml($data){
+		$tmp = new SimpleXMLElement($data);
+		$result = $tmp->ITEM->RESULT;
+		
+		if($result == "ADDED" || $result == "DOUBLE")
+			return true;
+		else //if($result == "ERROR")
+			return false;
+	}
+		
 }
+
 ?>
