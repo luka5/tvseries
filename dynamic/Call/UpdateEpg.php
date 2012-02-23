@@ -21,7 +21,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		"infolink" => 15,
 		"programlink" => 16
 	);
-	private $epgdir = "../tmp/";
+	private $tmpdir = "../tmp/";
 	private $allserials = null;
 	private $checksum = null;
 	private $configArray = null;
@@ -109,7 +109,7 @@ class Call_UpdateEpg extends Call_Abstract {
 
 		while ($from <= $to) {
 			$sourcefile = "http://www.onlinetvrecorder.com/epg/csv/epg_" . $from->format('Y_m_d') . ".csv";
-			$targetfile = $this->epgdir . "epg_" . $from->format('Y_m_d') . ".csv";
+			$targetfile = $this->tmpdir . "epg_" . $from->format('Y_m_d') . ".csv";
 			$this->downloadfile($sourcefile, $targetfile);
 
 			$year = $from->format('Y');
@@ -120,19 +120,19 @@ class Call_UpdateEpg extends Call_Abstract {
 	}
 
 	private function importEpgfiles() {
-		//Gehe alle Dateien des $epgdir ordners durch und rufe importEpgfile auf.
+		//Gehe alle Dateien des $tmpdir ordners durch und rufe importEpgfile auf.
 		$time1 = microtime(true);
 		echo "Start importing epgfile " . date("d.m.Y H:i") . "\n";
 
 		//wechsle in KB-Daten-Pfad
-		if ($handle = opendir($this->epgdir)) {
+		if ($handle = opendir($this->tmpdir)) {
 			while (false !== ($sourcefile = readdir($handle))) {
 				if (strpos($sourcefile, ".csv") !== false && strpos($sourcefile, ".csv") == strlen($sourcefile) - 4) {
 					//check file
 					$this->importEpgfile($sourcefile);
 
 					//delete file
-					unlink($this->epgdir . $sourcefile);
+					unlink($this->tmpdir . $sourcefile);
 				}
 			}
 			closedir($handle);
@@ -150,7 +150,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		echo "\nReading input file " . $sourcefile . " \n";
 
 		// open $sourcefile
-		$sourcehandle = fopen($this->epgdir . $sourcefile, "rb");
+		$sourcehandle = fopen($this->tmpdir . $sourcefile, "rb");
 		if (!$sourcehandle)
 			throw new Exception("File " . $sourcefile . " could not be opened");
 
@@ -415,7 +415,7 @@ class Call_UpdateEpg extends Call_Abstract {
 	}
 	
 	private function addFtppush($epgid) {
-		$cookiefilename = "/tmp/cookie_" . uniqid() . ".txt";
+		$cookiefilename = $this->tmpdir . "cookie_" . uniqid() . ".txt";
 		
 		$fp = fopen($cookiefilename, "w");
 		fclose($fp);
