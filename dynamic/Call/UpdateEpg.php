@@ -411,12 +411,17 @@ class Call_UpdateEpg extends Call_Abstract {
 					//ohne zuordnung => kein ftppush anlegen!
 					continue;
 				
+				$idEpisode = $broadcastmodel->getIdEpisode();
+				$episode = Factory_Episode::getById($idEpisode);
+				
+				if($episode->getAvailability() != 1)
+					//nur availability = "not" wird als ftppush angelegt
+					continue;
+				
 				//ftppush anhand von epgid anlegen
 				$this->addFtppush($broadcastmodel->getEpgid());
 				
 				//setzte Episode auf availability = processing
-				$idEpisode = $broadcastmodel->getIdEpisode();
-				$episode = Factory_Episode::getById($idEpisode);
 				$episode->setAvailability(2);
 				Factory_Episode::store($episode);
 				
