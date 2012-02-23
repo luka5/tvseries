@@ -414,7 +414,7 @@ class Call_UpdateEpg extends Call_Abstract {
 				$idEpisode = $broadcastmodel->getIdEpisode();
 				$episode = Factory_Episode::getById($idEpisode);
 				
-				if($episode->getAvailability() != 1)
+				if ($episode->getAvailability() == "high" || $episode->getAvailability() == "medium" || $episode->getAvailability() == "processing")
 					//nur availability = "not" wird als ftppush angelegt
 					continue;
 				
