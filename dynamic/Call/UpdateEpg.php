@@ -416,7 +416,7 @@ class Call_UpdateEpg extends Call_Abstract {
 				
 				//setzte Episode auf availability = processing
 				$idEpisode = $broadcastmodel->getIdEpisode();
-				$episode = Factory_Episode::getByFields($idEpisode);
+				$episode = Factory_Episode::getById($idEpisode);
 				$episode->setAvailability(2);
 				Factory_Episode::store($episode);
 				
