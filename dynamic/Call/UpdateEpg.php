@@ -53,6 +53,16 @@ class Call_UpdateEpg extends Call_Abstract {
 			$dateTo = $dateFrom;
 		}
 
+		if(!isset($_SERVER['argv'][3])){
+			//kein explizites Datum angegeben
+			//wähle vortag für ftppush
+			$dateFromFtp = date("d.m.Y", strtotime("-1 day"));
+			$dateToFtp = $dateFromFtp;
+		}else{
+			$dateFromFtp = $dateFrom;
+			$dateToFtp = $dateTo;
+		}
+		
 		echo "Starting with action " . $action . " (" . date("d.m.Y H:i") . ")\n\n";
 
 		$time1 = microtime(true);
@@ -64,7 +74,7 @@ class Call_UpdateEpg extends Call_Abstract {
 					$this->importEpgfiles();
 					$oldmapped = $this->recheck();
 					$this->sendMail($dateFrom, $dateTo, $oldmapped);
-					//$this->addFtppushs($dateFrom, $dateTo, $oldmapped);
+					echo $this->addFtppushs($dateFromFtp, $dateToFtp, $oldmapped);
 					break;
 
 				case "import":
@@ -84,7 +94,7 @@ class Call_UpdateEpg extends Call_Abstract {
 					break;
 				
 				case "ftppush":
-					$this->addFtppushs($dateFrom, $dateTo);
+					echo $this->addFtppushs($dateFromFtp, $dateToFtp);
 					break;
 
 				default:
@@ -373,9 +383,11 @@ class Call_UpdateEpg extends Call_Abstract {
 	}
 
 	private function addFtppushs($dateFrom, $dateTo, $oldmapped = array()) {
+		$result = null;
+		
 		$from = new DateTime($dateFrom);
 		$to = new DateTime($dateTo);
-		$broadcastmodels = array();
+		$broadcastmodels = $oldmapped;
 
 		$date = new DateTime($from->format("d.m.Y H:i"));
 		while ($date <= $to) {
@@ -391,27 +403,31 @@ class Call_UpdateEpg extends Call_Abstract {
 			$day = $date->format('d');
 			$date->setDate($year, $month, $day + 1);
 		}
-
-		if (count($oldmapped) > 0)
-			$broadcastmodels = array_merge($oldmapped, $broadcastmodels);
 		
 		foreach($broadcastmodels as $broadcastmodel){
 			try{
-				if ($broadcastmodel->getIdEpisode() != null) {
-					$result = $this->addFtppush($broadcastmodel->getEpgid());
-					if($result === true){
-						$idEpisode = $broadcastmodel->getIdEpisode();
-						$episode = Factory_Episode::getById($idEpisode);
-						$episode->setAvailability(2);
-						Factory_Episode::store($episode);
-					}
-				}
+
+				if ($broadcastmodel->getIdEpisode() == null)
+					//ohne zuordnung => kein ftppush anlegen!
+					continue;
+				
+				//ftppush anhand von epgid anlegen
+				$this->addFtppush($broadcastmodel->getEpgid());
+				
+				//setzte Episode auf availability = processing
+				$idEpisode = $broadcastmodel->getIdEpisode();
+				$episode = Factory_Episode::getByFields($idEpisode);
+				$episode->setAvailability(2);
+				Factory_Episode::store($episode);
+				
+				$result .= "\nErfolgreich für idBroadcastmodel " . $broadcastmodel->getId() . " angelegt";
+				
 			}catch(Exception $e){
-				//$e->getMessage();
-				//TODO: log to somewhere
+				$result .= "\nFehler bei idBroadcastmodel " . $broadcastmodel->getId() . ": " . $e->getMessage();
 			}
 			
 		}
+		return $result;
 	}
 	
 	private function addFtppush($epgid) {
@@ -494,8 +510,8 @@ class Call_UpdateEpg extends Call_Abstract {
 		
 		if($result == "ADDED" || $result == "DOUBLE")
 			return true;
-		else //if($result == "ERROR")
-			return false;
+		
+		throw new Exception("Anlegen des Ftppushs fehlgeschlagen. (" . $result . ")");
 	}
 		
 }
