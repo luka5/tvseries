@@ -364,7 +364,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		$mail_header .= "\nContent-Type: text/plain; charset=UTF-8";
 		$mail_header .= "\nContent-Transfer-Encoding: 8bit";
 
-		$emailaddress = "example@example.com";
+		$emailaddress = $this->configArray['common']['epgEmailAddress'];
 		mail($emailaddress, "Sendungen vom " . $from->format("d.m.Y") . ($from < $to ? " bis " . $to->format("d.m.Y") : ""), $nachricht, $mail_header);
 	}
 
