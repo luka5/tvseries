@@ -572,8 +572,6 @@ class Call_UpdateEpg extends Call_Abstract {
 		if ($dh = opendir($dir)) {
 			while (($filename = readdir($dh)) !== false) {
 				$filesize = filesize($dir . $filename);
-				
-				echo "filename: $filename : filesize : " . $filesize . "\n";
 
 				$tmp = Factory_Ftppush::getByFields(array("filename" => $filename));
 				if(count($tmp) == 0)
