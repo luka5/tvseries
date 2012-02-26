@@ -592,13 +592,21 @@ class Call_UpdateEpg extends Call_Abstract {
 					$season = Factory_Season::getById($episode->getIdSeason());
 					$serial = Factory_Serial::getById($broadcastTime->getIdSerial());					
 					
-					$destinationFilename = $this->configArray['common']['videofilesdir'] . $serial->getTitle() . "/" . $season->getTitle() . "/" . $season->getNumber() . "x" . $episode->getNumber();
-					$destinationFilename = str_replace(" ", "_", $destinationFilename);
+					$destinationFilename = "";
+					if(strlen($season->getNumber()) == 1)
+						$destinationFilename = "0" . $season->getNumber();
+					else
+						$destinationFilename = $season->getNumber();
+					$destinationFilename .=  "x";
+					if(strlen($episode->getNumber()) == 1)
+						$destinationFilename .= "0" . $episode->getNumber();
+					else
+						$destinationFilename .= $episode->getNumber();
+						
+					$destinationDir = $this->configArray['common']['videofilesdir'] . $serial->getTitle() . "/" . $season->getTitle() . "/";
+					$destinationDir = str_replace(" ", "_", $destinationDir);
 					
-					if(copy($dir . $filename, $destinationFilename)){
-						unlink($dir . $filename);
-					}
-					
+					rename($dir . $filename, $destinationDir . $destinationFilename);
 					
 					if($ftppush->isHQ())
 						$episode->setAvailability(5);
