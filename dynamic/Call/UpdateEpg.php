@@ -539,10 +539,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		$fileprop = null;
 		foreach ($fileprops as $tmp) {
 			if ($tmp['filename'] != "") {
-				$fileprop = array(
-					"filename" => $tmp['filename'],
-					"filesize" => $tmp['filesize']
-				);
+				$fileprop = $tmp;
 				break;
 			}
 		}
