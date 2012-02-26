@@ -23,18 +23,18 @@
 				$query .= "idBroadcastTime = " . $model->getIdBroadcastTime() . ", ";
 				$query .= "filename = '" . $model->getFilename() . "', ";
 				$query .= "filesize = " . $model->getFilesize() . ", ";
-				$query .= "isCut = " . $model->isCut() . ", ";
-				$query .= "isDecoded = " . $model->isDecoded() . ", ";
-				$query .= "isHQ = " . $model->isHQ() . " ";
+				$query .= "isCut = " . ($model->isCut()?1:0) . ", ";
+				$query .= "isDecoded = " . ($model->isDecoded()?1:0) . ", ";
+				$query .= "isHQ = " . ($model->isHQ()?1:0) . " ";
 		}else{
 				// Model hat ID, aktualisiere in Datenbank
 				$query = "UPDATE Ftppush SET ";
 				$query .= "idBroadcastTime = " . $model->getIdBroadcastTime() . ", ";
 				$query .= "filename = '" . $model->getFilename() . "', ";
 				$query .= "filesize = " . $model->getFilesize() . ", ";
-				$query .= "isCut = " . $model->isCut() . ", ";
-				$query .= "isDecoded = " . $model->isDecoded() . ", ";
-				$query .= "isHQ = " . $model->isHQ() . " ";
+				$query .= "isCut = " . ($model->isCut()?1:0) . ", ";
+				$query .= "isDecoded = " . ($model->isDecoded()?1:0) . ", ";
+				$query .= "isHQ = " . ($model->isHQ()?1:0) . " ";				
 				$query .= "WHERE id = " . $model->getId();
 			}
 			

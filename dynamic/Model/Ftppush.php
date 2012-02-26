@@ -7,9 +7,9 @@ class Model_Ftppush extends Model_Abstract {
 	public $idBroadcastTime;
 	public $filename;
 	public $filesize;
-	public $isCut = 0;
-	public $isDecoded = 0;
-	public $isHQ = 0;
+	public $isCut;
+	public $isDecoded;
+	public $isHQ;
 
 	public function __construct(){
 		// nothing to do
