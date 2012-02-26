@@ -539,17 +539,17 @@ class Call_UpdateEpg extends Call_Abstract {
 		$fileprop = null;
 		foreach ($fileprops as $tmp) {
 			if ($tmp['filename'] != "") {
-				$$fileprop = array(
+				$fileprop = array(
 					"filename" => $tmp['filename'],
 					"filesize" => $tmp['filesize']
 				);
 				break;
 			}
 		}
-		if ($$fileprop == null)
+		if ($fileprop == null)
 			throw new Exception("Kein Dateiformate gefunden.");
 
-		return $$fileprop;
+		return $fileprop;
 	}
 
 	private function parseFtppushXml($data) {
@@ -574,8 +574,8 @@ class Call_UpdateEpg extends Call_Abstract {
 				$filesize = filesize($dir . $filename);
 				
 				echo "filename: $filename : filesize : " . $filesize . "\n";
-				
-				$tmp = Factory_Ftppush::getByFields(array("filename", $filename));
+
+				$tmp = Factory_Ftppush::getByFields(array("filename" => $filename));
 				if(count($tmp) == 0)
 					continue;
 				$ftppush = $tmp[0];
@@ -589,10 +589,11 @@ class Call_UpdateEpg extends Call_Abstract {
 					$destinationFilename = "";
 					$broadcastTime = Factory_BroadcastTime::getById($ftppush->getIdBroadcastTime());
 					$episode = Factory_Episode::getById($broadcastTime->getIdEpisode());
-					$season = Factory_Season::getById($episode->getId());
+					$season = Factory_Season::getById($episode->getIdSeason());
 					$serial = Factory_Serial::getById($broadcastTime->getIdSerial());					
 					
 					$destinationFilename = $this->configArray['common']['videofilesdir'] . $serial->getTitle() . "/" . $season->getTitle() . "/" . $season->getNumber() . "x" . $episode->getNumber();
+					$destinationFilename = str_replace(" ", "_", $destinationFilename);
 					
 					if(copy($dir . $filename, $destinationFilename)){
 						unlink($dir . $filename);
