@@ -578,7 +578,7 @@ class Call_UpdateEpg extends Call_Abstract {
 				if(!$ftppush->isCut() || $ftppush->isDecoded())
 					continue;
 				
-				if($ftppush->getFilesize() == $filesize){
+				if($ftppush->getFilesize()*100 >= $filesize){
 					//datei fertig kopiert.
 					//verschiebe datei!
 					$destinationFilename = "";
