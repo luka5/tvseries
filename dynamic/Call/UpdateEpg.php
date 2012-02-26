@@ -25,14 +25,14 @@ class Call_UpdateEpg extends Call_Abstract {
 	private $allserials = null;
 	private $checksum = null;
 	private $configArray = null;
-	
+
 	public function __construct() {
 		
 	}
 
 	public function handle() {
 		$this->configArray = parse_ini_file("config.ini", true);
-		
+
 		//get request vars
 		if (isset($_SERVER['argv'][2])) {
 			$action = $_SERVER['argv'][2];
@@ -53,20 +53,20 @@ class Call_UpdateEpg extends Call_Abstract {
 			$dateTo = $dateFrom;
 		}
 
-		if(!isset($_SERVER['argv'][3])){
+		if (!isset($_SERVER['argv'][3])) {
 			//kein explizites Datum angegeben
 			//wähle vortag für ftppush
 			$dateFromFtp = date("d.m.Y", strtotime("-1 day"));
 			$dateToFtp = $dateFromFtp;
-		}else{
+		} else {
 			$dateFromFtp = $dateFrom;
 			$dateToFtp = $dateTo;
 		}
-		
+
 		echo "Starting with action " . $action . " (" . date("d.m.Y H:i") . ")\n\n";
 
 		$time1 = microtime(true);
-		
+
 		try {
 			switch ($action) {
 				case "all":
@@ -75,6 +75,7 @@ class Call_UpdateEpg extends Call_Abstract {
 					$oldmapped = $this->recheck();
 					$this->sendMail($dateFrom, $dateTo, $oldmapped);
 					echo $this->addFtppushs($dateFromFtp, $dateToFtp, $oldmapped);
+					$this->relocateFiles();
 					break;
 
 				case "import":
@@ -92,13 +93,16 @@ class Call_UpdateEpg extends Call_Abstract {
 				case "recheck":
 					$this->recheck();
 					break;
-				
+
 				case "ftppush":
 					echo $this->addFtppushs($dateFromFtp, $dateToFtp);
 					break;
 
+				case "relocateFiles":
+					$this->relocateFiles();
+
 				default:
-					throw new Exception("all | import | download | mail | recheck | ftppush");
+					throw new Exception("all | import | download | mail | recheck | ftppush | relocateFiles");
 			}
 		} catch (Exception $e) {
 			echo "\n\nForced Finish. " . $e->getMessage();
@@ -384,7 +388,7 @@ class Call_UpdateEpg extends Call_Abstract {
 
 	private function addFtppushs($dateFrom, $dateTo, $oldmapped = array()) {
 		$result = null;
-		
+
 		$from = new DateTime($dateFrom);
 		$to = new DateTime($dateTo);
 		$broadcastmodels = $oldmapped;
@@ -397,70 +401,77 @@ class Call_UpdateEpg extends Call_Abstract {
 			$sortCondition = array("time" => "DESC");
 			$tmp = Factory_BroadcastTime::getByFields($values, $sortCondition);
 			$broadcastmodels = array_merge($tmp, $broadcastmodels);
-			
+
 			$year = $date->format('Y');
 			$month = $date->format('m');
 			$day = $date->format('d');
 			$date->setDate($year, $month, $day + 1);
 		}
-		
+
 		foreach($broadcastmodels as $broadcastmodel){
 			try{
 
 				if ($broadcastmodel->getIdEpisode() == null)
-					//ohne zuordnung => kein ftppush anlegen!
+				//ohne zuordnung => kein ftppush anlegen!
 					continue;
-				
+
 				$idEpisode = $broadcastmodel->getIdEpisode();
 				$episode = Factory_Episode::getById($idEpisode);
-				
+
 				if ($episode->getAvailability() == "high" || $episode->getAvailability() == "medium" || $episode->getAvailability() == "processing")
-					//nur availability = "not" wird als ftppush angelegt
+				//nur availability = "not" wird als ftppush angelegt
 					continue;
-				
+
 				//ftppush anhand von epgid anlegen
-				$this->addFtppush($broadcastmodel->getEpgid());
-				
+				$fileprop = $this->addFtppush($broadcastmodel->getEpgid());
+
 				//setzte Episode auf availability = processing
 				$episode->setAvailability(2);
 				Factory_Episode::store($episode);
-				
+
+				$ftppush = new Model_Ftppush();
+				$ftppush->setIdBroadcastTime($broadcastmodel->getId());
+				$ftppush->setFilename($fileprop['filename']);
+				$ftppush->setFilesize($fileprop['filesize']);
+				$ftppush->setCut($fileprop['isCut']);
+				$ftppush->setDecoded($fileprop['isDecoded']);
+				$ftppush->setHQ($fileprop['isHQ']);
+				Factory_Ftppush::store($ftppush);
+
 				$result .= "\nErfolgreich für idBroadcastmodel " . $broadcastmodel->getId() . " angelegt";
-				
-			}catch(Exception $e){
+			} catch (Exception $e) {
 				$result .= "\nFehler bei idBroadcastmodel " . $broadcastmodel->getId() . ": " . $e->getMessage();
 			}
-			
 		}
 		return $result;
 	}
-	
+
 	private function addFtppush($epgid) {
 		$cookiefilename = $this->tmpdir . "cookie_" . uniqid() . ".txt";
-		
+
 		$fp = fopen($cookiefilename, "w");
 		fclose($fp);
-		
+
 		// create a new cURL resource
 		$ch = curl_init();
-		
+
 		// set URL and other appropriate options
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiefilename);
 		curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiefilename);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		
+
 		if($this->checksum == null){
 			$codeUrl = "https://www.onlinetvrecorder.com/downloader/api/getcode.php";
 			curl_setopt($ch, CURLOPT_URL, $codeUrl);
 
 			// grab URL and pass it to the browser
 			$code = curl_exec($ch);
-			
+
 			$this->checksum = md5($this->configArray['otr']['checksumPart1'] . $code . $this->configArray['otr']['checksumPart2']);
 		}
-		
-		$loginUrl = "https://www.onlinetvrecorder.com/downloader/api/login.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum ."&email=" . $this->configArray['otr']['email'] . "&pass=" . $this->configArray['otr']['pass'];
+
+		$loginUrl = "https://www.onlinetvrecorder.com/downloader/api/login.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&email=" . $this->configArray['otr']['email'] . "&pass=" . $this->configArray['otr']['pass'];
 		curl_setopt($ch, CURLOPT_URL, $loginUrl);
 		// grab URL and pass it to the browser
 		curl_exec($ch);
@@ -468,57 +479,140 @@ class Call_UpdateEpg extends Call_Abstract {
 		$base64epgid = base64_encode($epgid);
 		$filenameUrl = "https://www.onlinetvrecorder.com/downloader/api/request_file2.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&epgid=" . $base64epgid;
 		curl_setopt($ch, CURLOPT_URL, $filenameUrl);
-		$xmlData = curl_exec($ch);		
-		$filename = $this->parseFilenameXml($xmlData);
-		
-		$ftppushUrl = "https://www.onlinetvrecorder.com/downloader/api/ftppush.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum ."&host=" . $this->configArray['otr']['ftphost'] . "&port=" . $this->configArray['otr']['ftpport'] . "&username=".$this->configArray['otr']['ftpuser'] . "&password=" . $this->configArray['otr']['ftppassword'] . "&directory=" . $this->configArray['otr']['ftpdir'] . "&filename=" . $filename;
+		$xmlData = curl_exec($ch);
+		$fileprop = $this->parseFilenameXml($xmlData);
+
+		$ftppushUrl = "https://www.onlinetvrecorder.com/downloader/api/ftppush.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&host=" . $this->configArray['otr']['ftphost'] . "&port=" . $this->configArray['otr']['ftpport'] . "&username=" . $this->configArray['otr']['ftpuser'] . "&password=" . $this->configArray['otr']['ftppassword'] . "&directory=" . $this->configArray['otr']['ftpdir'] . "&filename=" . $fileprop['filename'];
 		curl_setopt($ch, CURLOPT_URL, $ftppushUrl);
 		$xmlData = curl_exec($ch);
-		$result = $this->parseFtppushXml($xmlData);
+		$this->parseFtppushXml($xmlData);
 
 		// close cURL resource, and free up system resources
 		curl_close($ch);
 		unlink($cookiefilename);
-		
-		return $result;
-	}
-	
-	
-	private function parseFilenameXml($data){
-		
-		$filenames = array();
-		
-		$tmp = new SimpleXMLElement($data);
-		
-		$filenames[] = $tmp->HQMP4_geschnitten->FILENAME;
-		$filenames[] = $tmp->HQAVI_unkodiert->FILENAME;
-		$filenames[] = $tmp->HQ->FILENAME;
-		$filenames[] = $tmp->AVI_unkodiert->FILENAME;
-		$filenames[] = $tmp->AVI->FILENAME;
 
-		$filename = null;
-		foreach($filenames as $tmp){
-			if($tmp != ""){
-				$filename = $tmp;
+		return $fileprop;
+	}
+
+	private function parseFilenameXml($data) {
+
+		$fileprops = array();
+
+		$tmp = new SimpleXMLElement($data);
+
+		$fileprops[] = array(
+			"filename" => $tmp->HQMP4_geschnitten->FILENAME,
+			"filesize" => $tmp->HQMP4_geschnitten->SIZE,
+			"isCut" => true,
+			"isDecoded" => false,
+			"isHQ" => true
+		);
+		$fileprops[] = array(
+			"filename" => $tmp->HQAVI_unkodiert->FILENAME,
+			"filesize" => $tmp->HQAVI_unkodiert->SIZE,
+			"isCut" => false,
+			"isDecoded" => false,
+			"isHQ" => true
+		);
+		$fileprops[] = array(
+			"filename" => $tmp->HQ->FILENAME,
+			"filesize" => $tmp->HQ->SIZE,
+			"isCut" => false,
+			"isDecoded" => true,
+			"isHQ" => true
+		);
+		$fileprops[] = array(
+			"filename" => $tmp->AVI_unkodiert->FILENAME,
+			"filesize" => $tmp->AVI_unkodiert->SIZE,
+			"isCut" => false,
+			"isDecoded" => false,
+			"isHQ" => false
+		);
+		$fileprops[] = array(
+			"filename" => $tmp->AVI->FILENAME,
+			"filesize" => $tmp->AVI->SIZE,
+			"isCut" => false,
+			"isDecoded" => true,
+			"isHQ" => false
+		);
+
+		$fileprop = null;
+		foreach ($fileprops as $tmp) {
+			if ($tmp['filename'] != "") {
+				$$fileprop = array(
+					"filename" => $tmp['filename'],
+					"filesize" => $tmp['filesize']
+				);
 				break;
 			}
 		}
-		if($filename == null)
+		if ($$fileprop == null)
 			throw new Exception("Kein Dateiformate gefunden.");
-		
-		return $filename;
+
+		return $$fileprop;
 	}
-	
-	private function parseFtppushXml($data){
+
+	private function parseFtppushXml($data) {
 		$tmp = new SimpleXMLElement($data);
 		$result = $tmp->ITEM->RESULT;
-		
-		if($result == "ADDED" || $result == "DOUBLE")
+
+		if ($result == "ADDED" || $result == "DOUBLE")
 			return true;
-		
+
 		throw new Exception("Anlegen des Ftppushs fehlgeschlagen. (" . $result . ")");
 	}
-		
+
+	private function relocateFiles() {
+		/*
+		 * schaue alle dateien in /share/ftppush an
+		 * verschiebe fertige dateien an richtige stelle
+		 * aktualisiere availability der episode
+		 */
+		$dir = "/share/ftppush/";
+		if ($dh = opendir($dir)) {
+			while (($filename = readdir($dh)) !== false) {
+				$filesize = filesize($dir . $filename);
+				
+				echo "filename: $filename : filesize : " . $filesize . "\n";
+				
+				$tmp = Factory_Ftppush::getByFields(array("filename", $filename));
+				if(count($tmp) == 0)
+					continue;
+				$ftppush = $tmp[0];
+				
+				if(!$ftppush->isCut() || $ftppush->isDecoded())
+					continue;
+				
+				if($ftppush->getFilesize() == $filesize){
+					//datei fertig kopiert.
+					//verschiebe datei!
+					$destinationFilename = "";
+					$broadcastTime = Factory_BroadcastTime::getById($ftppush->getIdBroadcastTime());
+					$episode = Factory_Episode::getById($broadcastTime->getIdEpisode());
+					$season = Factory_Season::getById($episode->getId());
+					$serial = Factory_Serial::getById($broadcastTime->getIdSerial());					
+					
+					$destinationFilename = $this->configArray['common']['videofilesdir'] . $serial->getTitle() . "/" . $season->getTitle() . "/" . $season->getNumber() . "x" . $episode->getNumber();
+					
+					if(copy($dir . $filename, $destinationFilename)){
+						unlink($dir . $filename);
+					}
+					
+					
+					if($ftppush->isHQ())
+						$episode->setAvailability(5);
+					else
+						$episode->setAvailability(4);
+					Factory_Episode::store($episode);
+				}
+			}
+			
+			closedir($dh);
+		}else{
+			throw new Exception("Fehler beim Öffnen des Ordners.");
+		}
+	}
+
 }
 
 ?>
