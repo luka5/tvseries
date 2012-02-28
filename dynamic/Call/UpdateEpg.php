@@ -100,6 +100,7 @@ class Call_UpdateEpg extends Call_Abstract {
 
 				case "relocateFiles":
 					$this->relocateFiles();
+					break;
 
 				default:
 					throw new Exception("all | import | download | mail | recheck | ftppush | relocateFiles");
@@ -578,7 +579,7 @@ class Call_UpdateEpg extends Call_Abstract {
 				if(!$ftppush->isCut() || $ftppush->isDecoded())
 					continue;
 				
-				if($ftppush->getFilesize()*100 >= $filesize){
+				if($ftppush->getFilesize()*1024 == $filesize){
 					//datei fertig kopiert.
 					//verschiebe datei!
 					$destinationFilename = "";
