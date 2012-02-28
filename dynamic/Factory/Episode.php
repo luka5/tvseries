@@ -96,7 +96,7 @@
 				$fields .= "number = " . $model->getNumber() . ", ";
 			$fields .= "title = \"" . $model->getTitle() . "\", ";
 			$fields .= "originalTitle = \"" . $model->getOriginalTitle() . "\",  ";
-			$fields .= "about = \"" . $model->getAbout() . "\", ";
+			$fields .= "about = \"" . str_replace("\"","\\\"", $model->getAbout()) . "\", ";
 			if($model->getRanking() !== null && $model->getRanking() != "")
 				$fields .= "ranking = " . $model->getRanking() . ", ";
 			if($model->getAvailability() !== null && $model->getAvailability() != "")
