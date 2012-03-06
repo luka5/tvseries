@@ -74,13 +74,18 @@ Ext.define('TvSeries.view.ui.EpisodesGrid', {
                 },
                 {
                     xtype: 'gridcolumn',
+                    hidden: true,
                     dataIndex: 'ranking',
                     text: 'Bewertung'
                 },
                 {
-                    xtype: 'gridcolumn',
+                    xtype: 'templatecolumn',
+                    tpl: Ext.create('Ext.XTemplate', 
+                        '<img src="icons/av_{availability}.png" alt="{availability}" />'
+                    ),
+                    width: 46,
                     dataIndex: 'availability',
-                    text: 'Qualität'
+                    text: ''
                 }
             ]
         });

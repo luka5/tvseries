@@ -42,8 +42,7 @@
                         "layout": "border",
                         "bodyPadding": 5,
                         "title": null,
-                        "designer|userClassName": "MyPanel4",
-                        "layout|region": "north"
+                        "designer|userClassName": "MyPanel4"
                     },
                     "cn": [
                         {
@@ -322,6 +321,7 @@
                     },
                     "codeClass": null,
                     "userConfig": {
+                        "hidden": true,
                         "dataIndex": "ranking",
                         "text": "Bewertung",
                         "designer|userClassName": "MyColumn4"
@@ -329,15 +329,18 @@
                 },
                 {
                     "id": "ExtBox1-ext-gen2636",
-                    "type": "gridcolumn",
+                    "type": "templatecolumn",
                     "reference": {
                         "name": "columns",
                         "type": "array"
                     },
                     "codeClass": null,
                     "userConfig": {
+                        "renderTpl": null,
+                        "tpl": "<img src=\"icons/av_{availability}.png\" alt=\"{availability}\" />",
+                        "width": 46,
                         "dataIndex": "availability",
-                        "text": "Qualität",
+                        "text": "",
                         "designer|userClassName": "MyBooleanColumn"
                     }
                 }
@@ -1209,9 +1212,7 @@
                         "bodyPadding": 10,
                         "title": null,
                         "url": "../dynamic/?callName=UpdateSerial&action=add",
-                        "designer|userClassName": "MyForm1",
-                        "layout|region": "center",
-                        "layout|split": true
+                        "designer|userClassName": "MyForm1"
                     },
                     "cn": [
                         {
