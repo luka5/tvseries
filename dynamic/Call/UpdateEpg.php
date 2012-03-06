@@ -236,8 +236,7 @@ class Call_UpdateEpg extends Call_Abstract {
 
 		foreach ($episodeTitles as $episodeTitle) {
 			//problem title steht mehreres mit Komma getrennt!
-			$episodeTitle = str_replace(array(" ", "'"), "", $episodeTitle);
-			$episodes = Factory_Episode::getByFields(array("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(`title`, 'ä', 'ae'), 'ö', 'oe'), 'ü', 'ue'), 'Ä', 'Ae'), 'Ö', 'Oe'), 'Ü', 'Ue'), 'ß', 'ss'), '-', ' '), ',', ''),' ','')" => "%" . $episodeTitle . "%"));
+			$episodes = Factory_Episode::getByFields(array("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(`title`, 'ä', 'ae'), 'ö', 'oe'), 'ü', 'ue'), 'Ä', 'Ae'), 'Ö', 'Oe'), 'Ü', 'Ue'), 'ß', 'ss'), '-', ' '), ',', ''),' ','')" => "%" . str_replace(array(" ", "'"), "", $episodeTitle) . "%"));
 
 			if (count($episodes) > 0) {
 				//eintraege gefunden suche passende serial oder season
