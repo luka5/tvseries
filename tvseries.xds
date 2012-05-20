@@ -1582,7 +1582,6 @@
             },
             "codeClass": null,
             "userConfig": {
-                "autoLoad": true,
                 "storeId": "Serials",
                 "designer|userClassName": "Serials"
             },

@@ -12,67 +12,79 @@
  */
 
 Ext.define('TvSeries.view.SeasonsGrid', {
-	extend: 'TvSeries.view.ui.SeasonsGrid',
-	alias: 'widget.SeasonsGrid',
+    extend: 'TvSeries.view.ui.SeasonsGrid',
+    alias: 'widget.SeasonsGrid',
 
-	serial: null,
+    serial: null,
         
-        filterTask:  null,
+    filterTask:  null,
 
-	initComponent: function() {
-		var me = this;
-		me.callParent(arguments);
+    initComponent: function() {
+        var me = this;
+        me.callParent(arguments);
 		
-		this.down("#addSeasonButton").on("click", this.addSeason, this);
+        this.down("#addSeasonButton").on("click", this.addSeason, this);
 		
-		this.getSelectionModel().on('select', this.select, this);
-		this.down("textfield").on('change', this.search, this);
+        this.getSelectionModel().on('select', this.select, this);
+        this.down("textfield").on('change', this.search, this);
 		
-		this.on('reload', this.reload, this);
+        this.on('reload', this.reload, this);
                 
-                this.filterTask = new Ext.util.DelayedTask(this.executeSearch, this);
-	},
+        this.filterTask = new Ext.util.DelayedTask(this.executeSearch, this);
+    },
 	
-	load: function(serial){
-		this.serial = serial;
+    load: function(serial, callback, callbackScope){
+        this.serial = serial;
 		
-		this.getStore().getProxy().extraParams = {
-			idSerial: this.serial.data.id
-		};
-		this.getStore().load();
-                
-                this.setTitle("2. " + serial.data.title);
-	},
-	
-	reload: function(){
-                this.filterTask.cancel();
-		this.load(this.serial);
-	},
-	
-	select: function(sm, record, index, opt){
-                this.filterTask.cancel();
-		this.fireEvent("loadEpisode", {season: record, serial: this.serial});
-	},
-	
-	addSeason: function(){
-		var addwindow = Ext.create('TvSeries.view.AddSeasonWindow', {
-			renderTo: Ext.getBody()
-		});
-		addwindow.down("#idSerialField").setValue(this.serial.data.id);
-		addwindow.show();
-		addwindow.on("close", this.reload, this);
-	},
-	
-	search: function(){
-            this.filterTask.delay(200);
-	},
+        this.getStore().getProxy().extraParams = {
+            idSerial: this.serial.data.id
+        };
         
-        executeSearch: function(){
-                var value = this.down("textfield").getValue();
-                this.getStore().getProxy().extraParams = {
-                        idSerial: this.serial.data.id,
-                        title: value
-                };
-                this.getStore().load();            
-        }        
+        var loadParams = {};
+        if(callback !== undefined && callbackScope !== undefined)
+            loadParams = {
+                scope: callbackScope,
+                callback: function(){
+                    callback();
+                }
+            };
+        this.getStore().load(loadParams);
+        
+        this.setTitle("2. " + serial.data.title);
+    },
+	
+    reload: function(){
+        this.filterTask.cancel();
+        this.load(this.serial);
+    },
+	
+    select: function(sm, record, index, opt){
+        this.filterTask.cancel();
+        this.fireEvent("loadEpisode", {
+            season: record, 
+            serial: this.serial
+            });
+    },
+	
+    addSeason: function(){
+        var addwindow = Ext.create('TvSeries.view.AddSeasonWindow', {
+            renderTo: Ext.getBody()
+        });
+        addwindow.down("#idSerialField").setValue(this.serial.data.id);
+        addwindow.show();
+        addwindow.on("close", this.reload, this);
+    },
+	
+    search: function(){
+        this.filterTask.delay(200);
+    },
+        
+    executeSearch: function(){
+        var value = this.down("textfield").getValue();
+        this.getStore().getProxy().extraParams = {
+            idSerial: this.serial.data.id,
+            title: value
+        };
+        this.getStore().load();            
+    }        
 });

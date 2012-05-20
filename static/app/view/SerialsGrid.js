@@ -12,52 +12,52 @@
  */
 
 Ext.define('TvSeries.view.SerialsGrid', {
-	extend: 'TvSeries.view.ui.SerialsGrid',
-	alias: 'widget.SerialsGrid',
+    extend: 'TvSeries.view.ui.SerialsGrid',
+    alias: 'widget.SerialsGrid',
 
-        filterTask:  null,
+    filterTask:  null,
 
-	initComponent: function() {
-		this.callParent(arguments);
+    initComponent: function() {
+        this.callParent(arguments);
 
-		this.getStore().on('load', onload, this);
-		this.down("#addSerialButton").on("click", this.addSerial, this);
+        this.getStore().on('load', onload, this);
+        this.down("#addSerialButton").on("click", this.addSerial, this);
 		
-		this.getSelectionModel().on('select', this.select, this);
-		this.down("textfield").on('change', this.search, this);
+        this.getSelectionModel().on('select', this.select, this);
+        this.down("textfield").on('change', this.search, this);
 		
-		this.on('reload', this.reload, this);
+        this.on('reload', this.reload, this);
                 
-                this.filterTask = new Ext.util.DelayedTask(this.executeSearch, this);
-	},
+        this.filterTask = new Ext.util.DelayedTask(this.executeSearch, this);
+    },
 	
-	reload: function(){
-                this.filterTask.cancel();
-		this.getStore().load();
-	},
+    reload: function(){
+        this.filterTask.cancel();
+        this.getStore().load();
+    },
 	
-	select: function(sm, record, index, opt){
-                this.filterTask.cancel();            
-		this.fireEvent("loadSeason", record);
-	},
+    select: function(sm, record, index, opt){
+        this.filterTask.cancel();            
+        this.fireEvent("loadSeason", record);
+    },
 
-	addSerial: function(){
-		var addwindow = Ext.create('TvSeries.view.AddSerialWindow', {
-			renderTo: Ext.getBody()
-		});
-		addwindow.show();
-		addwindow.on("close", this.reload, this);
-	},
+    addSerial: function(){
+        var addwindow = Ext.create('TvSeries.view.AddSerialWindow', {
+            renderTo: Ext.getBody()
+        });
+        addwindow.show();
+        addwindow.on("close", this.reload, this);
+    },
 	
-	search: function(){
-            this.filterTask.delay(200);
-	},
+    search: function(){
+        this.filterTask.delay(200);
+    },
         
-        executeSearch: function(){
-                var value = this.down("textfield").getValue();
-                this.getStore().getProxy().extraParams = {
-                        title: value
-                };
-                this.getStore().load();            
-        }
+    executeSearch: function(){
+        var value = this.down("textfield").getValue();
+        this.getStore().getProxy().extraParams = {
+            title: value
+        };
+        this.getStore().load();            
+    }
 });

@@ -12,78 +12,87 @@
  */
 
 Ext.define('TvSeries.view.EpisodesGrid', {
-	extend: 'TvSeries.view.ui.EpisodesGrid',
-	alias: 'widget.EpisodesGrid',
+    extend: 'TvSeries.view.ui.EpisodesGrid',
+    alias: 'widget.EpisodesGrid',
 
-	season: null,
-	serial: null,
+    season: null,
+    serial: null,
         
-        filterTask:  null,
+    filterTask:  null,
 
-	initComponent: function() {
-		var me = this;
-		me.callParent(arguments);
-		
-		me.down("#addEpisodeButton").on("click", me.addEpisode, me);
-		
-		this.getSelectionModel().on('select', this.select, this);
-		this.down("textfield").on('change', this.search, this);
+    initComponent: function() {
+        var me = this;
+        me.callParent(arguments);
 
-		this.on('reload', this.reload, this);
+        me.down("#addEpisodeButton").on("click", me.addEpisode, me);
+		
+        this.getSelectionModel().on('select', this.select, this);
+        this.down("textfield").on('change', this.search, this);
+
+        this.on('reload', this.reload, this);
                 
-                this.filterTask = new Ext.util.DelayedTask(this.executeSearch, this);
-	},
+        this.filterTask = new Ext.util.DelayedTask(this.executeSearch, this);
+    },
 	
-	load: function(obj){
-		this.season = obj.season;
-		this.serial = obj.serial;
+    load: function(obj, callback, callbackScope){
+        this.season = obj.season;
+        this.serial = obj.serial;
 		
-		this.getStore().getProxy().extraParams = {
-			idSeason: this.season.data.id
-		};
-		this.getStore().load();
-                
-                this.setTitle("3. " + this.serial.data.title + ", " + this.season.data.title);
-	},
-	
-	reload: function(){
-                this.filterTask.cancel();
-		var obj = {
-			season: this.season,
-			serial: this.serial
-		};
-		this.load(obj);
-	},
-	
-	select: function(sm, record, index, opt){
-                this.filterTask.cancel();
-		this.fireEvent("loadShowWindow", record, this.season, this.serial);
-	},
-	
-	addEpisode: function(){
-		var SerialStore = Ext.create('TvSeries.store.Serials',{});
-		var SeasonStore = Ext.create('TvSeries.store.Season',{});
-		var ReplacementsStore = Ext.create('TvSeries.store.Replacements',{});
-		var addwindow = Ext.create('TvSeries.view.AddWindow', {
-			renderTo: Ext.getBody(),
-			serialStore: SerialStore,
-			seasonStore: SeasonStore,
-			replacementsStore: ReplacementsStore
-		});
-		addwindow.show();
-		addwindow.on("hide", this.reload, this);
-	},
-
-	search: function(){
-            this.filterTask.delay(200);
-	},
+        this.getStore().getProxy().extraParams = {
+            idSeason: this.season.data.id
+        };
         
-        executeSearch: function(){
-                var value = this.down("textfield").getValue();
-                this.getStore().getProxy().extraParams = {
-                        idSeason: this.season.data.id,
-                        title: value
-                };
-                this.getStore().load();            
-        }         
+        var loadParams = {};
+        if(callback !== undefined && callbackScope !== undefined)
+            loadParams = {
+                scope: callbackScope,
+                callback: function(){
+                    callback();
+                }
+            };
+        this.getStore().load(loadParams);
+        
+        this.setTitle("3. " + this.serial.data.title + ", " + this.season.data.title);
+    },
+	
+    reload: function(){
+        this.filterTask.cancel();
+        var obj = {
+            season: this.season,
+            serial: this.serial
+        };
+        this.load(obj);
+    },
+	
+    select: function(sm, record, index, opt){
+        this.filterTask.cancel();
+        this.fireEvent("loadShowWindow", record, this.season, this.serial);
+    },
+	
+    addEpisode: function(){
+        var SerialStore = Ext.create('TvSeries.store.Serials',{});
+        var SeasonStore = Ext.create('TvSeries.store.Season',{});
+        var ReplacementsStore = Ext.create('TvSeries.store.Replacements',{});
+        var addwindow = Ext.create('TvSeries.view.AddWindow', {
+            renderTo: Ext.getBody(),
+            serialStore: SerialStore,
+            seasonStore: SeasonStore,
+            replacementsStore: ReplacementsStore
+        });
+        addwindow.show();
+        addwindow.on("hide", this.reload, this);
+    },
+
+    search: function(){
+        this.filterTask.delay(200);
+    },
+        
+    executeSearch: function(){
+        var value = this.down("textfield").getValue();
+        this.getStore().getProxy().extraParams = {
+            idSeason: this.season.data.id,
+            title: value
+        };
+        this.getStore().load();            
+    }         
 });

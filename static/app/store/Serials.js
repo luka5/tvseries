@@ -16,7 +16,6 @@ Ext.define('TvSeries.store.Serials', {
         var me = this;
         cfg = cfg || {};
         me.callParent([Ext.apply({
-            autoLoad: true,
             storeId: 'Serials',
             proxy: {
                 type: 'ajax',
