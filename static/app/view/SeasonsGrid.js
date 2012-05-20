@@ -45,7 +45,7 @@ Ext.define('TvSeries.view.SeasonsGrid', {
             loadParams = {
                 scope: callbackScope,
                 callback: function(){
-                    callback();
+                    callback.apply(callbackScope, []);
                 }
             };
         this.getStore().load(loadParams);
