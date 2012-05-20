@@ -34,9 +34,9 @@ Ext.define('TvSeries.view.EpisodesGrid', {
         this.filterTask = new Ext.util.DelayedTask(this.executeSearch, this);
     },
 	
-    load: function(obj, callback, callbackScope){
-        this.season = obj.season;
-        this.serial = obj.serial;
+    load: function(serial, season, callback, callbackScope){
+        this.season = season;
+        this.serial = serial;
 		
         this.getStore().getProxy().extraParams = {
             idSeason: this.season.data.id

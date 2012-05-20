@@ -47,7 +47,7 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
                                                                 var seasonTitle = tmp[1];
                                                                 var season = this.down("SeasonsGrid").getStore().findRecord("title", seasonTitle);
                                                                 this.down("SeasonsGrid").getSelectionModel().select(season);
-                                                                this.down("EpisodesGrid").load(season, function(){
+                                                                this.down("EpisodesGrid").load(serial, season, function(){
                                                                     if(tmp[2]){
                                                                         var episodeTitle = tmp[2];
                                                                         var episode = this.down("EpisodesGrid").getStore().findRecord("title", episodeTitle);
@@ -73,7 +73,7 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
 	
 	loadEpisode: function(record){
 		Ext.History.add(record.serial.data.title + "/" + record.season.data.title);
-		this.down("EpisodesGrid").load(record);
+		this.down("EpisodesGrid").load(record.serial, record.season);
 	},
 	
 	loadShowWindow: function(episode, season, serial){
