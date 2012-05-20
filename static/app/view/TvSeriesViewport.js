@@ -23,11 +23,11 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
             renderTo: Ext.getBody()
         });
         this.showWindow.on('hide',  this.reloadEpisodesGrid, this);
-		
+        this.showWindow.on("selectEpisode", this.selectEpisode, this);
+
         this.down("SerialsGrid").on("loadSeason", this.loadSeason, this);
         this.down("SeasonsGrid").on("loadEpisode", this.loadEpisode, this);
         this.down("EpisodesGrid").on("loadShowWindow", this.loadShowWindow, this);
-        this.down("ShowWindow").on("selectEpisode", this.selectEpisode, this);
 
         var serialStore = this.down("SerialsGrid").getStore();
         var token = Ext.History.getToken();
