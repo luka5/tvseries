@@ -57,11 +57,7 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 	
     reload: function(){
         this.filterTask.cancel();
-        var obj = {
-            season: this.season,
-            serial: this.serial
-        };
-        this.load(obj);
+        this.load(this.serial, this.season);
     },
 	
     select: function(sm, record, index, opt){
