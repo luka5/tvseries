@@ -193,6 +193,7 @@ Ext.define('TvSeries.view.ShowWindow', {
             index = index - this.grid.getStore().getCount();
         this.record = this.grid.getStore().getAt(index);
         this.loadVideo(this.record, this.seasonRecord, this.serialRecord, this.grid);
+        this.fireEvent("selectEpisode", this.record);
     },
 
     openPrev: function(){
@@ -202,6 +203,7 @@ Ext.define('TvSeries.view.ShowWindow', {
             index = this.grid.getStore().getCount() - index - 2;
         this.record = this.grid.getStore().getAt(index);
         this.loadVideo(this.record, this.seasonRecord, this.serialRecord, this.grid);
+        this.fireEvent("selectEpisode", this.record);
     },
 
     setFullscreen: function(){

@@ -12,76 +12,81 @@
  */
 
 Ext.define('TvSeries.view.TvSeriesViewport', {
-	extend: 'TvSeries.view.ui.TvSeriesViewport',
+    extend: 'TvSeries.view.ui.TvSeriesViewport',
 
-	showWindow: null,
+    showWindow: null,
 
-	initComponent: function() {
-		this.callParent(arguments);
+    initComponent: function() {
+        this.callParent(arguments);
         
-		this.showWindow = Ext.create('TvSeries.view.ShowWindow', {
-			renderTo: Ext.getBody()
-		});
-		this.showWindow.on('hide',  this.reloadEpisodesGrid, this);
+        this.showWindow = Ext.create('TvSeries.view.ShowWindow', {
+            renderTo: Ext.getBody()
+        });
+        this.showWindow.on('hide',  this.reloadEpisodesGrid, this);
 		
-		this.down("SerialsGrid").on("loadSeason", this.loadSeason, this);
-		this.down("SeasonsGrid").on("loadEpisode", this.loadEpisode, this);
-		this.down("EpisodesGrid").on("loadShowWindow", this.loadShowWindow, this);
+        this.down("SerialsGrid").on("loadSeason", this.loadSeason, this);
+        this.down("SeasonsGrid").on("loadEpisode", this.loadEpisode, this);
+        this.down("EpisodesGrid").on("loadShowWindow", this.loadShowWindow, this);
+        this.down("ShowWindow").on("selectEpisode", this.selectEpisode, this);
 
-		var serialStore = this.down("SerialsGrid").getStore();
-		var token = Ext.History.getToken();
-                                    if(token !== null){
-                                        var tmp = token.split("/");
-                                        if(tmp[0]){
-                                            var serialTitle = tmp[0];
-                                            serialStore.load({
-                                                scope: this,
-                                                callback: function(records, options, success){
-                                                    if(success){
-                                                        var serial = serialStore.findRecord("title", serialTitle);
-                                                        //load seasons
-                                                        this.down("SerialsGrid").getSelectionModel().select(serial);
-                                                        this.down("SeasonsGrid").load(serial, function(){
-                                                            if(tmp[1]){
-                                                                //open episode window
-                                                                var seasonTitle = tmp[1];
-                                                                var season = this.down("SeasonsGrid").getStore().findRecord("title", seasonTitle);
-                                                                this.down("SeasonsGrid").getSelectionModel().select(season);
-                                                                this.down("EpisodesGrid").load(serial, season, function(){
-                                                                    if(tmp[2]){
-                                                                        var episodeTitle = tmp[2];
-                                                                        var episode = this.down("EpisodesGrid").getStore().findRecord("title", episodeTitle);
-                                                                        this.down("EpisodesGrid").getSelectionModel().select(episode);
-                                                                        this.showWindow.loadVideo(episode, season, serial, this.down("EpisodesGrid"));
-                                                                    }
-                                                                }, this);
-                                                            }
-                                                        }, this);
-                                                    }
-                                                }
-                                            });
+        var serialStore = this.down("SerialsGrid").getStore();
+        var token = Ext.History.getToken();
+        if(token !== null){
+            var tmp = token.split("/");
+            if(tmp[0]){
+                var serialTitle = tmp[0];
+                serialStore.load({
+                    scope: this,
+                    callback: function(records, options, success){
+                        if(success){
+                            var serial = serialStore.findRecord("title", serialTitle);
+                            //load seasons
+                            this.down("SerialsGrid").getSelectionModel().select(serial);
+                            this.down("SeasonsGrid").load(serial, function(){
+                                if(tmp[1]){
+                                    //open episode window
+                                    var seasonTitle = tmp[1];
+                                    var season = this.down("SeasonsGrid").getStore().findRecord("title", seasonTitle);
+                                    this.down("SeasonsGrid").getSelectionModel().select(season);
+                                    this.down("EpisodesGrid").load(serial, season, function(){
+                                        if(tmp[2]){
+                                            var episodeTitle = tmp[2];
+                                            var episode = this.down("EpisodesGrid").getStore().findRecord("title", episodeTitle);
+                                            this.down("EpisodesGrid").getSelectionModel().select(episode);
+                                            this.showWindow.loadVideo(episode, season, serial, this.down("EpisodesGrid"));
                                         }
-                                    }else{
-                                        serialStore.load();
-                                    }
-	},
+                                    }, this);
+                                }
+                            }, this);
+                        }
+                    }
+                });
+            }
+        }else{
+            serialStore.load();
+        }
+    },
     
-	loadSeason: function(record){
-		Ext.History.add(record.data.title);
-		this.down("SeasonsGrid").load(record);
-	},
+    loadSeason: function(record){
+        Ext.History.add(record.data.title);
+        this.down("SeasonsGrid").load(record);
+    },
 	
-	loadEpisode: function(record){
-		Ext.History.add(record.serial.data.title + "/" + record.season.data.title);
-		this.down("EpisodesGrid").load(record.serial, record.season);
-	},
+    loadEpisode: function(serial, season){
+        Ext.History.add(serial.data.title + "/" + season.data.title);
+        this.down("EpisodesGrid").load(serial, season);
+    },
 	
-	loadShowWindow: function(episode, season, serial){
-		Ext.History.add(serial.data.title + "/" + season.data.title + "/" + episode.data.title);
-		this.showWindow.loadVideo(episode, season, serial, this.down("EpisodesGrid"));
-	},
+    loadShowWindow: function(episode, season, serial){
+        Ext.History.add(serial.data.title + "/" + season.data.title + "/" + episode.data.title);
+        this.showWindow.loadVideo(episode, season, serial, this.down("EpisodesGrid"));
+    },
 	
-	reloadEpisodesGrid: function(){
-		this.down("EpisodesGrid").reload();
-	}
+    reloadEpisodesGrid: function(){
+        this.down("EpisodesGrid").reload();
+    },
+        
+    selectEpisode: function(episode){
+        this.down("EpisodesGrid").getSelectionModel().select(episode);
+    }
 });

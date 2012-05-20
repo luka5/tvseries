@@ -58,12 +58,9 @@ Ext.define('TvSeries.view.SeasonsGrid', {
         this.load(this.serial);
     },
 	
-    select: function(sm, record, index, opt){
+    select: function(sm, season, index, opt){
         this.filterTask.cancel();
-        this.fireEvent("loadEpisode", {
-            season: record, 
-            serial: this.serial
-            });
+        this.fireEvent("loadEpisode", this.serial, season);
     },
 	
     addSeason: function(){
