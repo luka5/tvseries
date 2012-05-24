@@ -32,6 +32,7 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
         var serialStore = this.down("SerialsGrid").getStore();
         var token = Ext.History.getToken();
         if(token !== null){
+            token = Ext.urlDecode(token);
             var tmp = token.split("/");
             if(tmp[0]){
                 var serialTitle = tmp[0];
