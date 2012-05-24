@@ -30,7 +30,11 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
         this.down("EpisodesGrid").on("loadShowWindow", this.loadShowWindow, this);
         this.down("#logoutButton").on("click", this.logout, this);
 
-        this.manageUrl();
+        this.down("SerialsGrid").getStore().on('load', this.checkLoginState, this);
+        this.down("SeasonsGrid").getStore().on('load', this.checkLoginState, this);
+        this.down("EpisodesGrid").getStore().on('load', this.checkLoginState, this);
+
+        this.loadByUrl();
     },
     
     loadSeason: function(record){
@@ -63,7 +67,7 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
         this.down("EpisodesGrid").getSelectionModel().select(episode);
     },
     
-    manageUrl: function(){
+    loadByUrl: function(){
         var serialStore = this.down("SerialsGrid").getStore();
         var token = Ext.History.getToken();
         if(token !== null){
@@ -120,5 +124,22 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
                 Ext.Msg.alert("Fehler", responseObj.errorMsg);
             }
         });
+    },
+    
+    checkLoginState: function(store, grouper, success, operation){
+        if(success || store == undefined)
+            return;
+        
+        var data = store.getProxy().getReader().jsonData;
+        if(data.errorInfo != undefined)
+            if(data.errorInfo == "Nicht angemeldet."){
+                var loginWindow = Ext.create('TvSeries.view.LoginWindow', {
+                    renderTo: Ext.getBody()
+                });
+                loginWindow.on("forceReload", this.loadByUrl, this);
+                loginWindow.show();
+            }
+        else
+            Ext.Msg.alert('Fehler', data.errorInfo);
     }
 });

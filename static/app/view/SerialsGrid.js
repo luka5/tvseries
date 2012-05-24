@@ -20,7 +20,6 @@ Ext.define('TvSeries.view.SerialsGrid', {
     initComponent: function() {
         this.callParent(arguments);
 
-        this.getStore().on('load', onload, this);
         this.down("#addSerialButton").on("click", this.addSerial, this);
 		
         this.getSelectionModel().on('select', this.select, this);

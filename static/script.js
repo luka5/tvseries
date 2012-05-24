@@ -22,23 +22,3 @@ Ext.application({
         cmp1.show();
     }
 });
-
-var onload = function(store, grouper, success, operation){
-	 if(success || store == undefined)
-		return;
-
-	 var data = store.getProxy().getReader().jsonData;
-	 if(data.errorInfo != undefined)
-		if(data.errorInfo == "Nicht angemeldet.")
-			login();
-		else
-			Ext.Msg.alert('Fehler', data.errorInfo);
-};
-
-var login = function(){
-	//create new login window
-        var cmp3 = Ext.create('TvSeries.view.LoginWindow', {
-            renderTo: Ext.getBody()
-        });
-        cmp3.show();
-}
