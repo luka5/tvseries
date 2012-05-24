@@ -22,7 +22,7 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
         this.showWindow = Ext.create('TvSeries.view.ShowWindow', {
             renderTo: Ext.getBody()
         });
-        this.showWindow.on('hide',  this.reloadEpisodesGrid, this);
+        this.showWindow.on('hide',  this.showWindowHide, this);
         this.showWindow.on("selectEpisode", this.selectEpisode, this);
 
         this.down("SerialsGrid").on("loadSeason", this.loadSeason, this);
@@ -48,7 +48,14 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
         this.showWindow.loadVideo(episode, season, serial, this.down("EpisodesGrid"));
     },
 	
-    reloadEpisodesGrid: function(){
+    showWindowHide: function(){
+        //remove Episode from Url Token
+        var token = Ext.History.getToken();
+        var tmp = token.split("/");
+        if(tmp.length >= 2)
+            Ext.History.add(tmp[0] + "/" + tmp[1]);
+        
+        //reload EpisodesGrid
         this.down("EpisodesGrid").reload();
     },
         
