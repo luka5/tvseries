@@ -45,6 +45,7 @@ Ext.define('TvSeries.view.ui.TvSeriesViewport', {
                                     xtype: 'tbfill'
                                 },
                                 {
+                                    id: 'logoutButton',
                                     xtype: 'button',
                                     icon: 'icons/logout.png',
                                     text: 'abmelden'

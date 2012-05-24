@@ -74,7 +74,7 @@
                                     }
                                 },
                                 {
-                                    "id": "ExtBox1-ext-gen22689",
+                                    "id": "logoutButton",
                                     "type": "button",
                                     "reference": {
                                         "name": "items",

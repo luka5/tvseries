@@ -28,7 +28,7 @@ class Session {
 	}
 
 	public function __destruct() {
-		
+
 	}
 
 	public function getVar($key) {
@@ -41,7 +41,11 @@ class Session {
 	public function setVar($key, $value) {
 		$_SESSION[$key] = $value;
 	}
-
+        
+	public function destroy(){
+		$_SESSION = array();
+		session_destroy();
+	}
 }
 
 ?>

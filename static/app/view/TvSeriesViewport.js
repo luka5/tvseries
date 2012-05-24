@@ -28,7 +28,35 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
         this.down("SerialsGrid").on("loadSeason", this.loadSeason, this);
         this.down("SeasonsGrid").on("loadEpisode", this.loadEpisode, this);
         this.down("EpisodesGrid").on("loadShowWindow", this.loadShowWindow, this);
+        this.down("#logoutButton").on("click", this.logout, this);
 
+        this.manageUrl();
+    },
+    
+    loadSeason: function(record){
+        Ext.History.add(record.data.title);
+        this.down("SeasonsGrid").load(record);
+    },
+	
+    loadEpisode: function(serial, season){
+        Ext.History.add(serial.data.title + "/" + season.data.title);
+        this.down("EpisodesGrid").load(serial, season);
+    },
+	
+    loadShowWindow: function(episode, season, serial){
+        Ext.History.add(serial.data.title + "/" + season.data.title + "/" + episode.data.title);
+        this.showWindow.loadVideo(episode, season, serial, this.down("EpisodesGrid"));
+    },
+	
+    reloadEpisodesGrid: function(){
+        this.down("EpisodesGrid").reload();
+    },
+        
+    selectEpisode: function(episode){
+        this.down("EpisodesGrid").getSelectionModel().select(episode);
+    },
+    
+    manageUrl: function(){
         var serialStore = this.down("SerialsGrid").getStore();
         var token = Ext.History.getToken();
         if(token !== null){
@@ -68,26 +96,22 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
         }
     },
     
-    loadSeason: function(record){
-        Ext.History.add(record.data.title);
-        this.down("SeasonsGrid").load(record);
-    },
-	
-    loadEpisode: function(serial, season){
-        Ext.History.add(serial.data.title + "/" + season.data.title);
-        this.down("EpisodesGrid").load(serial, season);
-    },
-	
-    loadShowWindow: function(episode, season, serial){
-        Ext.History.add(serial.data.title + "/" + season.data.title + "/" + episode.data.title);
-        this.showWindow.loadVideo(episode, season, serial, this.down("EpisodesGrid"));
-    },
-	
-    reloadEpisodesGrid: function(){
-        this.down("EpisodesGrid").reload();
-    },
-        
-    selectEpisode: function(episode){
-        this.down("EpisodesGrid").getSelectionModel().select(episode);
+    logout: function(){
+        Ext.Ajax.request({
+            url: '"../dynamic/?callName=Logout"',
+            scope: this,
+            success: function(response){
+                var responseObj = Ext.decode(response.responseText);
+                if(responseObj.success != true)
+                    Ext.Msg.alert("Fehler", responseObj.errorMsg);
+                else
+                    //user successfully logged out
+                    location.reload();
+            },
+            failure: function(response){
+                var responseObj = Ext.decode(response.responseText);
+                Ext.Msg.alert("Fehler", responseObj.errorMsg);
+            }
+        });
     }
 });
