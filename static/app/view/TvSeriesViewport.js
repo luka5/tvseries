@@ -98,7 +98,7 @@ Ext.define('TvSeries.view.TvSeriesViewport', {
     
     logout: function(){
         Ext.Ajax.request({
-            url: '"../dynamic/?callName=Logout"',
+            url: "../dynamic/?callName=Logout",
             scope: this,
             success: function(response){
                 var responseObj = Ext.decode(response.responseText);
