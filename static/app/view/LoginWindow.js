@@ -27,8 +27,8 @@ Ext.define('TvSeries.view.LoginWindow', {
 	 this.down("form").getForm().submit({
 		scope: this,
 		success: function(form, action) {
-			this.close();
 			this.fireEvent("forceReload");
+			this.close();
 		},
 		failure: function(form, action) {
 			var response = Ext.decode(action.response.responseText);
