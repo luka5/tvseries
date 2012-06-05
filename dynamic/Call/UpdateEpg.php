@@ -566,6 +566,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		 * verschiebe fertige dateien an richtige stelle
 		 * aktualisiere availability der episode
 		 */
+                                    $files = null;
 		$dir = "/share/ftppush/";
 		if ($dh = opendir($dir)) {
 			while (($filename = readdir($dh)) !== false) {
@@ -609,6 +610,13 @@ class Call_UpdateEpg extends Call_Abstract {
 					else
 						$episode->setAvailability(4);
 					Factory_Episode::store($episode);
+
+					//save filedetails to mail
+					$files[] = array(
+						"episode" => $episode,
+						"season" => $season,
+						"serial" => $serial
+					);
 				}
 			}
 			
@@ -616,6 +624,23 @@ class Call_UpdateEpg extends Call_Abstract {
 		}else{
 			throw new Exception("Fehler beim Öffnen des Ordners.");
 		}
+
+		/*
+		* versende Direktlink von automatisch zugeordneten Episoden
+		*/
+		$links = "";
+		foreach($files as $file){
+			$links .= "http://nerdserv.somehost.eu/tvseries/static/#" . $file['serial'].getTitle() . "/" . $file['season'].getTitle() . "/"  . $file['episode'].getTitle();
+		}
+		$message = "Hallo,\n\nunter den folgenden Links findest du die neu hinzugefügten Episoden:\n\n"  . $links . "\n\nGruß,\nMarge";
+
+		$mail_header = "From: Marge<margesimpson@luka5.de>\n";
+		$mail_header .= "MIME-Version: 1.0";
+		$mail_header .= "\nContent-Type: text/plain; charset=UTF-8";
+		$mail_header .= "\nContent-Transfer-Encoding: 8bit";
+
+		$emailaddress = $this->configArray['common']['epgEmailAddress'];
+		mail($emailaddress, "Neue Folgen  vom " . date("d.m.Y"), $message, $mail_header);
 	}
 
 }
