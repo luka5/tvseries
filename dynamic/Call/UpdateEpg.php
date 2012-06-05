@@ -630,7 +630,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		*/
 		$links = "";
 		foreach($files as $file){
-			$links .= "http://nerdserv.somehost.eu/tvseries/static/#" . $file['serial'].getTitle() . "/" . $file['season'].getTitle() . "/"  . $file['episode'].getTitle();
+			$links .= "http://nerdserv.somehost.eu/tvseries/static/#" . $file['serial']->getTitle() . "/" . $file['season']->getTitle() . "/"  . $file['episode']->getTitle();
 		}
 		$message = "Hallo,\n\nunter den folgenden Links findest du die neu hinzugefügten Episoden:\n\n"  . $links . "\n\nGruß,\nMarge";
 
