@@ -628,6 +628,8 @@ class Call_UpdateEpg extends Call_Abstract {
 		/*
 		* versende Direktlink von automatisch zugeordneten Episoden
 		*/
+		if(count($files) == 0)
+			return;
 		$links = "";
 		foreach($files as $file){
 			$links .= "http://nerdserv.somehost.eu/tvseries/static/#" . $file['serial']->getTitle() . "/" . $file['season']->getTitle() . "/"  . $file['episode']->getTitle();
