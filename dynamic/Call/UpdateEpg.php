@@ -566,7 +566,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		 * verschiebe fertige dateien an richtige stelle
 		 * aktualisiere availability der episode
 		 */
-                                    $files = null;
+                                    $files = array();
 		$dir = "/share/ftppush/";
 		if ($dh = opendir($dir)) {
 			while (($filename = readdir($dh)) !== false) {
