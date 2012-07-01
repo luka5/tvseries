@@ -40,7 +40,7 @@ Ext.define('TvSeries.view.ui.AddWindow', {
                             fieldLabel: 'Serie',
                             editable: false,
                             displayField: 'title',
-                            store: this.serialStore,
+                            store: 'this.serialStore',
                             valueField: 'id',
                             anchor: '100%'
                         },
@@ -51,7 +51,7 @@ Ext.define('TvSeries.view.ui.AddWindow', {
                             fieldLabel: 'Staffel',
                             editable: false,
                             displayField: 'title',
-                            store: this.seasonStore,
+                            store: 'this.seasonStore',
                             valueField: 'id',
                             anchor: '100%'
                         },

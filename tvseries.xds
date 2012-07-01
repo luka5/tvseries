@@ -1477,6 +1477,7 @@
                             },
                             "codeClass": null,
                             "userConfig": {
+                                "disabled": true,
                                 "id": "serialCombobox2",
                                 "itemId": "serialCombobox2",
                                 "name": "idSerial",
@@ -1499,6 +1500,7 @@
                             },
                             "codeClass": null,
                             "userConfig": {
+                                "disabled": true,
                                 "id": "seasonCombobox2",
                                 "name": "idSeason",
                                 "fieldLabel": "Staffel",

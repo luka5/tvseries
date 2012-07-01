@@ -18,14 +18,15 @@ Ext.define('TvSeries.view.AddSingleEpisodeWindow', {
 		me.callParent(arguments);
 		
 		this.down("#saveButton").on("click", this.save, this);
-		this.down("#serialCombobox2").on("change", this.loadSeason, this);
+		this.down("#serialCombobox2").setValue(this.serial.get('id'));
+		this.down("#seasonCombobox2").setValue(this.season.get('id'));
 	},
 	
 	save: function(){
-		console.info("save");
 		this.down("form").getForm().submit({
 			params: {
-				action: "updateoraddSingle"
+				action: "updateoraddSingle",
+				idSeason: this.season.get('id')
 			},
 			success: function(form, action) {
 				Ext.Msg.alert('Erfolgreich gespeichert', "Änderungen erfolgreich gespeichert.<br />" + action.result.msg);
@@ -36,13 +37,5 @@ Ext.define('TvSeries.view.AddSingleEpisodeWindow', {
 			},
 			scope: this
 		});
-	},
-	
-	loadSeason: function(){
-		var idSerial = this.down("#serialCombobox2").getValue();
-		this.down("#seasonCombobox2").getStore().getProxy().extraParams = {
-			idSerial: idSerial
-		};
-		this.down("#seasonCombobox2").getStore().load();
 	}
 });

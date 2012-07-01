@@ -81,11 +81,17 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 	},
 
 	addSingleEpisode: function(){
+		if(this.serial == null || this.season == null){
+			Ext.Msg.alert("Fehler", "Bitte zuerst Serie und Staffel auswählen.");
+			return;
+		}
 		var addSingleEpisodeWindow =Ext.create('TvSeries.view.AddSingleEpisodeWindow', {
-			renderTo: Ext.getBody()
+			renderTo: Ext.getBody(),
+			serial: this.serial,
+			season: this.season
 		});
 		addSingleEpisodeWindow.show();
-		addSingleEpisodeWindow.on("hide", this.reload, this);
+		addSingleEpisodeWindow.on("close", this.reload, this);
 	},
 
 	search: function(){

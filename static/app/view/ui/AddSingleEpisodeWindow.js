@@ -35,8 +35,8 @@ Ext.define('TvSeries.view.ui.AddSingleEpisodeWindow', {
                     items: [
                         {
                             xtype: 'combobox',
+                            disabled: true,
                             id: 'serialCombobox2',
-                            itemId: 'serialCombobox2',
                             name: 'idSerial',
                             fieldLabel: 'Serie',
                             allowBlank: false,
@@ -48,6 +48,7 @@ Ext.define('TvSeries.view.ui.AddSingleEpisodeWindow', {
                         },
                         {
                             xtype: 'combobox',
+                            disabled: true,
                             id: 'seasonCombobox2',
                             name: 'idSeason',
                             fieldLabel: 'Staffel',
