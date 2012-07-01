@@ -46,10 +46,7 @@
 		 * @return Model_Replacements[]
 		 */
 		public static function getByFields($values){
-			$query = "";
-			if($values !== NULL)
-				$query = "WHERE " . parent::getFieldQuery($values);
-			$query = "SELECT * FROM Replacements " . $query;
+			$query = "SELECT * FROM Replacements " . parent::getWhereQuery($values);
 			$result = Database::getInstance()->executeQuery($query);
 			if($result === false){
 				throw new Exception("Fehler beim Abfragen der Replacements.".$query);	
