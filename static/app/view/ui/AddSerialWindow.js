@@ -30,8 +30,6 @@ Ext.define('TvSeries.view.ui.AddSerialWindow', {
                     border: 0,
                     bodyPadding: 10,
                     url: '../dynamic/?callName=UpdateSerial&action=add',
-                    region: 'center',
-                    split: true,
                     items: [
                         {
                             xtype: 'textfield',

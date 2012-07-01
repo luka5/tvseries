@@ -16,6 +16,8 @@
 <script type="text/javascript" src="app/view/AddSerialWindow.js"></script>
 <script type="text/javascript" src="app/view/ui/AddWindow.js"></script>
 <script type="text/javascript" src="app/view/AddWindow.js"></script>
+<script type="text/javascript" src="app/view/ui/AddSingleEpisodeWindow.js"></script>
+<script type="text/javascript" src="app/view/AddSingleEpisodeWindow.js"></script>
 <script type="text/javascript" src="app/store/Episodes.js"></script>
 <script type="text/javascript" src="app/store/Serials.js"></script>
 <script type="text/javascript" src="app/store/Season.js"></script>

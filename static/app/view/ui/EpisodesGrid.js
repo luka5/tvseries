@@ -32,6 +32,12 @@ Ext.define('TvSeries.view.ui.EpisodesGrid', {
                             icon: 'icons/add.png'
                         },
                         {
+                            xtype: 'button',
+                            id: 'addSingleEpisodeButton',
+                            itemId: 'addSingleEpisodeButton',
+                            icon: 'icons/add.png'
+                        },
+                        {
                             xtype: 'tbfill'
                         },
                         {

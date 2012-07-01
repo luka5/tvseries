@@ -33,7 +33,6 @@ Ext.define('TvSeries.view.ui.TvSeriesViewport', {
                         type: 'border'
                     },
                     bodyPadding: 5,
-                    region: 'north',
                     dockedItems: [
                         {
                             xtype: 'toolbar',
@@ -45,8 +44,8 @@ Ext.define('TvSeries.view.ui.TvSeriesViewport', {
                                     xtype: 'tbfill'
                                 },
                                 {
-                                    id: 'logoutButton',
                                     xtype: 'button',
+                                    id: 'logoutButton',
                                     icon: 'icons/logout.png',
                                     text: 'abmelden'
                                 }

@@ -25,7 +25,19 @@ class Call_UpdateEpisodes extends Call_Abstract {
 				//example url: view-source:http://localhost:8081/tvseries/dynamic/?callName=UpdateEpisodes&action=updateoradd&data=[{%22idSeason%22:%2250%22,%22number%22:%2221%22,%22originalTitle%22:%22Do%20You%20See%20What%20I%20See%22,%22premier%22:%2212.12.2012%22}]&allocate={%22originalTitle%22:%22originalTitle%22,%22premier%22:%22premier%22,%22idSeason%22:%22idSeason%22,%22number%22:%22number%22}
 				$data = json_decode(stripslashes(getRequestVar("data")), true);
 				$idSeason = getRequestVar("idSeason");
-
+				
+				foreach ($data as $item) {
+					$this->updateOrAdd($data, $idSeason);
+				}
+			}else if ($action == "updateoraddSingle") {
+				$idSeason = getRequestVar("idSeason");
+				$data = array();
+				$data['number'] = getRequestVar("number");
+				$data['premier'] = getRequestVar("premier");
+				$data['originalpremier'] = getRequestVar("originalpremier");
+				$data['title'] = getRequestVar("title");
+				$data['originaltitle'] = getRequestVar("originaltitle");
+				$data['about'] = getRequestVar("about");
 				$this->updateOrAdd($data, $idSeason);
 			} else {
 				throw new Exception("Fehlender Parameter 'action'.");
@@ -39,31 +51,29 @@ class Call_UpdateEpisodes extends Call_Abstract {
 		parent::encodeAndPrint($resultObj);
 	}
 
-	public function updateOrAdd($data, $idSeason) {
-		foreach ($data as $item) {
-			$model = new Model_Episode();
-			$model->setIdSeason($idSeason);
+	public function updateOrAdd($item, $idSeason) {
+		$model = new Model_Episode();
+		$model->setIdSeason($idSeason);
 
-			//add fields to Model_Episode()
-			foreach ($item as $key => $value) {
-				if ($key == "unused")
-					continue;
-				
-				$methodname = "set" . ucfirst($key);
-				$method = new ReflectionMethod('Model_Episode', $methodname);
-				$method->invoke($model, $value);
-			}
+		//add fields to Model_Episode()
+		foreach ($item as $key => $value) {
+			if ($key == "unused")
+				continue;
 
-			$existingEpisode = Factory_Episode::getByFields(array(
-						"idSeason" => $model->getIdSeason(),
-						"number" => $model->getNumber()
-					));
-			if (count($existingEpisode) > 0)
-				$model->setId($existingEpisode[0]->getId());
-
-			//insert $model into database OR update database
-			Factory_Episode::store($model);
+			$methodname = "set" . ucfirst($key);
+			$method = new ReflectionMethod('Model_Episode', $methodname);
+			$method->invoke($model, $value);
 		}
+
+		$existingEpisode = Factory_Episode::getByFields(array(
+					"idSeason" => $model->getIdSeason(),
+					"number" => $model->getNumber()
+				));
+		if (count($existingEpisode) > 0)
+			$model->setId($existingEpisode[0]->getId());
+
+		//insert $model into database OR update database
+		Factory_Episode::store($model);
 	}
 
 }
