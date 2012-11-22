@@ -696,12 +696,7 @@ class Call_UpdateEpg extends Call_Abstract {
 	}
 
 	private function parseFtppushXml($data) {
-		try{
 		$tmp = new SimpleXMLElement($data);
-		}catch(Exception $e){
-			var_dump($data);
-			echo $e;
-		}
 		$result = $tmp->ITEM->RESULT;
 
 		if ($result == "ADDED" || $result == "DOUBLE")
