@@ -222,7 +222,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		 * Überprüfe, ob Channel ignoriert werden soll
 		 */
 		$blockedChannels = Factory_Channel::getByFields(array(
-			"blocked" => 1,
+			"isBlocked" => 1,
 			"name" => $channel
 		));
 		if(count($blockedChannels) > 0){

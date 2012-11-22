@@ -57,7 +57,7 @@
 			if($model->getId() != null)
 				$fields = "id = " . $model->getId() . ", ";
 			$fields .= "name = '" . $model->getName() . "', ";
-			$fields .= "blocked = " . ($model->isBlocked()?1:0) . " ";
+			$fields .= "isBlocked = " . ($model->isBlocked()?1:0) . " ";
 
 			if(isset(self::$models[$model->getId()])){
 				// Model bekannt, schreibe in Datenbank
