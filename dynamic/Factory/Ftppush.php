@@ -21,20 +21,24 @@
 				// Model hat keine ID, schreibe in Datenbank
 				$query = "INSERT INTO Ftppush SET ";
 				$query .= "idBroadcastTime = " . $model->getIdBroadcastTime() . ", ";
+				$query .= "ftppushId = '" . $model->getFtppushId() . "', ";
 				$query .= "filename = '" . $model->getFilename() . "', ";
 				$query .= "filesize = " . $model->getFilesize() . ", ";
 				$query .= "isCut = " . ($model->isCut()?1:0) . ", ";
 				$query .= "isDecoded = " . ($model->isDecoded()?1:0) . ", ";
-				$query .= "isHQ = " . ($model->isHQ()?1:0) . " ";
+				$query .= "isHQ = " . ($model->isHQ()?1:0) . ", ";
+				$query .= "isDeleted = " . ($model->isDeleted()?1:0) . " ";
 		}else{
 				// Model hat ID, aktualisiere in Datenbank
 				$query = "UPDATE Ftppush SET ";
 				$query .= "idBroadcastTime = " . $model->getIdBroadcastTime() . ", ";
+				$query .= "ftppushId = '" . $model->getFtppushId() . "', ";
 				$query .= "filename = '" . $model->getFilename() . "', ";
 				$query .= "filesize = " . $model->getFilesize() . ", ";
 				$query .= "isCut = " . ($model->isCut()?1:0) . ", ";
 				$query .= "isDecoded = " . ($model->isDecoded()?1:0) . ", ";
-				$query .= "isHQ = " . ($model->isHQ()?1:0) . " ";				
+				$query .= "isHQ = " . ($model->isHQ()?1:0) . ", ";				
+				$query .= "isDeleted = " . ($model->isDeleted()?1:0) . " ";				
 				$query .= "WHERE id = " . $model->getId();
 			}
 			
@@ -75,11 +79,13 @@
 					
 					$model->setId($resultItem['id']);
 					$model->setIdBroadcastTime($resultItem['idBroadcastTime']);
+					$model->setFtppushId($resultItem['ftppushId']);
 					$model->setFilename($resultItem['filename']);
 					$model->setFilesize($resultItem['filesize']);
 					$model->setCut($resultItem['isCut']);
 					$model->setDecoded($resultItem['isDecoded']);
 					$model->setHQ($resultItem['isHQ']);
+					$model->setDeleted($resultItem['isDeleted']);
 
 					self::$models[$model->getId()] = $model;
 				}

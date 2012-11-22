@@ -5,11 +5,13 @@ class Model_Ftppush extends Model_Abstract {
 	/* Fields */
 	public $id;
 	public $idBroadcastTime;
+	public $ftppushId;
 	public $filename;
 	public $filesize;
 	public $isCut;
 	public $isDecoded;
 	public $isHQ;
+	public $isDeleted;
 
 	public function __construct(){
 		// nothing to do
@@ -45,7 +47,23 @@ class Model_Ftppush extends Model_Abstract {
 	 */
 	public function setIdBroadcastTime($idBroadcastTime){
 		$this->idBroadcastTime = $idBroadcastTime;
-	}	
+	}
+	
+	/**
+	*
+	* @return String
+	*/
+	public function getFtppushId(){
+		return $this->ftppushId;
+	}
+	
+	/**
+	 *
+	 * @param String $ftppushId
+	 */
+	public function setFtppushId($ftppushId){
+		$this->ftppushId = $ftppushId;
+	}
 		
 	/**
 	*
@@ -125,6 +143,22 @@ class Model_Ftppush extends Model_Abstract {
 	 */
 	public function setHQ($isHQ){
 		$this->isHQ = $isHQ;
+	}
+	
+	/**
+	*
+	* @return Boolean
+	*/
+	public function isDeleted(){
+		return $this->isDeleted;
+	}
+	
+	/**
+	 *
+	 * @param Boolean $isDeleted
+	 */
+	public function setDeleted($isDeleted){
+		$this->isDeleted = $isDeleted;
 	}
 	
 }

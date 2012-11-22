@@ -1479,7 +1479,7 @@
                             "userConfig": {
                                 "disabled": true,
                                 "id": "serialCombobox2",
-                                "itemId": "serialCombobox2",
+                                "itemId": null,
                                 "name": "idSerial",
                                 "fieldLabel": "Serie",
                                 "allowBlank": false,

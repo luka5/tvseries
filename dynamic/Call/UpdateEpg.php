@@ -22,6 +22,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		"programlink" => 16
 	);
 	private $tmpdir = "../tmp/";
+	private $videodownloaddir = "/share/ftppush/";
 	private $allserials = null;
 	private $checksum = null;
 	private $configArray = null;
@@ -217,6 +218,17 @@ class Call_UpdateEpg extends Call_Abstract {
 			$time = $var[$this->epgIndices['beginn']];
 		}
 
+		/*
+		 * Überprüfe, ob Channel ignoriert werden soll
+		 */
+		$blockedChannels = Factory_Channel::getByFields(array(
+			"blocked" => 1,
+			"name" => $channel
+		));
+		if(count($blockedChannels) > 0){
+			return;
+		}
+		
 		$found = false;
 		if ($this->allserials == null)
 			$this->allserials = Factory_Serial::getByFields(null);
@@ -353,11 +365,11 @@ class Call_UpdateEpg extends Call_Abstract {
 					$season = Factory_Season::getById($episode->getIdSeason());
 
 					if ($episode->getAvailability() == "high" || $episode->getAvailability() == "medium")
-						$available .= $time->format("H:i") . " " . $model->getChannel() . ": " . $serial->getTitle() . " - " . $episode->getTitle() . " (" . $season->getTitle() . ") \n";
+						$available .= $time->format("d.m. H:i") . " " . $model->getChannel() . ": " . $serial->getTitle() . " - " . $episode->getTitle() . " (" . $season->getTitle() . ") \n";
 					else
-						$unavailable .= $time->format("H:i") . " " . $model->getChannel() . ": " . $serial->getTitle() . " - " . $episode->getTitle() . " (" . $season->getTitle() . ") \n";
+						$unavailable .= $time->format("d.m. H:i") . " " . $model->getChannel() . ": " . $serial->getTitle() . " - " . $episode->getTitle() . " (" . $season->getTitle() . ") \n";
 				}else {
-					$unassigned .= $time->format("H:i") . " " . $model->getChannel() . ": " . $serial->getTitle() . " - " . $model->getTitle() . " \n";
+					$unassigned .= $time->format("d.m. H:i") . " " . $model->getChannel() . ": " . $serial->getTitle() . " - " . $model->getTitle() . " \n";
 				}
 			}
 
@@ -394,6 +406,11 @@ class Call_UpdateEpg extends Call_Abstract {
 		$to = new DateTime($dateTo);
 		$broadcastmodels = $oldmapped;
 
+		/*
+		 * suche in übergebenen BroadcastTime oder
+		 * in denen zwischen dateFrom und dateTo
+		 * nach neu anzulegenden ftppushs
+		 */
 		$date = new DateTime($from->format("d.m.Y H:i"));
 		while ($date <= $to) {
 			$values = array(
@@ -403,6 +420,9 @@ class Call_UpdateEpg extends Call_Abstract {
 			$tmp = Factory_BroadcastTime::getByFields($values, $sortCondition);
 			$broadcastmodels = array_merge($tmp, $broadcastmodels);
 
+			/*
+			 * addiere einen Tag
+			 */
 			$year = $date->format('Y');
 			$month = $date->format('m');
 			$day = $date->format('d');
@@ -411,7 +431,8 @@ class Call_UpdateEpg extends Call_Abstract {
 
 		foreach($broadcastmodels as $broadcastmodel){
 			try{
-
+				$skipBroadCastTime = false;
+				
 				if ($broadcastmodel->getIdEpisode() == null)
 				//ohne zuordnung => kein ftppush anlegen!
 					continue;
@@ -419,12 +440,61 @@ class Call_UpdateEpg extends Call_Abstract {
 				$idEpisode = $broadcastmodel->getIdEpisode();
 				$episode = Factory_Episode::getById($idEpisode);
 
-				if ($episode->getAvailability() == "high" || $episode->getAvailability() == "medium" || $episode->getAvailability() == "processing")
+				if ($episode->getAvailability() == "high" || $episode->getAvailability() == "medium")
 				//nur availability = "not" wird als ftppush angelegt
 					continue;
+				
+				/*
+				 * Lade Dateiname und Eigenschaften der OTR-Daten
+				 */
+				$fileprop = $this->getFtppushData($broadcastmodel->getEpgid());
+				
+				if($episode->getAvailability() == "processing"){
+					/*
+					 * überprüfe, ob dieser FTPPush bessere Qualität hat als letzter
+					 * wenn nein, 
+					 *	breche FTPPush ab oder lösche Datei (wenn bswp ungeschnitten)
+					 */
+					$otherBroadcastTimes = Factory_BroadcastTime::getByFields(array(
+							"idEpisode" => $episode->getId()
+						));
+					foreach($otherBroadcastTimes as $bct){
+						if($broadcastmodel->getId() == $bct->getId())
+							continue;
 
-				//ftppush anhand von epgid anlegen
-				$fileprop = $this->addFtppush($broadcastmodel->getEpgid());
+						$ftppushs = Factory_Ftppush::getByFields(array(
+								"idBroadcastTime" => $bct->getId()
+							));
+						foreach($ftppushs as $ftppush){
+							if($ftppush['worth'] < $fileprop['worth']){
+								/*
+								 * alter ftppush ist schlechter, als aktueller.
+								 * Lösche alten, starte neuen!
+								 */
+								$this->removeFtppush($ftppush->getFtppushId());
+								unlink($this->videodownloaddir . $ftppush->getFilename());
+								/*
+								 * setzte FTPPush auf gelöscht
+								 */
+								$ftppush->setDeleted(true);
+								Factory_Ftppush::store($ftppush);
+							}else{
+								/*
+								 * überspringe diese BroadcastTime
+								 * da bereits besseres vorhanden.
+								 */
+								$skipBroadCastTime = true;
+							}
+						}
+					}
+				}
+
+				if($skipBroadCastTime)
+					continue;
+
+
+				//ftppush anhand des Dateinames
+				$ftppushId = $this->addFtppush($fileprop['filename']);
 
 				//setzte Episode auf availability = processing
 				$episode->setAvailability(2);
@@ -432,6 +502,7 @@ class Call_UpdateEpg extends Call_Abstract {
 
 				$ftppush = new Model_Ftppush();
 				$ftppush->setIdBroadcastTime($broadcastmodel->getId());
+				$ftppush->setFtppushId($ftppushId);
 				$ftppush->setFilename($fileprop['filename']);
 				$ftppush->setFilesize($fileprop['filesize']);
 				$ftppush->setCut($fileprop['isCut']);
@@ -447,7 +518,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		return $result;
 	}
 
-	private function addFtppush($epgid) {
+	private function getFtppushData($epgid) {
 		$cookiefilename = $this->tmpdir . "cookie_" . uniqid() . ".txt";
 
 		$fp = fopen($cookiefilename, "w");
@@ -483,11 +554,6 @@ class Call_UpdateEpg extends Call_Abstract {
 		$xmlData = curl_exec($ch);
 		$fileprop = $this->parseFilenameXml($xmlData);
 
-		$ftppushUrl = "https://www.onlinetvrecorder.com/downloader/api/ftppush.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&host=" . $this->configArray['otr']['ftphost'] . "&port=" . $this->configArray['otr']['ftpport'] . "&username=" . $this->configArray['otr']['ftpuser'] . "&password=" . $this->configArray['otr']['ftppassword'] . "&directory=" . $this->configArray['otr']['ftpdir'] . "&filename=" . $fileprop['filename'];
-		curl_setopt($ch, CURLOPT_URL, $ftppushUrl);
-		$xmlData = curl_exec($ch);
-		$this->parseFtppushXml($xmlData);
-
 		// close cURL resource, and free up system resources
 		curl_close($ch);
 		unlink($cookiefilename);
@@ -495,6 +561,57 @@ class Call_UpdateEpg extends Call_Abstract {
 		return $fileprop;
 	}
 
+	private function addFtppush($filename) {
+		$cookiefilename = $this->tmpdir . "cookie_" . uniqid() . ".txt";
+
+		$fp = fopen($cookiefilename, "w");
+		fclose($fp);
+
+		// create a new cURL resource
+		$ch = curl_init();
+
+		// set URL and other appropriate options
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiefilename);
+		curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiefilename);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$ftppushUrl = "https://www.onlinetvrecorder.com/downloader/api/ftppush.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&host=" . $this->configArray['otr']['ftphost'] . "&port=" . $this->configArray['otr']['ftpport'] . "&username=" . $this->configArray['otr']['ftpuser'] . "&password=" . $this->configArray['otr']['ftppassword'] . "&directory=" . $this->configArray['otr']['ftpdir'] . "&filename=" . $filename;
+		curl_setopt($ch, CURLOPT_URL, $ftppushUrl);
+		$xmlData = curl_exec($ch);
+		$ftppushId = $this->parseFtppushXml($xmlData);
+		
+		// close cURL resource, and free up system resources
+		curl_close($ch);
+		unlink($cookiefilename);
+		return $ftppushId;
+	}
+	
+	private function removeFtppush($ftppushId) {
+		$cookiefilename = $this->tmpdir . "cookie_" . uniqid() . ".txt";
+
+		$fp = fopen($cookiefilename, "w");
+		fclose($fp);
+
+		// create a new cURL resource
+		$ch = curl_init();
+
+		// set URL and other appropriate options
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiefilename);
+		curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiefilename);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$ftppushUrl = "https://www.onlinetvrecorder.com/downloader/api/deleteftppush.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&ftppush_id=" . $ftppushId;
+		curl_setopt($ch, CURLOPT_URL, $ftppushUrl);
+		$xmlData = curl_exec($ch);
+		$this->parseFtppushXml($xmlData);
+
+		// close cURL resource, and free up system resources
+		curl_close($ch);
+		unlink($cookiefilename);
+	}
+	
 	private function parseFilenameXml($data) {
 
 		$fileprops = array();
@@ -547,6 +664,14 @@ class Call_UpdateEpg extends Call_Abstract {
 		if ($fileprop == null)
 			throw new Exception("Kein Dateiformate gefunden.");
 
+		/*
+		 * Wert der Datei wie oben die Reihenfolge
+		 * Somit ftppushs vergleichbar
+		 */
+		$fileprop['worth'] = $fileprop['isCut'] * 2^2 +
+								$fileprop['isHQ'] * 2^1 +
+								!$fileprop['isDecoded'] * 2^0;
+		
 		return $fileprop;
 	}
 
@@ -555,7 +680,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		$result = $tmp->ITEM->RESULT;
 
 		if ($result == "ADDED" || $result == "DOUBLE")
-			return true;
+			return $tmp->ITEM->FTPPUSH_ID;
 
 		throw new Exception("Anlegen des Ftppushs fehlgeschlagen. (" . $result . ")");
 	}
@@ -566,8 +691,8 @@ class Call_UpdateEpg extends Call_Abstract {
 		 * verschiebe fertige dateien an richtige stelle
 		 * aktualisiere availability der episode
 		 */
-                                    $files = array();
-		$dir = "/share/ftppush/";
+		$files = array();
+		$dir = $this->videodownloaddir;
 		if ($dh = opendir($dir)) {
 			while (($filename = readdir($dh)) !== false) {
 				$filesize = filesize($dir . $filename);
