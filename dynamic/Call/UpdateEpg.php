@@ -687,9 +687,10 @@ class Call_UpdateEpg extends Call_Abstract {
 				break;
 			}
 		}
-		if ($fileprop == null)
+		if ($fileprop == null){
+			var_dump($data);
 			throw new Exception("Kein Dateiformate gefunden.");
-
+		}
 		/*
 		 * Wert der Datei wie oben die Reihenfolge
 		 * Somit ftppushs vergleichbar
