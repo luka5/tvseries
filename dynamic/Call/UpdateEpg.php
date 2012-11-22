@@ -605,7 +605,7 @@ class Call_UpdateEpg extends Call_Abstract {
 		$ftppushUrl = "https://www.onlinetvrecorder.com/downloader/api/deleteftppush.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&ftppush_id=" . $ftppushId;
 		curl_setopt($ch, CURLOPT_URL, $ftppushUrl);
 		$xmlData = curl_exec($ch);
-		$this->parseFtppushXml($xmlData);
+		$this->parseFtppushRemoveXml($xmlData);
 
 		// close cURL resource, and free up system resources
 		curl_close($ch);
@@ -683,6 +683,11 @@ class Call_UpdateEpg extends Call_Abstract {
 			return $tmp->ITEM->FTPPUSH_ID;
 
 		throw new Exception("Anlegen des Ftppushs fehlgeschlagen. (" . $result . ")");
+	}
+	
+	private function parseFtppushRemoveXml($data) {
+		$tmp = new SimpleXMLElement($data);
+		return $tmp->ITEM->RESULT == "OK";
 	}
 
 	private function relocateFiles() {
