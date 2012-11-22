@@ -466,9 +466,9 @@ class Call_UpdateEpg extends Call_Abstract {
 								"idBroadcastTime" => $bct->getId()
 							));
 						foreach($ftppushs as $ftppush){
-							$ftppushWorth = $ftppushs->isCut() * 2^2 +
-												$ftppushs->isHQ() * 2^1 +
-												!$ftppushs->isDecoded() * 2^0;
+							$ftppushWorth = $ftppush->isCut() * 2^2 +
+												$ftppush->isHQ() * 2^1 +
+												!$ftppush->isDecoded() * 2^0;
 							if($ftppushWorth < $fileprop['worth']){
 								/*
 								 * alter ftppush ist schlechter, als aktueller.
