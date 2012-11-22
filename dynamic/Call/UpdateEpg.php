@@ -575,7 +575,12 @@ class Call_UpdateEpg extends Call_Abstract {
 		curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiefilename);
 		curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiefilename);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
+		
+		$loginUrl = "https://www.onlinetvrecorder.com/downloader/api/login.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&email=" . $this->configArray['otr']['email'] . "&pass=" . $this->configArray['otr']['pass'];
+		curl_setopt($ch, CURLOPT_URL, $loginUrl);
+		// grab URL and pass it to the browser
+		curl_exec($ch);
+		
 		$ftppushUrl = "https://www.onlinetvrecorder.com/downloader/api/ftppush.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&host=" . $this->configArray['otr']['ftphost'] . "&port=" . $this->configArray['otr']['ftpport'] . "&username=" . $this->configArray['otr']['ftpuser'] . "&password=" . $this->configArray['otr']['ftppassword'] . "&directory=" . $this->configArray['otr']['ftpdir'] . "&filename=" . $filename;
 		curl_setopt($ch, CURLOPT_URL, $ftppushUrl);
 		$xmlData = curl_exec($ch);
@@ -611,6 +616,11 @@ class Call_UpdateEpg extends Call_Abstract {
 
 			$this->checksum = md5($this->configArray['otr']['checksumPart1'] . $code . $this->configArray['otr']['checksumPart2']);
 		}
+				
+		$loginUrl = "https://www.onlinetvrecorder.com/downloader/api/login.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&email=" . $this->configArray['otr']['email'] . "&pass=" . $this->configArray['otr']['pass'];
+		curl_setopt($ch, CURLOPT_URL, $loginUrl);
+		// grab URL and pass it to the browser
+		curl_exec($ch);
 		
 		$ftppushUrl = "https://www.onlinetvrecorder.com/downloader/api/deleteftppush.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&ftppush_id=" . $ftppushId;
 		curl_setopt($ch, CURLOPT_URL, $ftppushUrl);
@@ -686,7 +696,12 @@ class Call_UpdateEpg extends Call_Abstract {
 	}
 
 	private function parseFtppushXml($data) {
+		try{
 		$tmp = new SimpleXMLElement($data);
+		}catch(Exception $e){
+			var_dump($data);
+			echo $e;
+		}
 		$result = $tmp->ITEM->RESULT;
 
 		if ($result == "ADDED" || $result == "DOUBLE")
