@@ -602,6 +602,16 @@ class Call_UpdateEpg extends Call_Abstract {
 		curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiefilename);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+		if($this->checksum == null){
+			$codeUrl = "https://www.onlinetvrecorder.com/downloader/api/getcode.php";
+			curl_setopt($ch, CURLOPT_URL, $codeUrl);
+
+			// grab URL and pass it to the browser
+			$code = curl_exec($ch);
+
+			$this->checksum = md5($this->configArray['otr']['checksumPart1'] . $code . $this->configArray['otr']['checksumPart2']);
+		}
+		
 		$ftppushUrl = "https://www.onlinetvrecorder.com/downloader/api/deleteftppush.php?did=" . $this->configArray['otr']['did'] . "&checksum=" . $this->checksum . "&ftppush_id=" . $ftppushId;
 		curl_setopt($ch, CURLOPT_URL, $ftppushUrl);
 		$xmlData = curl_exec($ch);
