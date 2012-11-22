@@ -475,7 +475,10 @@ class Call_UpdateEpg extends Call_Abstract {
 								 * Lösche alten, starte neuen!
 								 */
 								$this->removeFtppush($ftppush->getFtppushId());
-								unlink($this->videodownloaddir . $ftppush->getFilename());
+								$filepath = $this->videodownloaddir .
+												$ftppush->getFilename();
+								if(file_exists($filepath))
+									unlink($filepath);
 								/*
 								 * setzte FTPPush auf gelöscht
 								 */
