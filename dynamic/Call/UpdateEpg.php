@@ -760,6 +760,8 @@ class Call_UpdateEpg extends Call_Abstract {
 					$destinationDir = $this->configArray['common']['videofilesdir'] . $serial->getTitle() . "/" . $season->getTitle() . "/";
 					$destinationDir = str_replace(" ", "_", $destinationDir);
 					
+					if(!is_dir($destinationDir))
+						mkdir($destinationDir, 0, true);
 					rename($dir . $filename, $destinationDir . $destinationFilename);
 					
 					if($ftppush->isHQ())
