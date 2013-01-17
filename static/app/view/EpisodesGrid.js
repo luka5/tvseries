@@ -27,8 +27,9 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 		me.down("#addEpisodeButton").on("click", me.addEpisode, me);
 		me.down("#addSingleEpisodeButton").on("click", me.addSingleEpisode, me);
 		me.down("#openVideoUrlButton").on("click", me.openVideoUrl, me);
+		me.down("#openVideoButton").on("click", me.openVideo, me);
 		
-		this.getSelectionModel().on('select', this.select, this);
+//		this.getSelectionModel().on('select', this.select, this);
 		this.down("textfield").on('change', this.search, this);
 
 		this.on('reload', this.reload, this);
@@ -60,6 +61,12 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 	reload: function(){
 		this.filterTask.cancel();
 		this.load(this.serial, this.season);
+	},
+	
+	openVideo: function(){
+		this.filterTask.cancel();
+		var episode = this.getSelectionModel().getSelection();
+		this.fireEvent("loadShowWindow", episode, this.season, this.serial);
 	},
 	
 	select: function(sm, record, index, opt){

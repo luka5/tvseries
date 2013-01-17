@@ -242,6 +242,23 @@
                             },
                             "codeClass": null,
                             "userConfig": {
+                                "id": "openVideoButton",
+                                "itemId": "openVideoButton",
+                                "icon": null,
+                                "text": "Video öffnen",
+                                "designer|userClassName": "MyButton2",
+                                "layout|flex": null
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen8761",
+                            "type": "button",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
                                 "id": "openVideoUrlButton",
                                 "itemId": "openVideoUrlButton",
                                 "icon": null,

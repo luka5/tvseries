@@ -40,6 +40,12 @@ Ext.define('TvSeries.view.ui.EpisodesGrid', {
                         },
                         {
                             xtype: 'button',
+                            id: 'openVideoButton',
+                            itemId: 'openVideoButton',
+                            text: 'Video öffnen'
+                        },
+                        {
+                            xtype: 'button',
                             id: 'openVideoUrlButton',
                             itemId: 'openVideoUrlButton',
                             text: 'Video extern öffnen'
