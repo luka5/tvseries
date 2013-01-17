@@ -122,7 +122,7 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 		
 		var videourl = "/tvseries/media/" + serialTitle_ + "/" + seasonTitle_ 
 						+ "/"+seasonNumber + "x" + episodeNumber;
-		window.open(window.location + videourl, "_blank");
+		window.open(location.origin + videourl, "_blank");
 	},
 
 	search: function(){
