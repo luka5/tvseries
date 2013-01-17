@@ -26,6 +26,7 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 
 		me.down("#addEpisodeButton").on("click", me.addEpisode, me);
 		me.down("#addSingleEpisodeButton").on("click", me.addSingleEpisode, me);
+		me.down("#openVideoUrlButton").on("click", me.openVideoUrl, me);
 		
 		this.getSelectionModel().on('select', this.select, this);
 		this.down("textfield").on('change', this.search, this);
@@ -92,6 +93,23 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 		});
 		addSingleEpisodeWindow.show();
 		addSingleEpisodeWindow.on("close", this.reload, this);
+	},
+
+	openVideoUrl: function(){
+		var episode = this.getSelectionModel().getSelection();
+		var episodeNumber = episode.get('number');
+        if(episodeNumber <= 9){
+            episodeNumber = "0" + episodeNumber;
+        }
+		var seasonTitle = this.season.get('title');
+        var seasonTitle_ = seasonTitle.replace(/ /gi,"_");
+		var seasonNumber = this.season.get('number');
+		var serialTitle = this.serial.get('title');
+        var serialTitle_ = serialTitle.replace(/ /gi,"_");
+		
+		var videourl = "/tvseries/media/" + serialTitle_ + "/" + seasonTitle_ 
+						+ "/"+seasonNumber + "x" + episodeNumber;
+		window.open(window.location + videourl, "_blank");
 	},
 
 	search: function(){

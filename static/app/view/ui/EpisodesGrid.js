@@ -27,6 +27,7 @@ Ext.define('TvSeries.view.ui.EpisodesGrid', {
                     items: [
                         {
                             xtype: 'button',
+                            hidden: true,
                             id: 'addEpisodeButton',
                             itemId: 'addEpisodeButton',
                             icon: 'icons/add.png'
@@ -36,6 +37,12 @@ Ext.define('TvSeries.view.ui.EpisodesGrid', {
                             id: 'addSingleEpisodeButton',
                             itemId: 'addSingleEpisodeButton',
                             icon: 'icons/add.png'
+                        },
+                        {
+                            xtype: 'button',
+                            id: 'openVideoUrlButton',
+                            itemId: 'openVideoUrlButton',
+                            text: 'Video extern öffnen'
                         },
                         {
                             xtype: 'tbfill'

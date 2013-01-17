@@ -207,6 +207,7 @@
                             },
                             "codeClass": null,
                             "userConfig": {
+                                "hidden": true,
                                 "id": "addEpisodeButton",
                                 "itemId": "addEpisodeButton",
                                 "icon": "icons/add.png",
@@ -228,6 +229,23 @@
                                 "itemId": "addSingleEpisodeButton",
                                 "icon": "icons/add.png",
                                 "text": null,
+                                "designer|userClassName": "MyButton2",
+                                "layout|flex": null
+                            }
+                        },
+                        {
+                            "id": "ExtBox1-ext-gen8216",
+                            "type": "button",
+                            "reference": {
+                                "name": "items",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "id": "openVideoUrlButton",
+                                "itemId": "openVideoUrlButton",
+                                "icon": null,
+                                "text": "Video extern öffnen",
                                 "designer|userClassName": "MyButton2",
                                 "layout|flex": null
                             }
