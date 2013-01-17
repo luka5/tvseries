@@ -65,7 +65,10 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 	
 	openVideo: function(){
 		this.filterTask.cancel();
-		var episode = this.getSelectionModel().getSelection();
+		var records = this.getSelectionModel().getSelection();
+		if(records.length === 0)
+			return;
+		var episode = records[0];
 		this.fireEvent("loadShowWindow", episode, this.season, this.serial);
 	},
 	
@@ -103,7 +106,10 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 	},
 
 	openVideoUrl: function(){
-		var episode = this.getSelectionModel().getSelection();
+		var records = this.getSelectionModel().getSelection();
+		if(records.length === 0)
+			return;
+		var episode = records[0];
 		var episodeNumber = episode.get('number');
         if(episodeNumber <= 9){
             episodeNumber = "0" + episodeNumber;
