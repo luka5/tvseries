@@ -117,12 +117,15 @@ Ext.define('TvSeries.view.EpisodesGrid', {
 		var seasonTitle = this.season.get('title');
         var seasonTitle_ = seasonTitle.replace(/ /gi,"_");
 		var seasonNumber = this.season.get('number');
+		if(seasonNumber <= 9){
+            seasonNumber = "0" + seasonNumber;
+        }
 		var serialTitle = this.serial.get('title');
         var serialTitle_ = serialTitle.replace(/ /gi,"_");
 		
 		var videourl = "/tvseries/media/" + serialTitle_ + "/" + seasonTitle_ 
 						+ "/"+seasonNumber + "x" + episodeNumber;
-		window.open(location.origin + videourl, "_blank");
+		window.open(videourl, "_blank");
 	},
 
 	search: function(){
